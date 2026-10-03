@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Guru</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body class="bg-gray-100">
+
+    <nav class="bg-green-600 p-4 text-white flex justify-between items-center shadow">
+        <h1 class="text-xl font-bold">Portal Guru - Rapot Sisipan</h1>
+        <button onclick="logout()" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded text-sm">Logout</button>
+    </nav>
+
+    <div class="p-8">
+        <h2 class="text-2xl mb-2">Selamat datang, <span id="namaGuru" class="font-bold">Guru</span>!</h2>
+        <p class="text-gray-600 mb-6">Status Wali Kelas: <span id="statusWaliBadge" class="px-2 py-1 bg-gray-200 rounded text-sm font-bold"></span></p>
+        
+        <div class="flex gap-4 mb-6">
+            <button onclick="bukaTab('tabNilai')" id="btnTabNilai" class="bg-blue-600 text-white font-bold py-2 px-4 rounded">Menu Input Nilai Mapel</button>
+            <button onclick="bukaTab('tabWali')" id="btnTabWali" class="bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded hidden">Menu Wali Kelas</button>
+        </div>
+
+        <!-- AREA INPUT NILAI -->
+        <div id="tabNilai" class="bg-white p-6 rounded shadow border-t-4 border-blue-500">
+            <h3 class="font-bold text-lg mb-4 text-blue-600">Input Nilai Mata Pelajaran</h3>
+            <div class="flex gap-4 mb-4">
+                <select id="pilihKelas" class="border rounded p-2" onchange="loadMapel()">
+                    <option value="">-- Memuat Kelas... --</option>
+                </select>
+                <select id="pilihMapel" class="border rounded p-2" disabled onchange="loadSiswaNilai()">
+                    <option value="">-- Pilih Mapel --</option>
+                </select>
+            </div>
+
+            <!-- AREA EXCEL -->
+            <div id="areaExcel" class="hidden flex gap-4 mb-4 p-4 bg-blue-50 border border-blue-200 rounded">
+                <button onclick="downloadTemplateExcel()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded flex items-center gap-2 text-sm">
+                    ⬇️ Download Format Excel
+                </button>
+                <div class="relative">
+                    <input type="file" id="uploadExcel" accept=".xlsx, .xls" onchange="uploadTemplateExcel(event)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                    <button class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded flex items-center gap-2 text-sm pointer-events-none">
+                        ⬆️ Upload File Excel
+                    </button>
+                </div>
+                <p class="text-xs text-gray-500 ml-2 mt-2">*Upload format yang sudah diisi, lalu klik Simpan.</p>
+            </div>
+
+            <div id="areaTabelNilai" class="hidden overflow-x-auto">
+                <table class="w-full text-sm text-left text-gray-500 mb-4 border">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-2 border">NIS</th>
+                            <th class="px-4 py-2 border">Nama Siswa</th>
+                            <th class="px-4 py-2 border">UH 1</th>
+                            <th class="px-4 py-2 border">UH 2</th>
+                            <th class="px-4 py-2 border">UH 3</th>
+                            <th class="px-4 py-2 border">PTS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelBodyNilai"></tbody>
+                </table>
+                <button onclick="simpanNilai()" id="btnSimpanNilai" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Simpan Nilai ke Database</button>
+                <div id="statusMsgNilai" class="mt-4 font-bold hidden p-3 rounded"></div>
+            </div>
+        </div>
+
+        <!-- AREA WALI KELAS -->
+        <div id="tabWali" class="bg-white p-6 rounded shadow border-t-4 border-green-500 hidden">
+            <h3 class="font-bold text-lg mb-2 text-green-600">Input Kehadiran & Catatan Siswa Kelas <span id="lblKelasWali"></span></h3>
+            <button onclick="loadSiswaWali()" class="bg-green-100 text-green-800 font-bold py-2 px-4 rounded mb-4 hover:bg-green-200">Muat Daftar Siswa</button>
+
+            <div id="areaTabelWali" class="hidden overflow-x-auto">
+                <table class="w-full text-sm text-left text-gray-500 mb-4 border">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-2 border">NIS</th>
+                            <th class="px-4 py-2 border">Nama Siswa</th>
+                            <th class="px-4 py-2 border w-20">Sakit</th>
+                            <th class="px-4 py-2 border w-20">Izin</th>
+                            <th class="px-4 py-2 border w-20">Alpa</th>
+                            <th class="px-4 py-2 border">Catatan Wali Kelas</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelBodyWali"></tbody>
+                </table>
+                <button onclick="simpanKehadiran()" id="btnSimpanWali" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Simpan Kehadiran ke Database</button>
+                <div id="statusMsgWali" class="mt-4 font-bold hidden p-3 rounded"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // MASUKKAN URL DEPLOYMENT ANDA DI SINI
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbymL6pCjOtQSXVoDP-01PXZBYrVv86dDx7qAjcwYrW_oIWwYgylCfL2RS8dtCXBpXKP1g/exec';
+
+        if (sessionStorage.getItem('isLoggedIn') !== 'true' || sessionStorage.getItem('role') !== 'Guru') {
+            window.location.href = 'index.html';
+        }
+
+        document.getElementById('namaGuru').innerText = sessionStorage.getItem('nama_guru');
+        const idGuru = sessionStorage.getItem('id_guru');
+        const statusWali = sessionStorage.getItem('status_wali') ? sessionStorage.getItem('status_wali').toString().trim() : 'Tidak';
+        const kelasWali = sessionStorage.getItem('kelas_wali') ? sessionStorage.getItem('kelas_wali').toString().trim() : '-';
+
+        if(statusWali === 'Ya') {
+            document.getElementById('statusWaliBadge').innerText = "Ya (" + kelasWali + ")";
+            document.getElementById('statusWaliBadge').classList.add('bg-green-200', 'text-green-800');
+            document.getElementById('lblKelasWali').innerText = kelasWali;
+            document.getElementById('btnTabWali').classList.remove('hidden');
+        } else {
+            document.getElementById('statusWaliBadge').innerText = "Bukan Wali Kelas";
+        }
+
+        // Load Kelas Khusus Guru Pengampu
+        function loadDaftarKelas() {
+            const selectKelas = document.getElementById('pilihKelas');
+            fetch(SCRIPT_URL, { 
+                method: 'POST', 
+                body: JSON.stringify({ action: 'get_kelas_guru', id_guru: idGuru }) 
+            })
+            .then(res => res.json())
+            .then(data => {
+                selectKelas.innerHTML = '<option value="">-- Pilih Kelas --</option>';
+                if(data.status === 'success' && data.data.length > 0) {
+                    data.data.forEach(k => { selectKelas.innerHTML += `<option value="${k}">${k}</option>`; });
+                } else {
+                    selectKelas.innerHTML = '<option value="">-- Tidak ada kelas diampu --</option>';
+                }
+            });
+        }
+        loadDaftarKelas();
+
+        function bukaTab(tabId) {
+            document.getElementById('tabNilai').classList.add('hidden');
+            document.getElementById('tabWali').classList.add('hidden');
+            document.getElementById('btnTabNilai').className = "bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded";
+            if(statusWali === 'Ya') document.getElementById('btnTabWali').className = "bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded";
+            
+            document.getElementById(tabId).classList.remove('hidden');
+            if(tabId === 'tabNilai') {
+                document.getElementById('btnTabNilai').className = "bg-blue-600 text-white font-bold py-2 px-4 rounded";
+            } else {
+                document.getElementById('btnTabWali').className = "bg-green-600 text-white font-bold py-2 px-4 rounded";
+            }
+        }
+
+        // ================= FUNGSI NILAI =================
+        function loadMapel() {
+            const kelas = document.getElementById('pilihKelas').value;
+            const selectMapel = document.getElementById('pilihMapel');
+            const areaTabel = document.getElementById('areaTabelNilai');
+            const areaExcel = document.getElementById('areaExcel');
+            
+            if(!kelas) { selectMapel.disabled = true; areaTabel.classList.add('hidden'); areaExcel.classList.add('hidden'); return; }
+
+            selectMapel.innerHTML = '<option>Loading...</option>'; selectMapel.disabled = true; 
+            areaTabel.classList.add('hidden'); areaExcel.classList.add('hidden');
+
+            fetch(SCRIPT_URL, { 
+                method: 'POST', 
+                body: JSON.stringify({ action: 'get_mapel_guru', id_guru: idGuru, kelas: kelas }) 
+            })
+            .then(res => res.json()).then(data => {
+                selectMapel.innerHTML = '<option value="">-- Pilih Mapel --</option>';
+                if(data.status === 'success') {
+                    data.data.forEach(m => { selectMapel.innerHTML += `<option value="${m.id_mapel}">${m.nama_mapel}</option>`; });
+                }
+                selectMapel.disabled = false;
+            });
+        }
+
+        function loadSiswaNilai() {
+            const kelas = document.getElementById('pilihKelas').value;
+            const mapel = document.getElementById('pilihMapel').value;
+            const tabelBody = document.getElementById('tabelBodyNilai');
+            if(!mapel) return;
+
+            document.getElementById('areaTabelNilai').classList.remove('hidden');
+            document.getElementById('areaExcel').classList.remove('hidden');
+            tabelBody.innerHTML = '<tr><td colspan="6" class="text-center py-4">Memuat data siswa...</td></tr>';
+
+            fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_siswa', kelas: kelas }) })
+            .then(res => res.json()).then(data => {
+                tabelBody.innerHTML = '';
+                data.data.forEach(s => {
+                    tabelBody.innerHTML += `
+                        <tr class="bg-white border-b data-siswa-row" data-nis="${s.nis}">
+                            <td class="px-4 py-2 border">${s.nis}</td><td class="px-4 py-2 border font-bold">${s.nama}</td>
+                            <td class="px-4 py-2 border"><input type="number" class="w-16 border rounded p-1 input-uh1" value="0"></td>
+                            <td class="px-4 py-2 border"><input type="number" class="w-16 border rounded p-1 input-uh2" value="0"></td>
+                            <td class="px-4 py-2 border"><input type="number" class="w-16 border rounded p-1 input-uh3" value="0"></td>
+                            <td class="px-4 py-2 border"><input type="number" class="w-16 border rounded p-1 input-pts" value="0"></td>
+                        </tr>`;
+                });
+            });
+        }
+
+        // ================= FITUR EXCEL =================
+        function downloadTemplateExcel() {
+            const kelas = document.getElementById('pilihKelas').value;
+            const selectMapel = document.getElementById('pilihMapel');
+            const mapelText = selectMapel.options[selectMapel.selectedIndex].text;
+            const rows = document.querySelectorAll('.data-siswa-row');
+            
+            if(rows.length === 0) return alert("Belum ada data siswa.");
+
+            let dataExcel = [];
+            rows.forEach(row => {
+                dataExcel.push({
+                    "NIS": row.getAttribute('data-nis'),
+                    "Nama Siswa": row.children[1].innerText,
+                    "UH 1": row.querySelector('.input-uh1').value,
+                    "UH 2": row.querySelector('.input-uh2').value,
+                    "UH 3": row.querySelector('.input-uh3').value,
+                    "PTS": row.querySelector('.input-pts').value
+                });
+            });
+
+            const worksheet = XLSX.utils.json_to_sheet(dataExcel);
+            const wscols = [ {wch:10}, {wch:30}, {wch:8}, {wch:8}, {wch:8}, {wch:8} ];
+            worksheet['!cols'] = wscols;
+
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Format Nilai");
+            XLSX.writeFile(workbook, `Format_Nilai_${mapelText.replace(/ /g,"_")}_${kelas}.xlsx`);
+        }
+
+        function uploadTemplateExcel(event) {
+            const file = event.target.files[0];
+            if(!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, {type: 'array'});
+                const firstSheetName = workbook.SheetNames[0];
+                const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheetName]);
+
+                let successCount = 0;
+                jsonData.forEach(row => {
+                    const nis = String(row["NIS"]).trim();
+                    const tr = document.querySelector(`.data-siswa-row[data-nis="${nis}"]`);
+                    if(tr) {
+                        if(row["UH 1"] !== undefined) tr.querySelector('.input-uh1').value = row["UH 1"];
+                        if(row["UH 2"] !== undefined) tr.querySelector('.input-uh2').value = row["UH 2"];
+                        if(row["UH 3"] !== undefined) tr.querySelector('.input-uh3').value = row["UH 3"];
+                        if(row["PTS"] !== undefined) tr.querySelector('.input-pts').value = row["PTS"];
+                        successCount++;
+                    }
+                });
+                
+                alert(`Berhasil mengimpor nilai untuk ${successCount} siswa! Silakan cek tabel dan klik "Simpan Nilai ke Database".`);
+                event.target.value = '';
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function simpanNilai() {
+            const btn = document.getElementById('btnSimpanNilai'); const statusMsg = document.getElementById('statusMsgNilai');
+            let dataNilai = [];
+            document.querySelectorAll('.data-siswa-row').forEach(row => {
+                dataNilai.push({
+                    nis: row.getAttribute('data-nis'),
+                    uh1: row.querySelector('.input-uh1').value, uh2: row.querySelector('.input-uh2').value,
+                    uh3: row.querySelector('.input-uh3').value, pts: row.querySelector('.input-pts').value
+                });
+            });
+            btn.innerText = "Menyimpan..."; btn.disabled = true; statusMsg.classList.add('hidden');
+            
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action: 'simpan_nilai', id_mapel: document.getElementById('pilihMapel').value, data_nilai: dataNilai })
+            }).then(res => res.json()).then(data => {
+                btn.innerText = "Simpan Nilai ke Database"; btn.disabled = false;
+                statusMsg.innerText = data.message;
+                statusMsg.className = "mt-4 p-3 rounded font-bold " + (data.status === 'success' ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700");
+                statusMsg.classList.remove('hidden');
+            });
+        }
+
+        // ================= FUNGSI WALI KELAS =================
+        function loadSiswaWali() {
+            const tabelBody = document.getElementById('tabelBodyWali');
+            document.getElementById('areaTabelWali').classList.remove('hidden');
+            tabelBody.innerHTML = '<tr><td colspan="6" class="text-center py-4">Memuat daftar siswa kelas '+ kelasWali +'...</td></tr>';
+
+            fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_siswa', kelas: kelasWali }) })
+            .then(res => res.json()).then(data => {
+                tabelBody.innerHTML = '';
+                data.data.forEach(s => {
+                    tabelBody.innerHTML += `
+                        <tr class="bg-white border-b data-wali-row" data-nis="${s.nis}">
+                            <td class="px-4 py-2 border">${s.nis}</td><td class="px-4 py-2 border font-bold">${s.nama}</td>
+                            <td class="px-4 py-2 border"><input type="number" class="w-full border rounded p-1 input-sakit" value="0"></td>
+                            <td class="px-4 py-2 border"><input type="number" class="w-full border rounded p-1 input-izin" value="0"></td>
+                            <td class="px-4 py-2 border"><input type="number" class="w-full border rounded p-1 input-alpa" value="0"></td>
+                            <td class="px-4 py-2 border"><input type="text" class="w-full border rounded p-1 input-catatan" placeholder="Cth: Tingkatkan belajarmu..."></td>
+                        </tr>`;
+                });
+            });
+        }
+
+        function simpanKehadiran() {
+            const btn = document.getElementById('btnSimpanWali'); const statusMsg = document.getElementById('statusMsgWali');
+            let dataHadir = [];
+            document.querySelectorAll('.data-wali-row').forEach(row => {
+                dataHadir.push({
+                    nis: row.getAttribute('data-nis'),
+                    sakit: row.querySelector('.input-sakit').value,
+                    izin: row.querySelector('.input-izin').value,
+                    alpa: row.querySelector('.input-alpa').value,
+                    catatan: row.querySelector('.input-catatan').value
+                });
+            });
+            btn.innerText = "Menyimpan..."; btn.disabled = true; statusMsg.classList.add('hidden');
+            
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action: 'simpan_kehadiran', data_kehadiran: dataHadir })
+            }).then(res => res.json()).then(data => {
+                btn.innerText = "Simpan Kehadiran ke Database"; btn.disabled = false;
+                statusMsg.innerText = data.message;
+                statusMsg.className = "mt-4 p-3 rounded font-bold " + (data.status === 'success' ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700");
+                statusMsg.classList.remove('hidden');
+            });
+        }
+
+        function logout() { sessionStorage.clear(); window.location.href = 'index.html'; }
+    </script>
+</body>
+</html>
