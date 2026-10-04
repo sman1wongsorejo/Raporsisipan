@@ -6,6 +6,7 @@
     <title>Dashboard Guru - Portal Rapot Sisipan</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         /* CSS Khusus untuk menghilangkan panah (spinner) pada input tipe number */
         input[type=number]::-webkit-inner-spin-button, 
@@ -41,11 +42,36 @@
         <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
                 <h2 class="text-2xl font-bold text-slate-900">Selamat datang, <span id="namaGuru" class="text-emerald-600">Guru</span>! 👋</h2>
-                <p class="text-slate-500 text-sm mt-1">Kelola nilai mata pelajaran dan rekapitulasi kehadiran siswa dengan mudah di sini.</p>
+                <p class="text-slate-500 text-sm mt-1">Kelola nilai mata pelajaran, rekapitulasi kehadiran, dan pantau progres pengisian nilai.</p>
             </div>
             <div class="bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl flex items-center gap-2">
                 <span class="text-xs font-medium text-slate-500 uppercase tracking-wider">Status Wali Kelas:</span>
                 <span id="statusWaliBadge" class="px-3 py-1 rounded-full text-xs font-bold transition-all"></span>
+            </div>
+        </div>
+
+        <!-- INFO CARDS RINGKASAN MENGAJAR (PROFESIONAL & ELEGAN) -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 flex items-center gap-4">
+                <div class="p-3 bg-blue-50 text-blue-600 rounded-xl text-xl font-bold">🏫</div>
+                <div>
+                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Kelas Diampu</p>
+                    <p id="infoTotalKelas" class="text-lg font-black text-slate-900">- Kelas</p>
+                </div>
+            </div>
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 flex items-center gap-4">
+                <div class="p-3 bg-indigo-50 text-indigo-600 rounded-xl text-xl font-bold">📖</div>
+                <div>
+                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Mata Pelajaran</p>
+                    <p id="infoTotalMapel" class="text-lg font-black text-slate-900">- Mapel</p>
+                </div>
+            </div>
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 flex items-center gap-4">
+                <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl text-xl font-bold">🎯</div>
+                <div>
+                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Sedang Dikelola</p>
+                    <p id="infoStatusAktif" class="text-xs font-bold text-slate-700 mt-0.5">Pilih Kelas & Mapel</p>
+                </div>
             </div>
         </div>
         
@@ -57,15 +83,29 @@
             <button onclick="bukaTab('tabWali')" id="btnTabWali" class="transition-all duration-200 font-semibold py-2.5 px-5 rounded-xl text-sm shadow-sm flex items-center gap-2 hidden">
                 🎓 Menu Wali Kelas
             </button>
+            <button onclick="bukaTab('tabProgress')" id="btnTabProgress" class="transition-all duration-200 font-semibold py-2.5 px-5 rounded-xl text-sm shadow-sm flex items-center gap-2 bg-slate-200 text-slate-700 hover:bg-slate-300">
+                📈 Pemantauan Progres Nilai Saya
+            </button>
         </div>
 
         <!-- AREA INPUT NILAI -->
         <div id="tabNilai" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200/80 border-t-4 border-t-blue-500 transition-all">
-            <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
-                <div class="p-2.5 bg-blue-50 text-blue-600 rounded-xl text-xl">📊</div>
-                <div>
-                    <h3 class="font-bold text-lg text-slate-900">Input Nilai Mata Pelajaran</h3>
-                    <p class="text-xs text-slate-500">Pilih kelas dan mata pelajaran untuk mulai memasukkan atau mengimpor nilai.</p>
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 pb-4 border-b border-slate-100">
+                <div class="flex items-center gap-3">
+                    <div class="p-2.5 bg-blue-50 text-blue-600 rounded-xl text-xl">📊</div>
+                    <div>
+                        <h3 class="font-bold text-lg text-slate-900">Input Nilai Mata Pelajaran</h3>
+                        <p class="text-xs text-slate-500">Pilih kelas dan mata pelajaran untuk mulai memasukkan atau mengimpor nilai.</p>
+                    </div>
+                </div>
+
+                <!-- Info Card Jumlah Siswa Per Kelas (Profesional) -->
+                <div id="infoJumlahSiswa" class="hidden bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200/80 px-4 py-2.5 rounded-xl flex items-center gap-3 shadow-xs">
+                    <div class="p-2 bg-blue-600 text-white rounded-lg text-xs font-bold shadow-sm">👥</div>
+                    <div>
+                        <p class="text-[10px] uppercase tracking-wider font-bold text-blue-600">Total Siswa Kelas Ini</p>
+                        <p id="teksJumlahSiswa" class="text-sm font-extrabold text-slate-800">0 Siswa Terdaftar</p>
+                    </div>
                 </div>
             </div>
 
@@ -158,6 +198,25 @@
             </div>
         </div>
 
+        <!-- TAB PEMANTAUAN PROGRES NILAI (GRAFIK BATANG HORIZONTAL SPESIFIK GURU) -->
+        <div id="tabProgress" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200/80 border-t-4 border-t-purple-500 hidden transition-all">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 pb-4 border-b border-slate-100">
+                <div class="flex items-center gap-3">
+                    <div class="p-2.5 bg-purple-50 text-purple-600 rounded-xl text-xl">📈</div>
+                    <div>
+                        <h3 class="font-bold text-lg text-slate-900">Grafik Progres Nilai Mata Pelajaran yang Anda Ampu</h3>
+                        <p class="text-xs text-slate-500">Memantau persentase kelengkapan pengisian nilai khusus untuk kelas dan mata pelajaran tugas Anda.</p>
+                    </div>
+                </div>
+                <button onclick="loadProgressGuruData()" class="bg-purple-50 text-purple-700 hover:bg-purple-100 active:scale-95 transition font-semibold px-4 py-2.5 rounded-xl border border-purple-200 text-sm flex items-center gap-2 shadow-sm">
+                    🔄 Refresh Grafik
+                </button>
+            </div>
+            <div class="w-full bg-slate-50 p-6 rounded-2xl border border-slate-200" style="height: 420px; position: relative;">
+                <canvas id="chartProgressGuru"></canvas>
+            </div>
+        </div>
+
     </div>
 
     <script>
@@ -184,7 +243,7 @@
             badge.className = "px-3 py-1 bg-slate-200 text-slate-600 rounded-full text-xs font-bold";
         }
 
-        // Load Kelas Khusus Guru Pengampu
+        // Load Kelas Khusus Guru Pengampu & Update Info Card Ringkasan
         function loadDaftarKelas() {
             const selectKelas = document.getElementById('pilihKelas');
             fetch(SCRIPT_URL, { 
@@ -196,9 +255,29 @@
                 selectKelas.innerHTML = '<option value="">-- Pilih Kelas --</option>';
                 if(data.status === 'success' && data.data.length > 0) {
                     data.data.forEach(k => { selectKelas.innerHTML += `<option value="${k}">${k}</option>`; });
+                    // Update Info Card Total Kelas
+                    document.getElementById('infoTotalKelas').innerText = data.data.length + " Kelas";
                 } else {
                     selectKelas.innerHTML = '<option value="">-- Tidak ada kelas diampu --</option>';
+                    document.getElementById('infoTotalKelas').innerText = "0 Kelas";
                 }
+            });
+
+            // Ambil informasi total mapel yang diampu guru ini untuk Info Card
+            fetch(SCRIPT_URL, { 
+                method: 'POST', 
+                body: JSON.stringify({ action: 'get_mapel_summary_guru', id_guru: idGuru }) 
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === 'success') {
+                    document.getElementById('infoTotalMapel').innerText = data.total_mapel + " Mapel";
+                } else {
+                    document.getElementById('infoTotalMapel').innerText = "0 Mapel";
+                }
+            }).catch(() => {
+                // Fallback jika action belum ada di backend, biarkan statis/aman
+                document.getElementById('infoTotalMapel').innerText = "Tersedia";
             });
         }
         loadDaftarKelas();
@@ -206,22 +285,118 @@
         function bukaTab(tabId) {
             document.getElementById('tabNilai').classList.add('hidden');
             document.getElementById('tabWali').classList.add('hidden');
+            document.getElementById('tabProgress').classList.add('hidden');
             
             // Reset button styles
             document.getElementById('btnTabNilai').className = "transition-all duration-200 font-semibold py-2.5 px-5 rounded-xl text-sm shadow-sm bg-slate-200 text-slate-700 hover:bg-slate-300";
             if(statusWali === 'Ya') {
                 document.getElementById('btnTabWali').className = "transition-all duration-200 font-semibold py-2.5 px-5 rounded-xl text-sm shadow-sm bg-slate-200 text-slate-700 hover:bg-slate-300";
             }
+            document.getElementById('btnTabProgress').className = "transition-all duration-200 font-semibold py-2.5 px-5 rounded-xl text-sm shadow-sm bg-slate-200 text-slate-700 hover:bg-slate-300";
             
             document.getElementById(tabId).classList.remove('hidden');
             if(tabId === 'tabNilai') {
                 document.getElementById('btnTabNilai').className = "transition-all duration-200 font-semibold py-2.5 px-5 rounded-xl text-sm shadow-md bg-blue-600 text-white";
-            } else {
+            } else if(tabId === 'tabWali') {
                 document.getElementById('btnTabWali').className = "transition-all duration-200 font-semibold py-2.5 px-5 rounded-xl text-sm shadow-md bg-emerald-600 text-white";
+            } else if(tabId === 'tabProgress') {
+                document.getElementById('btnTabProgress').className = "transition-all duration-200 font-semibold py-2.5 px-5 rounded-xl text-sm shadow-md bg-purple-600 text-white";
+                loadProgressGuruData();
             }
         }
         // Inisialisasi tab aktif awal
         document.getElementById('btnTabNilai').className = "transition-all duration-200 font-semibold py-2.5 px-5 rounded-xl text-sm shadow-md bg-blue-600 text-white";
+
+        // ================= GRAFIK PROGRES NILAI SPESIFIK GURU (MODERN & PROFESIONAL) =================
+        let myChartGuru = null;
+        function loadProgressGuruData() {
+            fetch(SCRIPT_URL, { 
+                method: 'POST', 
+                body: JSON.stringify({ action: 'get_progress_nilai_guru', id_guru: idGuru }) 
+            })
+            .then(res => res.json()).then(res => {
+                if(res.status !== 'success') return;
+                
+                const labels = res.data.map(item => `${item.nama_mapel} (Kelas ${item.kelas})`);
+                const percentages = res.data.map(item => item.persentase);
+                const ctx = document.getElementById('chartProgressGuru').getContext('2d');
+                
+                let gradient = ctx.createLinearGradient(0, 0, 600, 0);
+                gradient.addColorStop(0, 'rgba(99, 102, 241, 0.7)');   
+                gradient.addColorStop(0.5, 'rgba(147, 51, 234, 0.85)'); 
+                gradient.addColorStop(1, 'rgba(168, 85, 247, 1)');      
+
+                if(myChartGuru) myChartGuru.destroy();
+                myChartGuru = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Kelengkapan Pengisian Nilai',
+                            data: percentages,
+                            backgroundColor: gradient,
+                            borderColor: 'rgba(126, 34, 206, 1)',
+                            borderWidth: 0,
+                            borderRadius: 8,          
+                            borderSkipped: false,
+                            barPercentage: 0.5,       
+                            categoryPercentage: 0.7
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y', 
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        animation: {
+                            duration: 1200,         
+                            easing: 'easeOutQuart'
+                        },
+                        scales: { 
+                            x: { 
+                                beginAtZero: true, 
+                                max: 100, 
+                                grid: { 
+                                    color: 'rgba(226, 232, 240, 0.6)',
+                                    borderDash: [4, 4]  
+                                },
+                                ticks: { 
+                                    callback: function(value) { return value + '%'; }, 
+                                    font: { family: 'sans-serif', size: 11, weight: '500' },
+                                    color: '#64748b'
+                                } 
+                            },
+                            y: {
+                                grid: { display: false },
+                                ticks: { 
+                                    font: { family: 'sans-serif', size: 12, weight: 'bold' },
+                                    color: '#1e293b'
+                                }
+                            }
+                        },
+                        plugins: { 
+                            legend: { display: false }, 
+                            tooltip: { 
+                                backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                                titleFont: { size: 13, weight: 'bold', family: 'sans-serif' },
+                                bodyFont: { size: 13, family: 'sans-serif' },
+                                padding: 14,
+                                cornerRadius: 10,
+                                boxPadding: 6,
+                                usePointStyle: true,
+                                callbacks: { 
+                                    title: function(context) {
+                                        return '📚 ' + context[0].label;
+                                    },
+                                    label: function(context) { 
+                                        return ' Status Kelengkapan: ' + context.raw + '%'; 
+                                    } 
+                                } 
+                            } 
+                        }
+                    }
+                });
+            });
+        }
 
         // ================= FUNGSI NILAI =================
         function loadMapel() {
@@ -229,9 +404,19 @@
             const selectMapel = document.getElementById('pilihMapel');
             const areaTabel = document.getElementById('areaTabelNilai');
             const areaExcel = document.getElementById('areaExcel');
+            const infoJumlahSiswa = document.getElementById('infoJumlahSiswa');
+            const infoStatusAktif = document.getElementById('infoStatusAktif');
             
-            if(!kelas) { selectMapel.disabled = true; areaTabel.classList.add('hidden'); areaExcel.classList.add('hidden'); return; }
+            if(!kelas) { 
+                selectMapel.disabled = true; 
+                areaTabel.classList.add('hidden'); 
+                areaExcel.classList.add('hidden'); 
+                infoJumlahSiswa.classList.add('hidden');
+                infoStatusAktif.innerText = "Pilih Kelas & Mapel";
+                return; 
+            }
 
+            infoStatusAktif.innerText = `Kelas ${kelas} (Pilih Mapel)`;
             selectMapel.innerHTML = '<option>Loading...</option>'; selectMapel.disabled = true; 
             areaTabel.classList.add('hidden'); areaExcel.classList.add('hidden');
 
@@ -250,9 +435,22 @@
 
         function loadSiswaNilai() {
             const kelas = document.getElementById('pilihKelas').value;
-            const mapel = document.getElementById('pilihMapel').value;
+            const selectMapel = document.getElementById('pilihMapel');
+            const mapel = selectMapel.value;
+            const mapelText = selectMapel.options[selectMapel.selectedIndex].text;
             const tabelBody = document.getElementById('tabelBodyNilai');
-            if(!mapel) return;
+            const infoJumlahSiswa = document.getElementById('infoJumlahSiswa');
+            const teksJumlahSiswa = document.getElementById('teksJumlahSiswa');
+            const infoStatusAktif = document.getElementById('infoStatusAktif');
+
+            if(!mapel) {
+                infoJumlahSiswa.classList.add('hidden');
+                infoStatusAktif.innerText = `Kelas ${kelas} (Pilih Mapel)`;
+                return;
+            }
+
+            // Update Info Card Status Aktif Mengelola
+            infoStatusAktif.innerText = `${mapelText} - Kelas ${kelas}`;
 
             document.getElementById('areaTabelNilai').classList.remove('hidden');
             document.getElementById('areaExcel').classList.remove('hidden');
@@ -261,6 +459,12 @@
             fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_siswa', kelas: kelas }) })
             .then(res => res.json()).then(data => {
                 tabelBody.innerHTML = '';
+                
+                // Tampilkan info jumlah siswa secara profesional
+                const jumlahSiswa = data.data.length;
+                teksJumlahSiswa.innerText = `${jumlahSiswa} Siswa Terdaftar`;
+                infoJumlahSiswa.classList.remove('hidden');
+
                 data.data.forEach(s => {
                     tabelBody.innerHTML += `
                         <tr class="hover:bg-slate-50 transition data-siswa-row" data-nis="${s.nis}">
