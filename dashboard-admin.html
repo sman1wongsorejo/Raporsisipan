@@ -50,18 +50,18 @@
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans min-h-screen">
+<body class="bg-gradient-to-br from-slate-50 via-indigo-50/20 to-blue-50/30 text-slate-800 font-sans min-h-screen">
 
-    <!-- Top Navigation Bar Modern -->
-    <nav class="bg-slate-900 text-white px-8 py-4 flex justify-between items-center shadow-md border-b border-slate-800">
-        <div class="flex items-center gap-3">
-            <div class="bg-blue-600 p-2 rounded-xl text-lg font-bold shadow-inner">🛡️</div>
+    <!-- Top Navigation Bar Modern & Profesional -->
+    <nav class="bg-slate-900 text-white px-8 py-4 flex justify-between items-center shadow-lg border-b border-slate-800/80 sticky top-0 z-50 backdrop-blur-md bg-slate-900/95">
+        <div class="flex items-center gap-3.5">
+            <div class="bg-gradient-to-tr from-blue-600 to-indigo-600 p-2.5 rounded-2xl text-lg font-bold shadow-md shadow-blue-500/20">🛡️</div>
             <div>
-                <h1 class="text-lg font-bold tracking-wide">Panel Administrator</h1>
-                <p class="text-xs text-slate-400">SMAN 1 Wongsorejo - Rapot Sisipan</p>
+                <h1 class="text-base font-extrabold tracking-wide text-white">Panel Administrator</h1>
+                <p class="text-xs text-slate-400 font-medium">SMAN 1 Wongsorejo • Sistem Rapot Sisipan</p>
             </div>
         </div>
-        <button onclick="logout()" class="bg-red-500 hover:bg-red-600 active:scale-95 transition px-4 py-2 rounded-xl text-sm font-semibold shadow-sm flex items-center gap-1.5">
+        <button onclick="logout()" class="bg-rose-500 hover:bg-rose-600 active:scale-95 transition-all duration-200 px-4 py-2 rounded-xl text-xs font-bold shadow-sm shadow-rose-500/20 flex items-center gap-1.5 text-white">
             🚪 Logout
         </button>
     </nav>
@@ -69,63 +69,107 @@
     <!-- Main Container -->
     <div class="max-w-7xl mx-auto p-6 md:p-8">
         
-        <!-- Welcome Card -->
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <div>
-                <h2 class="text-2xl font-bold text-slate-900">Selamat datang, <span id="namaAdmin" class="text-blue-600">Admin</span>! 👋</h2>
-                <p class="text-slate-500 text-sm mt-1">Kelola pencetakan rapot sisipan resmi kedinasan, pantau progres input nilai guru, dan database.</p>
+        <!-- Welcome Card Mewah Tema Terang -->
+        <div class="bg-white/90 backdrop-blur rounded-3xl p-6 md:p-7 shadow-sm border border-slate-200/80 mb-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative overflow-hidden">
+            <div class="absolute right-0 top-0 w-32 h-32 bg-gradient-to-bl from-blue-100/60 to-transparent rounded-bl-full pointer-events-none"></div>
+            <div class="relative z-10">
+                <span class="px-3 py-0.5 bg-blue-50 text-blue-700 font-bold text-[10px] rounded-full uppercase tracking-wider mb-1.5 inline-block border border-blue-100">Portal Resmi Admin</span>
+                <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">Selamat datang, <span id="namaAdmin" class="text-blue-600">Admin</span>! 👋</h2>
+                <p class="text-slate-500 text-xs md:text-sm mt-0.5 font-medium">Kelola pencetakan rapot resmi kedinasan, pantau progres pengisian nilai guru, dan rincian kelas secara terpusat.</p>
             </div>
-            <div class="bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl flex items-center gap-2">
-                <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Status Akses:</span>
-                <span class="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-xs font-bold">Administrator</span>
+            <div class="bg-slate-50/80 border border-slate-200/80 px-4 py-2.5 rounded-2xl flex items-center gap-3 shadow-2xs relative z-10">
+                <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                <div>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Status Sistem</p>
+                    <p class="text-xs font-extrabold text-emerald-700">Aktif & Terhubung</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- INFO CARDS UTAMA (TOTAL KELAS & TOTAL KESELURUHAN SISWA) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 flex items-center gap-4 transition hover:shadow-md">
+                <div class="p-3 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-xl text-xl font-bold shadow-md shadow-blue-500/20">🏫</div>
+                <div>
+                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Kelas Aktif</p>
+                    <p id="infoTotalKelasBadge" class="text-xl font-black text-slate-900 mt-0.5">Memuat...</p>
+                </div>
+            </div>
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 flex items-center gap-4 transition hover:shadow-md">
+                <div class="p-3 bg-gradient-to-br from-purple-500 to-indigo-600 text-white rounded-xl text-xl font-bold shadow-md shadow-purple-500/20">👥</div>
+                <div>
+                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Keseluruhan Siswa</p>
+                    <p id="infoTotalSiswa" class="text-xl font-black text-slate-900 mt-0.5">Memuat...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTAINER GRID SUB-CARD PER KELAS (KOMPAK, RINGKAS, ELEGAN) -->
+        <div class="bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-slate-200/80 mb-6">
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+                <div class="flex items-center gap-2.5">
+                    <div class="p-2 bg-indigo-50 text-indigo-600 rounded-xl font-bold text-sm">📊</div>
+                    <div>
+                        <h3 class="font-extrabold text-sm text-slate-900">Rincian Per Kelas (Klik untuk Lihat Mapel)</h3>
+                        <p class="text-[11px] text-slate-400 font-medium">Ringkasan kelas, jumlah siswa, dan total mapel aktif.</p>
+                    </div>
+                </div>
+                <span class="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-100">Compact View</span>
+            </div>
+            <!-- Grid dengan kolom lebih banyak agar kartu berukuran kecil dan rapi -->
+            <div id="gridSubCardKelas" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                <!-- Data card kelas kecil akan dirender secara dinamis lewat JavaScript -->
+                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/50 text-center text-slate-400 py-6 col-span-full font-medium text-xs">
+                    Memuat data rincian kelas...
+                </div>
             </div>
         </div>
         
         <!-- Tab Navigation Buttons Modern -->
-        <div class="flex flex-wrap gap-3 mb-6">
-            <button onclick="bukaTab('tabCetak')" id="btnTabCetak" class="transition-all duration-200 font-semibold py-2.5 px-5 rounded-xl text-sm shadow-sm flex items-center gap-2">
+        <div class="flex flex-wrap gap-2.5 mb-5">
+            <button onclick="bukaTab('tabCetak')" id="btnTabCetak" class="transition-all duration-200 font-bold py-2.5 px-5 rounded-xl text-xs shadow-sm flex items-center gap-2">
                 🖨️ Cetak Rapot Resmi
             </button>
-            <button onclick="bukaTab('tabProgress')" id="btnTabProgress" class="transition-all duration-200 font-semibold py-2.5 px-5 rounded-xl text-sm shadow-sm flex items-center gap-2">
-                📈 Pemantauan Progres Nilai
+            <button onclick="bukaTab('tabProgress')" id="btnTabProgress" class="transition-all duration-200 font-bold py-2.5 px-5 rounded-xl text-xs shadow-sm flex items-center gap-2">
+                📈 Pemantauan Progres Nilai Mapel & Kelas
             </button>
-            <button onclick="bukaTab('tabMaster')" id="btnTabMaster" class="transition-all duration-200 font-semibold py-2.5 px-5 rounded-xl text-sm shadow-sm flex items-center gap-2">
+            <button onclick="bukaTab('tabMaster')" id="btnTabMaster" class="transition-all duration-200 font-bold py-2.5 px-5 rounded-xl text-xs shadow-sm flex items-center gap-2">
                 📂 Kelola Master Data
             </button>
         </div>
 
-        <!-- TAB PEMANTAUAN PROGRES NILAI (GRAFIK INTERAKTIF) -->
-        <div id="tabProgress" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200/80 border-t-4 border-t-purple-500 hidden transition-all">
+        <!-- TAB PEMANTAUAN PROGRES NILAI (GRAFIK HORIZONTAL SPESIFIK PER MAPEL & KELAS) -->
+        <div id="tabProgress" class="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-200/80 border-t-4 border-t-purple-500 hidden transition-all">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 pb-4 border-b border-slate-100">
                 <div class="flex items-center gap-3">
-                    <div class="p-2.5 bg-purple-50 text-purple-600 rounded-xl text-xl">📊</div>
+                    <div class="p-3 bg-purple-50 text-purple-600 rounded-2xl text-xl font-bold">📈</div>
                     <div>
-                        <h3 class="font-bold text-lg text-slate-900">Grafik Kemajuan Input Nilai Guru per Kelas</h3>
-                        <p class="text-xs text-slate-500">Memantau persentase kelengkapan pengisian nilai mata pelajaran di setiap kelas secara real-time.</p>
+                        <h3 class="font-extrabold text-lg text-slate-900">Grafik Kelengkapan Pengisian Nilai per Mapel & Kelas</h3>
+                        <p class="text-xs text-slate-400 font-medium">Memantau progres pengisian nilai dari seluruh guru secara mendetail berdasarkan mata pelajaran dan kelas.</p>
                     </div>
                 </div>
-                <button onclick="loadProgressData()" class="bg-purple-50 text-purple-700 hover:bg-purple-100 active:scale-95 transition font-semibold px-4 py-2.5 rounded-xl border border-purple-200 text-sm flex items-center gap-2 shadow-sm">
+                <button onclick="loadProgressData()" class="bg-purple-50 text-purple-700 hover:bg-purple-100 active:scale-95 transition font-bold px-4 py-2.5 rounded-xl border border-purple-200 text-xs flex items-center gap-2 shadow-2xs">
                     🔄 Refresh Grafik
                 </button>
             </div>
-            <div class="w-full bg-slate-50 p-6 rounded-2xl border border-slate-200" style="height: 420px; position: relative;">
+            <div class="w-full bg-slate-50/60 p-6 rounded-2xl border border-slate-200/80" style="height: 520px; position: relative;">
                 <canvas id="chartProgress"></canvas>
             </div>
         </div>
 
         <!-- TAB KELOLA MASTER DATA -->
-        <div id="tabMaster" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200/80 border-t-4 border-t-slate-600 hidden transition-all">
+        <div id="tabMaster" class="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-200/80 border-t-4 border-t-slate-700 hidden transition-all">
             <div class="flex items-center gap-3 mb-4 pb-4 border-b border-slate-100">
-                <div class="p-2.5 bg-slate-100 text-slate-700 rounded-xl text-xl">🗄️</div>
+                <div class="p-3 bg-slate-100 text-slate-700 rounded-2xl text-xl font-bold">🗄️</div>
                 <div>
-                    <h3 class="font-bold text-lg text-slate-900">Manajemen Database Terpusat</h3>
-                    <p class="text-xs text-slate-500">Pengelolaan data master Siswa, Guru, dan Mata Pelajaran secara massal.</p>
+                    <h3 class="font-extrabold text-lg text-slate-900">Manajemen Database Terpusat</h3>
+                    <p class="text-xs text-slate-400 font-medium">Pengelolaan data master Siswa, Guru, dan Mata Pelajaran secara massal.</p>
                 </div>
             </div>
-            <p class="text-slate-600 text-sm mb-6 bg-slate-50 p-4 rounded-xl border border-slate-200 leading-relaxed">
+            <p class="text-slate-600 text-sm mb-6 bg-slate-50 p-5 rounded-2xl border border-slate-200/80 leading-relaxed font-medium">
                 Untuk menjaga integritas sistem, silakan kelola data Siswa, Guru, dan Mata Pelajaran secara langsung melalui lembar kerja Google Sheets resmi sekolah.
             </p>
-            <a href="https://docs.google.com/spreadsheets/d/1ddne0Xdfhiiz1fQckAuAjjPmldLplyzlCCcyp6U9Jq8/edit" target="_blank" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 active:scale-95 transition text-white font-semibold py-3 px-6 rounded-xl shadow-md text-sm">
+            <a href="https://docs.google.com/spreadsheets/d/1ddne0Xdfhiiz1fQckAuAjjPmldLplyzlCCcyp6U9Jq8/edit" target="_blank" class="inline-flex items-center gap-2.5 bg-emerald-600 hover:bg-emerald-700 active:scale-95 transition text-white font-bold py-3.5 px-6 rounded-2xl shadow-md text-xs tracking-wide">
                 📊 Buka Google Sheets Database
             </a>
         </div>
@@ -133,16 +177,19 @@
         <!-- TAB CETAK RAPOT -->
         <div id="tabCetak" class="flex flex-col lg:flex-row gap-6">
             <div class="w-full lg:w-1/3">
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80 border-t-4 border-t-blue-500">
+                <div class="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-200/80 border-t-4 border-t-blue-500">
                     
-                    <div class="flex items-center gap-2.5 mb-5 pb-3 border-b border-slate-100">
-                        <span class="text-blue-600 text-lg">📜</span>
-                        <h3 class="font-bold text-base text-slate-900">Pengaturan Dokumen Resmi</h3>
+                    <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
+                        <div class="p-2.5 bg-blue-50 text-blue-600 rounded-2xl font-bold text-base">📜</div>
+                        <div>
+                            <h3 class="font-extrabold text-sm text-slate-900">Pengaturan Dokumen Resmi</h3>
+                            <p class="text-[11px] text-slate-400 font-medium">Sesuaikan format dan unduh rapot.</p>
+                        </div>
                     </div>
 
-                    <!-- PILIHAN TEMPLAT DESAIN (5 PILIHAN UTAMA TERBAIK) -->
-                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Pilih Templat Dokumen Resmi</label>
-                    <select id="pilihTemplat" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm font-medium mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                    <!-- PILIHAN TEMPLAT DESAIN -->
+                    <label class="block text-xs font-extrabold text-slate-600 uppercase tracking-wider mb-2">Pilih Templat Dokumen Resmi</label>
+                    <select id="pilihTemplat" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-xs font-semibold mb-5 focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-slate-700">
                         <option value="dinas_standard">1. Standar Kedinasan (Kop Resmi Hitam Elegan)</option>
                         <option value="dinas_formal">2. Formal Institusional (Garis Ganda Dokumen Negara)</option>
                         <option value="dinas_pemprov">3. Pemprov Birokrasi Klasik (Format Arsip Resmi)</option>
@@ -151,43 +198,43 @@
                     </select>
 
                     <!-- INPUT TANGGAL CETAK MANUAL -->
-                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Tanggal Penetapan / Cetak</label>
-                    <input type="date" id="inputTanggalCetak" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                    <label class="block text-xs font-extrabold text-slate-600 uppercase tracking-wider mb-2">Tanggal Penetapan / Cetak</label>
+                    <input type="date" id="inputTanggalCetak" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-xs font-semibold mb-5 focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-slate-700">
 
-                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">1. Pilih Kelas</label>
-                    <select id="pilihKelas" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 transition" onchange="loadSiswa()">
+                    <label class="block text-xs font-extrabold text-slate-600 uppercase tracking-wider mb-2">1. Pilih Kelas</label>
+                    <select id="pilihKelas" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-xs font-semibold mb-5 focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-slate-700" onchange="loadSiswa()">
                         <option value="">-- Memuat Kelas... --</option>
                     </select>
 
-                    <button id="btnDownloadKelas" onclick="downloadPDFKelas()" class="w-full bg-purple-600 hover:bg-purple-700 active:scale-95 transition text-white font-semibold py-3 px-4 rounded-xl mb-6 hidden shadow-sm text-sm flex items-center justify-center gap-2">
+                    <button id="btnDownloadKelas" onclick="downloadPDFKelas()" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 active:scale-95 transition text-white font-bold py-3.5 px-4 rounded-2xl mb-6 hidden shadow-md shadow-purple-500/20 text-xs flex items-center justify-center gap-2">
                         📥 Unduh PDF 1 Kelas (Masal)
                     </button>
 
-                    <div class="relative flex py-2 items-center mb-4">
+                    <div class="relative flex py-2 items-center mb-5">
                         <div class="flex-grow border-t border-slate-200"></div>
-                        <span class="flex-shrink mx-4 text-xs text-slate-400 font-bold uppercase tracking-wider">Atau</span>
+                        <span class="flex-shrink mx-4 text-[11px] text-slate-400 font-extrabold uppercase tracking-widest">Atau</span>
                         <div class="flex-grow border-t border-slate-200"></div>
                     </div>
 
-                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">2. Pilih 1 Siswa Saja</label>
-                    <select id="pilihSiswa" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 transition" disabled onchange="enablePreview()">
+                    <label class="block text-xs font-extrabold text-slate-600 uppercase tracking-wider mb-2">2. Pilih 1 Siswa Saja</label>
+                    <select id="pilihSiswa" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-xs font-semibold mb-5 focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-slate-700" disabled onchange="enablePreview()">
                         <option value="">-- Pilih Siswa --</option>
                     </select>
 
-                    <button id="btnPreview" onclick="generatePreview()" class="w-full bg-blue-600 hover:bg-blue-700 active:scale-95 transition text-white font-semibold py-3 px-4 rounded-xl mb-3 opacity-50 cursor-not-allowed shadow-sm text-sm" disabled>
+                    <button id="btnPreview" onclick="generatePreview()" class="w-full bg-blue-600 hover:bg-blue-700 active:scale-95 transition text-white font-bold py-3.5 px-4 rounded-xl mb-3 opacity-50 cursor-not-allowed shadow-sm text-xs" disabled>
                         Tampilkan Pratinjau Rapot
                     </button>
-                    <button id="btnDownload" onclick="downloadPDF()" class="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-95 transition text-white font-semibold py-3 px-4 rounded-xl hidden shadow-sm text-sm flex items-center justify-center gap-2">
+                    <button id="btnDownload" onclick="downloadPDF()" class="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-95 transition text-white font-bold py-3.5 px-4 rounded-2xl hidden shadow-md shadow-emerald-500/20 text-xs flex items-center justify-center gap-2">
                         💾 Unduh Dokumen PDF
                     </button>
                 </div>
             </div>
 
-            <div class="w-full lg:w-2/3 overflow-x-auto flex justify-center bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80 items-start">
+            <div class="w-full lg:w-2/3 overflow-x-auto flex justify-center bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-200/80 items-start">
                 <div id="areaRapotContainer" class="flex justify-center w-full">
-                    <div class="text-center py-20 text-slate-400">
-                        <div class="text-4xl mb-2">📄</div>
-                        <p class="text-sm">Pratinjau dokumen resmi akan muncul di sini setelah Anda memilih siswa.</p>
+                    <div class="text-center py-24 text-slate-400">
+                        <div class="text-5xl mb-3">📄</div>
+                        <p class="text-xs font-semibold">Pratinjau dokumen resmi akan muncul di sini setelah Anda memilih siswa.</p>
                     </div>
                 </div>
             </div>
@@ -207,10 +254,103 @@
             fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_kelas' }) })
             .then(res => res.json()).then(data => {
                 selectKelas.innerHTML = '<option value="">-- Pilih Kelas --</option>';
-                if(data.status === 'success') { data.data.forEach(k => { selectKelas.innerHTML += `<option value="${k}">${k}</option>`; }); }
+                if(data.status === 'success') { 
+                    data.data.forEach(k => { selectKelas.innerHTML += `<option value="${k}">${k}</option>`; });
+                    document.getElementById('infoTotalKelasBadge').innerText = data.data.length + " Kelas Aktif";
+                }
+            });
+
+            // Ambil data detail rincian per kelas untuk sub-card kecil kompak
+            fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_school_summary_detail' }) })
+            .then(res => res.json()).then(res => {
+                if(res.status === 'success') {
+                    const gridContainer = document.getElementById('gridSubCardKelas');
+                    gridContainer.innerHTML = '';
+
+                    let totalSiswaAll = 0;
+
+                    res.detail_kelas.forEach((item, index) => {
+                        totalSiswaAll += item.jumlah_siswa;
+                        
+                        let listMapelHtml = '';
+                        if(item.daftar_mapel && item.daftar_mapel.length > 0) {
+                            item.daftar_mapel.forEach(m => {
+                                listMapelHtml += `<li class="py-0.5 text-slate-700 flex items-center gap-1">• ${m}</li>`;
+                            });
+                        } else {
+                            listMapelHtml = `<li class="text-slate-400 italic py-0.5">Belum ada mapel</li>`;
+                        }
+
+                        // Desain Kartu Kecil Kompak (Minimalis & Elegan)
+                        gridContainer.innerHTML += `
+                            <div class="relative">
+                                <div class="bg-gradient-to-br from-slate-50 via-white to-blue-50/20 border border-slate-200 rounded-xl p-3.5 shadow-2xs hover:shadow-sm hover:border-blue-300 transition-all cursor-pointer group flex flex-col justify-between" onclick="toggleDetailKelas(${index})">
+                                    <div class="flex justify-between items-center mb-1.5">
+                                        <span class="font-black text-slate-900 text-xs tracking-tight">Kelas ${item.kelas}</span>
+                                        <span id="icon-arrow-${index}" class="text-[10px] text-slate-400 font-bold transition-transform duration-300">▼</span>
+                                    </div>
+                                    <div class="space-y-0.5 text-[11px] font-semibold text-slate-600">
+                                        <div class="flex justify-between">
+                                            <span class="text-slate-400 font-medium text-[10px]">Siswa:</span>
+                                            <span class="text-slate-900 font-bold">${item.jumlah_siswa}</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-slate-400 font-medium text-[10px]">Mapel:</span>
+                                            <span class="text-indigo-600 font-bold">${item.jumlah_mapel}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Dropdown Rincian Mapel Kompak Melayang -->
+                                <div id="detail-kelas-${index}" class="hidden absolute left-0 right-0 top-full mt-1.5 z-30 bg-white border border-slate-200 rounded-xl p-3 shadow-xl text-[11px]">
+                                    <p class="font-bold text-slate-800 mb-1.5 uppercase tracking-wider text-[10px] border-b border-slate-100 pb-1">Mapel Kelas ${item.kelas}:</p>
+                                    <ul class="max-h-40 overflow-y-auto space-y-0.5 pr-1">
+                                        ${listMapelHtml}
+                                    </ul>
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    document.getElementById('infoTotalSiswa').innerText = `${totalSiswaAll} Siswa`;
+                }
+            }).catch(() => {
+                document.getElementById('gridSubCardKelas').innerHTML = '<div class="text-center text-slate-400 py-4 col-span-full font-medium text-xs">Gagal memuat rincian sub-card kelas.</div>';
             });
         }
         loadDaftarKelas();
+
+        // Fungsi Toggle Dropdown Rincian Kelas
+        function toggleDetailKelas(index) {
+            const detailEl = document.getElementById(`detail-kelas-${index}`);
+            const arrowEl = document.getElementById(`icon-arrow-${index}`);
+            
+            // Tutup dropdown lain yang mungkin sedang terbuka agar tidak bertumpuk
+            document.querySelectorAll('[id^="detail-kelas-"]').forEach((el, idx) => {
+                if(idx !== index) {
+                    el.classList.add('hidden');
+                    document.getElementById(`icon-arrow-${idx}`).style.transform = 'rotate(0deg)';
+                }
+            });
+
+            if (detailEl.classList.contains('hidden')) {
+                detailEl.classList.remove('hidden');
+                arrowEl.style.transform = 'rotate(180deg)';
+            } else {
+                detailEl.classList.add('hidden');
+                arrowEl.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // Tutup dropdown jika klik di luar area kartu
+        window.addEventListener('click', function(e) {
+            if (!e.target.closest('[id^="gridSubCardKelas"]')) {
+                document.querySelectorAll('[id^="detail-kelas-"]').forEach((el, idx) => {
+                    el.classList.add('hidden');
+                    const arr = document.getElementById(`icon-arrow-${idx}`);
+                    if(arr) arr.style.transform = 'rotate(0deg)';
+                });
+            }
+        });
 
         function bukaTab(tabId) {
             document.getElementById('tabCetak').classList.add('hidden');
@@ -218,38 +358,40 @@
             document.getElementById('tabProgress').classList.add('hidden');
             
             // Reset button tab styles
-            document.getElementById('btnTabCetak').className = "transition-all duration-200 font-semibold py-2.5 px-5 rounded-xl text-sm shadow-sm bg-slate-200 text-slate-700 hover:bg-slate-300";
-            document.getElementById('btnTabProgress').className = "transition-all duration-200 font-semibold py-2.5 px-5 rounded-xl text-sm shadow-sm bg-slate-200 text-slate-700 hover:bg-slate-300";
-            document.getElementById('btnTabMaster').className = "transition-all duration-200 font-semibold py-2.5 px-5 rounded-xl text-sm shadow-sm bg-slate-200 text-slate-700 hover:bg-slate-300";
+            document.getElementById('btnTabCetak').className = "transition-all duration-200 font-bold py-2.5 px-5 rounded-xl text-xs shadow-sm bg-slate-100 text-slate-600 hover:bg-slate-200";
+            document.getElementById('btnTabProgress').className = "transition-all duration-200 font-bold py-2.5 px-5 rounded-xl text-xs shadow-sm bg-slate-100 text-slate-600 hover:bg-slate-200";
+            document.getElementById('btnTabMaster').className = "transition-all duration-200 font-bold py-2.5 px-5 rounded-xl text-xs shadow-sm bg-slate-100 text-slate-600 hover:bg-slate-200";
             
             document.getElementById(tabId).classList.remove('hidden');
             if(tabId === 'tabCetak') {
                 document.getElementById('tabCetak').classList.add('flex');
-                document.getElementById('btnTabCetak').className = "transition-all duration-200 font-semibold py-2.5 px-5 rounded-xl text-sm shadow-md bg-blue-600 text-white";
+                document.getElementById('btnTabCetak').className = "transition-all duration-200 font-bold py-2.5 px-5 rounded-xl text-xs shadow-md shadow-blue-500/20 bg-blue-600 text-white";
             } else if(tabId === 'tabProgress') {
-                document.getElementById('btnTabProgress').className = "transition-all duration-200 font-semibold py-2.5 px-5 rounded-xl text-sm shadow-md bg-purple-600 text-white";
+                document.getElementById('btnTabProgress').className = "transition-all duration-200 font-bold py-2.5 px-5 rounded-xl text-xs shadow-md shadow-purple-500/20 bg-purple-600 text-white";
                 loadProgressData();
             } else {
-                document.getElementById('btnTabMaster').className = "transition-all duration-200 font-semibold py-2.5 px-5 rounded-xl text-sm shadow-md bg-slate-800 text-white";
+                document.getElementById('btnTabMaster').className = "transition-all duration-200 font-bold py-2.5 px-5 rounded-xl text-xs shadow-md shadow-slate-900/20 bg-slate-900 text-white";
             }
         }
         // Set initial active tab button style
-        document.getElementById('btnTabCetak').className = "transition-all duration-200 font-semibold py-2.5 px-5 rounded-xl text-sm shadow-md bg-blue-600 text-white";
+        document.getElementById('btnTabCetak').className = "transition-all duration-200 font-bold py-2.5 px-5 rounded-xl text-xs shadow-md shadow-blue-500/20 bg-blue-600 text-white";
         document.getElementById('tabCetak').classList.add('flex');
 
-        // ================= GRAFIK PROGRESS NILAI (MODERN GRADIENT) =================
+        // ================= GRAFIK PROGRESS NILAI MAPEL & KELAS (HORIZONTAL / MENYAMPING) =================
         let myChart = null;
         function loadProgressData() {
-            fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_progress_nilai' }) })
+            fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_progress_nilai_sekolah' }) })
             .then(res => res.json()).then(res => {
                 if(res.status !== 'success') return;
-                const labels = res.data.map(item => "Kelas " + item.kelas);
+                
+                const labels = res.data.map(item => `${item.nama_mapel} (Kelas ${item.kelas})`);
                 const percentages = res.data.map(item => item.persentase);
                 const ctx = document.getElementById('chartProgress').getContext('2d');
                 
-                let gradient = ctx.createLinearGradient(0, 0, 0, 400);
-                gradient.addColorStop(0, 'rgba(147, 51, 234, 0.85)');
-                gradient.addColorStop(1, 'rgba(192, 132, 252, 0.35)');
+                let gradient = ctx.createLinearGradient(0, 0, 700, 0);
+                gradient.addColorStop(0, 'rgba(147, 51, 234, 0.7)'); 
+                gradient.addColorStop(0.5, 'rgba(168, 85, 247, 0.85)');
+                gradient.addColorStop(1, 'rgba(192, 132, 252, 1)');     
 
                 if(myChart) myChart.destroy();
                 myChart = new Chart(ctx, {
@@ -257,39 +399,65 @@
                     data: {
                         labels: labels,
                         datasets: [{
-                            label: 'Kelengkapan Input Nilai (%)',
+                            label: 'Kelengkapan Pengisian Nilai (%)',
                             data: percentages,
                             backgroundColor: gradient,
-                            borderColor: 'rgba(147, 51, 234, 1)',
-                            borderWidth: 1.5,
-                            borderRadius: 8,
-                            barPercentage: 0.6
+                            borderColor: 'rgba(126, 34, 206, 1)',
+                            borderWidth: 0,
+                            borderRadius: 6,
+                            borderSkipped: false,
+                            barPercentage: 0.55,
+                            categoryPercentage: 0.75
                         }]
                     },
                     options: {
+                        indexAxis: 'y', 
                         responsive: true,
                         maintainAspectRatio: false,
+                        animation: {
+                            duration: 1200,
+                            easing: 'easeOutQuart'
+                        },
                         scales: { 
-                            y: { 
+                            x: { 
                                 beginAtZero: true, 
                                 max: 100, 
-                                grid: { color: 'rgba(226, 232, 240, 0.8)' },
-                                ticks: { callback: function(value) { return value + '%'; }, font: { family: 'sans-serif', size: 11 } } 
+                                grid: { 
+                                    color: 'rgba(226, 232, 240, 0.6)',
+                                    borderDash: [4, 4]
+                                },
+                                ticks: { 
+                                    callback: function(value) { return value + '%'; }, 
+                                    font: { family: 'sans-serif', size: 11, weight: '500' },
+                                    color: '#64748b'
+                                } 
                             },
-                            x: {
+                            y: {
                                 grid: { display: false },
-                                ticks: { font: { family: 'sans-serif', size: 11, weight: 'bold' } }
+                                ticks: { 
+                                    font: { family: 'sans-serif', size: 11, weight: 'bold' },
+                                    color: '#1e293b'
+                                }
                             }
                         },
                         plugins: { 
                             legend: { display: false }, 
                             tooltip: { 
-                                backgroundColor: 'rgba(15, 23, 42, 0.9)',
-                                titleFont: { size: 13, weight: 'bold' },
-                                bodyFont: { size: 12 },
-                                padding: 12,
-                                cornerRadius: 8,
-                                callbacks: { label: function(context) { return ' Progres Pengisian: ' + context.raw + '%'; } } 
+                                backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                                titleFont: { size: 13, weight: 'bold', family: 'sans-serif' },
+                                bodyFont: { size: 13, family: 'sans-serif' },
+                                padding: 14,
+                                cornerRadius: 10,
+                                boxPadding: 6,
+                                usePointStyle: true,
+                                callbacks: { 
+                                    title: function(context) {
+                                        return '📚 ' + context[0].label;
+                                    },
+                                    label: function(context) { 
+                                        return ' Status Kelengkapan: ' + context.raw + '%'; 
+                                    } 
+                                } 
                             } 
                         }
                     }
@@ -303,7 +471,7 @@
             
             selectSiswa.innerHTML = '<option>Loading...</option>'; selectSiswa.disabled = true;
             document.getElementById('btnPreview').disabled = true; document.getElementById('btnPreview').classList.add('opacity-50', 'cursor-not-allowed');
-            document.getElementById('areaRapotContainer').innerHTML = `<div class="text-center py-20 text-slate-400"><div class="text-4xl mb-2">📄</div><p class="text-sm">Pratinjau dokumen resmi akan muncul di sini setelah Anda memilih siswa.</p></div>`; 
+            document.getElementById('areaRapotContainer').innerHTML = `<div class="text-center py-24 text-slate-400"><div class="text-5xl mb-3">📄</div><p class="text-xs font-semibold">Pratinjau dokumen resmi akan muncul di sini setelah Anda memilih siswa.</p></div>`; 
             document.getElementById('btnDownload').classList.add('hidden');
             document.getElementById('btnDownloadKelas').classList.add('hidden');
 

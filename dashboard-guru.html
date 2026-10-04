@@ -19,18 +19,18 @@
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-slate-50 to-emerald-50 min-h-screen text-slate-800 font-sans">
+<body class="bg-gradient-to-br from-slate-50 via-emerald-50/25 to-blue-50/30 min-h-screen text-slate-800 font-sans">
 
     <!-- Top Navigation Bar -->
-    <nav class="bg-emerald-700 text-white px-6 py-4 flex justify-between items-center shadow-lg">
-        <div class="flex items-center gap-3">
-            <div class="bg-emerald-800 p-2 rounded-xl text-lg font-bold shadow-inner">📚</div>
+    <nav class="bg-emerald-700 text-white px-8 py-4 flex justify-between items-center shadow-lg sticky top-0 z-50 backdrop-blur-md bg-emerald-700/95">
+        <div class="flex items-center gap-3.5">
+            <div class="bg-emerald-800 p-2.5 rounded-2xl text-lg font-bold shadow-inner">📚</div>
             <div>
-                <h1 class="text-lg font-bold tracking-wide">Portal Guru</h1>
-                <p class="text-xs text-emerald-200">Sistem Manajemen Rapot Sisipan</p>
+                <h1 class="text-base font-extrabold tracking-wide">Portal Guru</h1>
+                <p class="text-xs text-emerald-200 font-medium">Sistem Manajemen Rapot Sisipan</p>
             </div>
         </div>
-        <button onclick="logout()" class="bg-red-500 hover:bg-red-600 active:scale-95 transition px-4 py-2 rounded-xl text-sm font-semibold shadow-md flex items-center gap-1.5">
+        <button onclick="logout()" class="bg-rose-500 hover:bg-rose-600 active:scale-95 transition px-4 py-2 rounded-xl text-xs font-bold shadow-sm flex items-center gap-1.5 text-white">
             🚪 Logout
         </button>
     </nav>
@@ -39,72 +39,94 @@
     <div class="max-w-6xl mx-auto p-6 md:p-8">
         
         <!-- Welcome Card -->
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <div>
-                <h2 class="text-2xl font-bold text-slate-900">Selamat datang, <span id="namaGuru" class="text-emerald-600">Guru</span>! 👋</h2>
-                <p class="text-slate-500 text-sm mt-1">Kelola nilai mata pelajaran, rekapitulasi kehadiran, dan pantau progres pengisian nilai.</p>
+        <div class="bg-white rounded-3xl p-6 md:p-7 shadow-sm border border-slate-200/80 mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative overflow-hidden">
+            <div class="absolute right-0 top-0 w-32 h-32 bg-gradient-to-bl from-emerald-100/50 to-transparent rounded-bl-full pointer-events-none"></div>
+            <div class="relative z-10">
+                <span class="px-3 py-0.5 bg-emerald-50 text-emerald-700 font-bold text-[10px] rounded-full uppercase tracking-wider mb-1.5 inline-block border border-emerald-100">Portal Pengajar SMANJO</span>
+                <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">Selamat datang, <span id="namaGuru" class="text-emerald-600">Guru</span>! 👋</h2>
+                <p class="text-slate-500 text-xs md:text-sm mt-0.5 font-medium">Kelola nilai mata pelajaran, rekapitulasi kehadiran, dan pantau progres pengisian nilai.</p>
             </div>
-            <div class="bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl flex items-center gap-2">
-                <span class="text-xs font-medium text-slate-500 uppercase tracking-wider">Status Wali Kelas:</span>
+            <div class="bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-2xl flex items-center gap-2.5 relative z-10 shadow-2xs">
+                <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Status Wali Kelas:</span>
                 <span id="statusWaliBadge" class="px-3 py-1 rounded-full text-xs font-bold transition-all"></span>
             </div>
         </div>
 
-        <!-- INFO CARDS RINGKASAN MENGAJAR (PROFESIONAL & ELEGAN) -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+        <!-- INFO CARDS RINGKASAN MENGAJAR INTERAKTIF (KLIK UNTUK LIHAT DETAIL & PERSENTASE MAPEL) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <!-- Card 1: Total Kelas -->
             <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 flex items-center gap-4">
-                <div class="p-3 bg-blue-50 text-blue-600 rounded-xl text-xl font-bold">🏫</div>
+                <div class="p-3 bg-blue-50 text-blue-600 rounded-xl text-xl font-bold shadow-2xs">🏫</div>
                 <div>
                     <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Kelas Diampu</p>
                     <p id="infoTotalKelas" class="text-lg font-black text-slate-900">- Kelas</p>
                 </div>
             </div>
-            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 flex items-center gap-4">
-                <div class="p-3 bg-indigo-50 text-indigo-600 rounded-xl text-xl font-bold">📖</div>
-                <div>
-                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Mata Pelajaran</p>
-                    <p id="infoTotalMapel" class="text-lg font-black text-slate-900">- Mapel</p>
+
+            <!-- Card 2: Total Mapel + Interaktif Dropdown Persentase -->
+            <div class="relative">
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 flex items-center gap-4 cursor-pointer hover:border-indigo-300 transition group" onclick="toggleCardDetail('detailMapelGuru', 'arrowMapel')">
+                    <div class="p-3 bg-indigo-50 text-indigo-600 rounded-xl text-xl font-bold shadow-2xs">📖</div>
+                    <div class="flex-grow">
+                        <div class="flex justify-between items-center">
+                            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Mata Pelajaran</p>
+                            <span id="arrowMapel" class="text-xs text-slate-400 font-bold transition-transform duration-300">▼</span>
+                        </div>
+                        <p id="infoTotalMapel" class="text-lg font-black text-slate-900">- Mapel (Klik Rincian)</p>
+                    </div>
+                </div>
+                <!-- Dropdown Rincian Mapel & Persentase Guru -->
+                <div id="detailMapelGuru" class="hidden absolute left-0 right-0 top-full mt-2 z-30 bg-white border border-slate-200 rounded-2xl p-4 shadow-xl text-xs">
+                    <p class="font-bold text-slate-800 mb-2 uppercase tracking-wider text-[10px] border-b border-slate-100 pb-1.5 flex justify-between">
+                        <span>Mapel & Persentase Input:</span>
+                        <span class="text-indigo-600">Status Nilai</span>
+                    </p>
+                    <div id="listMapelPersentaseContainer" class="max-h-48 overflow-y-auto space-y-1.5 pr-1">
+                        <span class="text-slate-400 italic">Memuat rincian persentase...</span>
+                    </div>
                 </div>
             </div>
+
+            <!-- Card 3: Status Aktif Mengelola -->
             <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 flex items-center gap-4">
-                <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl text-xl font-bold">🎯</div>
+                <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl text-xl font-bold shadow-2xs">🎯</div>
                 <div>
                     <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Sedang Dikelola</p>
-                    <p id="infoStatusAktif" class="text-xs font-bold text-slate-700 mt-0.5">Pilih Kelas & Mapel</p>
+                    <p id="infoStatusAktif" class="text-xs font-bold text-slate-700 mt-0.5 truncate max-w-[200px]">Pilih Kelas & Mapel</p>
                 </div>
             </div>
         </div>
         
         <!-- Tab Navigation Buttons -->
-        <div class="flex flex-wrap gap-3 mb-6">
-            <button onclick="bukaTab('tabNilai')" id="btnTabNilai" class="transition-all duration-200 font-semibold py-2.5 px-5 rounded-xl text-sm shadow-sm flex items-center gap-2">
+        <div class="flex flex-wrap gap-2.5 mb-6">
+            <button onclick="bukaTab('tabNilai')" id="btnTabNilai" class="transition-all duration-200 font-bold py-2.5 px-5 rounded-xl text-xs shadow-sm flex items-center gap-2">
                 📝 Menu Input Nilai Mapel
             </button>
-            <button onclick="bukaTab('tabWali')" id="btnTabWali" class="transition-all duration-200 font-semibold py-2.5 px-5 rounded-xl text-sm shadow-sm flex items-center gap-2 hidden">
+            <button onclick="bukaTab('tabWali')" id="btnTabWali" class="transition-all duration-200 font-bold py-2.5 px-5 rounded-xl text-xs shadow-sm flex items-center gap-2 hidden">
                 🎓 Menu Wali Kelas
             </button>
-            <button onclick="bukaTab('tabProgress')" id="btnTabProgress" class="transition-all duration-200 font-semibold py-2.5 px-5 rounded-xl text-sm shadow-sm flex items-center gap-2 bg-slate-200 text-slate-700 hover:bg-slate-300">
+            <button onclick="bukaTab('tabProgress')" id="btnTabProgress" class="transition-all duration-200 font-bold py-2.5 px-5 rounded-xl text-xs shadow-sm flex items-center gap-2 bg-slate-100 text-slate-600 hover:bg-slate-200">
                 📈 Pemantauan Progres Nilai Saya
             </button>
         </div>
 
         <!-- AREA INPUT NILAI -->
-        <div id="tabNilai" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200/80 border-t-4 border-t-blue-500 transition-all">
+        <div id="tabNilai" class="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-200/80 border-t-4 border-t-blue-500 transition-all">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 pb-4 border-b border-slate-100">
                 <div class="flex items-center gap-3">
                     <div class="p-2.5 bg-blue-50 text-blue-600 rounded-xl text-xl">📊</div>
                     <div>
-                        <h3 class="font-bold text-lg text-slate-900">Input Nilai Mata Pelajaran</h3>
-                        <p class="text-xs text-slate-500">Pilih kelas dan mata pelajaran untuk mulai memasukkan atau mengimpor nilai.</p>
+                        <h3 class="font-extrabold text-base text-slate-900">Input Nilai Mata Pelajaran</h3>
+                        <p class="text-xs text-slate-400 font-medium">Pilih kelas dan mata pelajaran untuk mulai memasukkan atau mengimpor nilai.</p>
                     </div>
                 </div>
 
                 <!-- Info Card Jumlah Siswa Per Kelas (Profesional) -->
-                <div id="infoJumlahSiswa" class="hidden bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200/80 px-4 py-2.5 rounded-xl flex items-center gap-3 shadow-xs">
-                    <div class="p-2 bg-blue-600 text-white rounded-lg text-xs font-bold shadow-sm">👥</div>
+                <div id="infoJumlahSiswa" class="hidden bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200/80 px-4 py-2.5 rounded-2xl flex items-center gap-3 shadow-2xs">
+                    <div class="p-2 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-xs">👥</div>
                     <div>
-                        <p class="text-[10px] uppercase tracking-wider font-bold text-blue-600">Total Siswa Kelas Ini</p>
-                        <p id="teksJumlahSiswa" class="text-sm font-extrabold text-slate-800">0 Siswa Terdaftar</p>
+                        <p class="text-[10px] uppercase tracking-wider font-extrabold text-blue-600">Total Siswa Kelas Ini</p>
+                        <p id="teksJumlahSiswa" class="text-xs font-black text-slate-800">0 Siswa Terdaftar</p>
                     </div>
                 </div>
             </div>
@@ -112,26 +134,26 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                 <div>
                     <label class="block text-xs font-bold text-slate-500 uppercase mb-1.5">Pilih Kelas</label>
-                    <select id="pilihKelas" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition" onchange="loadMapel()">
+                    <select id="pilihKelas" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-slate-700" onchange="loadMapel()">
                         <option value="">-- Memuat Kelas... --</option>
                     </select>
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-500 uppercase mb-1.5">Pilih Mata Pelajaran</label>
-                    <select id="pilihMapel" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition" disabled onchange="loadSiswaNilai()">
+                    <select id="pilihMapel" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-slate-700" disabled onchange="loadSiswaNilai()">
                         <option value="">-- Pilih Mapel --</option>
                     </select>
                 </div>
             </div>
 
             <!-- AREA EXCEL -->
-            <div id="areaExcel" class="hidden flex flex-wrap items-center gap-3 mb-6 p-4 bg-blue-50/60 border border-blue-100 rounded-xl">
-                <button onclick="downloadTemplateExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-4 rounded-xl flex items-center gap-2 text-sm shadow-sm transition active:scale-95">
+            <div id="areaExcel" class="hidden flex flex-wrap items-center gap-3 mb-6 p-4 bg-blue-50/60 border border-blue-100 rounded-2xl">
+                <button onclick="downloadTemplateExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-4 rounded-xl flex items-center gap-2 text-xs shadow-sm transition active:scale-95">
                     ⬇️ Download Format Excel
                 </button>
                 <div class="relative">
                     <input type="file" id="uploadExcel" accept=".xlsx, .xls" onchange="uploadTemplateExcel(event)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
-                    <button class="bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2.5 px-4 rounded-xl flex items-center gap-2 text-sm shadow-sm pointer-events-none transition">
+                    <button class="bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2.5 px-4 rounded-xl flex items-center gap-2 text-xs shadow-sm pointer-events-none transition">
                         ⬆️ Upload File Excel
                     </button>
                 </div>
@@ -139,80 +161,80 @@
             </div>
 
             <div id="areaTabelNilai" class="hidden">
-                <div class="overflow-x-auto rounded-xl border border-slate-200 mb-6">
-                    <table class="w-full text-sm text-left text-slate-600">
-                        <thead class="text-xs text-slate-700 uppercase bg-slate-100 border-b border-slate-200">
+                <div class="overflow-x-auto rounded-2xl border border-slate-200 mb-6">
+                    <table class="w-full text-xs text-left text-slate-600">
+                        <thead class="text-slate-700 uppercase bg-slate-100 border-b border-slate-200">
                             <tr>
-                                <th class="px-5 py-3 font-semibold">NIS</th>
-                                <th class="px-5 py-3 font-semibold">Nama Siswa</th>
-                                <th class="px-5 py-3 font-semibold text-center w-24">UH 1</th>
-                                <th class="px-5 py-3 font-semibold text-center w-24">UH 2</th>
-                                <th class="px-5 py-3 font-semibold text-center w-24">UH 3</th>
-                                <th class="px-5 py-3 font-semibold text-center w-24">PTS</th>
+                                <th class="px-5 py-3 font-bold">NIS</th>
+                                <th class="px-5 py-3 font-bold">Nama Siswa</th>
+                                <th class="px-3 py-3 font-bold text-center w-24">UH 1</th>
+                                <th class="px-3 py-3 font-bold text-center w-24">UH 2</th>
+                                <th class="px-3 py-3 font-bold text-center w-24">UH 3</th>
+                                <th class="px-3 py-3 font-bold text-center w-24">PTS</th>
                             </tr>
                         </thead>
-                        <tbody id="tabelBodyNilai" class="divide-y divide-slate-200 bg-white"></tbody>
+                        <tbody id="tabelBodyNilai" class="divide-y divide-slate-200 bg-white font-medium"></tbody>
                     </table>
                 </div>
-                <button onclick="simpanNilai()" id="btnSimpanNilai" class="bg-blue-600 hover:bg-blue-700 active:scale-95 transition text-white font-semibold py-3 px-6 rounded-xl shadow-md text-sm">
+                <button onclick="simpanNilai()" id="btnSimpanNilai" class="bg-blue-600 hover:bg-blue-700 active:scale-95 transition text-white font-bold py-3 px-6 rounded-xl shadow-md text-xs">
                     💾 Simpan Nilai ke Database
                 </button>
-                <div id="statusMsgNilai" class="mt-4 font-bold hidden p-4 rounded-xl text-sm transition-all"></div>
+                <div id="statusMsgNilai" class="mt-4 font-bold hidden p-4 rounded-xl text-xs transition-all"></div>
             </div>
         </div>
 
         <!-- AREA WALI KELAS -->
-        <div id="tabWali" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200/80 border-t-4 border-t-emerald-500 transition-all hidden">
+        <div id="tabWali" class="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-200/80 border-t-4 border-t-emerald-500 transition-all hidden">
             <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
                 <div class="p-2.5 bg-emerald-50 text-emerald-600 rounded-xl text-xl">📋</div>
                 <div>
-                    <h3 class="font-bold text-lg text-slate-900">Input Kehadiran & Catatan Siswa Kelas <span id="lblKelasWali" class="text-emerald-600"></span></h3>
-                    <p class="text-xs text-slate-500">Kelola absensi (Sakit, Izin, Alpa) dan catatan perkembangan siswa.</p>
+                    <h3 class="font-extrabold text-base text-slate-900">Input Kehadiran & Catatan Siswa Kelas <span id="lblKelasWali" class="text-emerald-600"></span></h3>
+                    <p class="text-xs text-slate-400 font-medium">Kelola absensi (Sakit, Izin, Alpa) dan catatan perkembangan siswa.</p>
                 </div>
             </div>
 
-            <button onclick="loadSiswaWali()" class="bg-emerald-50 text-emerald-700 hover:bg-emerald-100 active:scale-95 transition font-semibold py-2.5 px-5 rounded-xl mb-6 text-sm border border-emerald-200 shadow-sm">
+            <button onclick="loadSiswaWali()" class="bg-emerald-50 text-emerald-700 hover:bg-emerald-100 active:scale-95 transition font-bold py-2.5 px-5 rounded-xl mb-6 text-xs border border-emerald-200 shadow-2xs">
                 🔄 Muat Daftar Siswa
             </button>
 
             <div id="areaTabelWali" class="hidden">
-                <div class="overflow-x-auto rounded-xl border border-slate-200 mb-6">
-                    <table class="w-full text-sm text-left text-slate-600">
-                        <thead class="text-xs text-slate-700 uppercase bg-slate-100 border-b border-slate-200">
+                <div class="overflow-x-auto rounded-2xl border border-slate-200 mb-6">
+                    <table class="w-full text-xs text-left text-slate-600">
+                        <thead class="text-slate-700 uppercase bg-slate-100 border-b border-slate-200">
                             <tr>
-                                <th class="px-5 py-3 font-semibold">NIS</th>
-                                <th class="px-5 py-3 font-semibold">Nama Siswa</th>
-                                <th class="px-5 py-3 font-semibold w-24 text-center">Sakit</th>
-                                <th class="px-5 py-3 font-semibold w-24 text-center">Izin</th>
-                                <th class="px-5 py-3 font-semibold w-24 text-center">Alpa</th>
-                                <th class="px-5 py-3 font-semibold">Catatan Wali Kelas</th>
+                                <th class="px-5 py-3 font-bold">NIS</th>
+                                <th class="px-5 py-3 font-bold">Nama Siswa</th>
+                                <th class="px-3 py-3 font-bold w-24 text-center">Sakit</th>
+                                <th class="px-3 py-3 font-bold w-24 text-center">Izin</th>
+                                <th class="px-3 py-3 font-bold w-24 text-center">Alpa</th>
+                                <th class="px-5 py-3 font-bold">Catatan Wali Kelas</th>
                             </tr>
                         </thead>
-                        <tbody id="tabelBodyWali" class="divide-y divide-slate-200 bg-white"></tbody>
+                        <tbody id="tabelBodyWali" class="divide-y divide-slate-200 bg-white font-medium"></tbody>
                     </table>
                 </div>
-                <button onclick="simpanKehadiran()" id="btnSimpanWali" class="bg-emerald-600 hover:bg-emerald-700 active:scale-95 transition text-white font-semibold py-3 px-6 rounded-xl shadow-md text-sm">
+                <button onclick="simpanKehadiran()" id="btnSimpanWali" class="bg-emerald-600 hover:bg-emerald-700 active:scale-95 transition text-white font-bold py-3 px-6 rounded-xl shadow-md text-xs">
                     💾 Simpan Kehadiran ke Database
                 </button>
-                <div id="statusMsgWali" class="mt-4 font-bold hidden p-4 rounded-xl text-sm transition-all"></div>
+                <div id="statusMsgWali" class="mt-4 font-bold hidden p-4 rounded-xl text-xs transition-all"></div>
             </div>
         </div>
 
         <!-- TAB PEMANTAUAN PROGRES NILAI (GRAFIK BATANG HORIZONTAL SPESIFIK GURU) -->
-        <div id="tabProgress" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200/80 border-t-4 border-t-purple-500 hidden transition-all">
+        <div id="tabProgress" class="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-200/80 border-t-4 border-t-purple-500 hidden transition-all">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 pb-4 border-b border-slate-100">
                 <div class="flex items-center gap-3">
-                    <div class="p-2.5 bg-purple-50 text-purple-600 rounded-xl text-xl">📈</div>
+                    <div class="p-3 bg-purple-50 text-purple-600 rounded-2xl text-xl font-bold">📈</div>
                     <div>
-                        <h3 class="font-bold text-lg text-slate-900">Grafik Progres Nilai Mata Pelajaran yang Anda Ampu</h3>
-                        <p class="text-xs text-slate-500">Memantau persentase kelengkapan pengisian nilai khusus untuk kelas dan mata pelajaran tugas Anda.</p>
+                        <h3 class="font-extrabold text-lg text-slate-900">Grafik Progres Nilai Mata Pelajaran yang Anda Ampu</h3>
+                        <p class="text-xs text-slate-400 font-medium">Memantau persentase kelengkapan pengisian nilai khusus untuk kelas dan mata pelajaran tugas Anda.</p>
                     </div>
                 </div>
-                <button onclick="loadProgressGuruData()" class="bg-purple-50 text-purple-700 hover:bg-purple-100 active:scale-95 transition font-semibold px-4 py-2.5 rounded-xl border border-purple-200 text-sm flex items-center gap-2 shadow-sm">
+                <button onclick="loadProgressGuruData()" class="bg-purple-50 text-purple-700 hover:bg-purple-100 active:scale-95 transition font-bold px-4 py-2.5 rounded-xl border border-purple-200 text-xs flex items-center gap-2 shadow-2xs">
                     🔄 Refresh Grafik
                 </button>
             </div>
-            <div class="w-full bg-slate-50 p-6 rounded-2xl border border-slate-200" style="height: 420px; position: relative;">
+            <div class="w-full bg-slate-50/60 p-6 rounded-2xl border border-slate-200/80" style="height: 420px; position: relative;">
                 <canvas id="chartProgressGuru"></canvas>
             </div>
         </div>
@@ -220,7 +242,6 @@
     </div>
 
     <script>
-        // MASUKKAN URL DEPLOYMENT ANDA DI SINI
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbymL6pCjOtQSXVoDP-01PXZBYrVv86dDx7qAjcwYrW_oIWwYgylCfL2RS8dtCXBpXKP1g/exec';
 
         if (sessionStorage.getItem('isLoggedIn') !== 'true' || sessionStorage.getItem('role') !== 'Guru') {
@@ -235,7 +256,7 @@
         const badge = document.getElementById('statusWaliBadge');
         if(statusWali === 'Ya') {
             badge.innerText = "Ya (" + kelasWali + ")";
-            badge.className = "px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-xs font-bold";
+            badge.className = "px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-xs font-extrabold";
             document.getElementById('lblKelasWali').innerText = kelasWali;
             document.getElementById('btnTabWali').classList.remove('hidden');
         } else {
@@ -243,7 +264,7 @@
             badge.className = "px-3 py-1 bg-slate-200 text-slate-600 rounded-full text-xs font-bold";
         }
 
-        // Load Kelas Khusus Guru Pengampu & Update Info Card Ringkasan
+        // Load Kelas Khusus Guru Pengampu & Detail Persentase Mapel untuk Card Interaktif
         function loadDaftarKelas() {
             const selectKelas = document.getElementById('pilihKelas');
             fetch(SCRIPT_URL, { 
@@ -255,7 +276,6 @@
                 selectKelas.innerHTML = '<option value="">-- Pilih Kelas --</option>';
                 if(data.status === 'success' && data.data.length > 0) {
                     data.data.forEach(k => { selectKelas.innerHTML += `<option value="${k}">${k}</option>`; });
-                    // Update Info Card Total Kelas
                     document.getElementById('infoTotalKelas').innerText = data.data.length + " Kelas";
                 } else {
                     selectKelas.innerHTML = '<option value="">-- Tidak ada kelas diampu --</option>';
@@ -263,24 +283,66 @@
                 }
             });
 
-            // Ambil informasi total mapel yang diampu guru ini untuk Info Card
+            // Ambil rincian mapel & persentase khusus guru ini untuk Card Interaktif
             fetch(SCRIPT_URL, { 
                 method: 'POST', 
-                body: JSON.stringify({ action: 'get_mapel_summary_guru', id_guru: idGuru }) 
+                body: JSON.stringify({ action: 'get_progress_nilai_guru', id_guru: idGuru }) 
             })
             .then(res => res.json())
-            .then(data => {
-                if(data.status === 'success') {
-                    document.getElementById('infoTotalMapel').innerText = data.total_mapel + " Mapel";
-                } else {
-                    document.getElementById('infoTotalMapel').innerText = "0 Mapel";
+            .then(res => {
+                if(res.status === 'success') {
+                    const totalMapel = res.data.length;
+                    document.getElementById('infoTotalMapel').innerText = totalMapel + " Mapel (Klik Rincian)";
+                    
+                    const listContainer = document.getElementById('listMapelPersentaseContainer');
+                    listContainer.innerHTML = '';
+
+                    if(totalMapel > 0) {
+                        res.data.forEach(item => {
+                            let badgeColor = "bg-amber-100 text-amber-800";
+                            if(item.persentase === 100) badgeColor = "bg-emerald-100 text-emerald-800";
+                            else if(item.persentase > 0) badgeColor = "bg-blue-100 text-blue-800";
+
+                            listContainer.innerHTML += `
+                                <div class="flex justify-between items-center py-1.5 border-b border-slate-100">
+                                    <span class="font-bold text-slate-700">${item.nama_mapel} <span class="text-slate-400 font-normal">(${item.kelas})</span></span>
+                                    <span class="px-2 py-0.5 rounded-full font-extrabold text-[10px] ${badgeColor}">${item.persentase}% Terisi</span>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        listContainer.innerHTML = '<span class="text-slate-400 italic">Belum ada penugasan mapel.</span>';
+                    }
                 }
             }).catch(() => {
-                // Fallback jika action belum ada di backend, biarkan statis/aman
                 document.getElementById('infoTotalMapel').innerText = "Tersedia";
             });
         }
         loadDaftarKelas();
+
+        // Fungsi Toggle untuk Kartu Dropdown Mapel Guru
+        function toggleCardDetail(contentId, arrowId) {
+            const contentEl = document.getElementById(contentId);
+            const arrowEl = document.getElementById(arrowId);
+
+            if (contentEl.classList.contains('hidden')) {
+                contentEl.classList.remove('hidden');
+                arrowEl.style.transform = 'rotate(180deg)';
+            } else {
+                contentEl.classList.add('hidden');
+                arrowEl.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // Tutup dropdown jika klik di luar area kartu
+        window.addEventListener('click', function(e) {
+            if (!e.target.closest('#detailMapelGuru') && !e.target.closest('[onclick*="detailMapelGuru"]')) {
+                const drop = document.getElementById('detailMapelGuru');
+                const arr = document.getElementById('arrowMapel');
+                if(drop) drop.classList.add('hidden');
+                if(arr) arr.style.transform = 'rotate(0deg)';
+            }
+        });
 
         function bukaTab(tabId) {
             document.getElementById('tabNilai').classList.add('hidden');
@@ -288,24 +350,24 @@
             document.getElementById('tabProgress').classList.add('hidden');
             
             // Reset button styles
-            document.getElementById('btnTabNilai').className = "transition-all duration-200 font-semibold py-2.5 px-5 rounded-xl text-sm shadow-sm bg-slate-200 text-slate-700 hover:bg-slate-300";
+            document.getElementById('btnTabNilai').className = "transition-all duration-200 font-bold py-2.5 px-5 rounded-xl text-xs shadow-sm bg-slate-100 text-slate-600 hover:bg-slate-200";
             if(statusWali === 'Ya') {
-                document.getElementById('btnTabWali').className = "transition-all duration-200 font-semibold py-2.5 px-5 rounded-xl text-sm shadow-sm bg-slate-200 text-slate-700 hover:bg-slate-300";
+                document.getElementById('btnTabWali').className = "transition-all duration-200 font-bold py-2.5 px-5 rounded-xl text-xs shadow-sm bg-slate-100 text-slate-600 hover:bg-slate-200";
             }
-            document.getElementById('btnTabProgress').className = "transition-all duration-200 font-semibold py-2.5 px-5 rounded-xl text-sm shadow-sm bg-slate-200 text-slate-700 hover:bg-slate-300";
+            document.getElementById('btnTabProgress').className = "transition-all duration-200 font-bold py-2.5 px-5 rounded-xl text-xs shadow-sm bg-slate-100 text-slate-600 hover:bg-slate-200";
             
             document.getElementById(tabId).classList.remove('hidden');
             if(tabId === 'tabNilai') {
-                document.getElementById('btnTabNilai').className = "transition-all duration-200 font-semibold py-2.5 px-5 rounded-xl text-sm shadow-md bg-blue-600 text-white";
+                document.getElementById('btnTabNilai').className = "transition-all duration-200 font-bold py-2.5 px-5 rounded-xl text-xs shadow-md shadow-blue-500/20 bg-blue-600 text-white";
             } else if(tabId === 'tabWali') {
-                document.getElementById('btnTabWali').className = "transition-all duration-200 font-semibold py-2.5 px-5 rounded-xl text-sm shadow-md bg-emerald-600 text-white";
+                document.getElementById('btnTabWali').className = "transition-all duration-200 font-bold py-2.5 px-5 rounded-xl text-xs shadow-md shadow-emerald-500/20 bg-emerald-600 text-white";
             } else if(tabId === 'tabProgress') {
-                document.getElementById('btnTabProgress').className = "transition-all duration-200 font-semibold py-2.5 px-5 rounded-xl text-sm shadow-md bg-purple-600 text-white";
+                document.getElementById('btnTabProgress').className = "transition-all duration-200 font-bold py-2.5 px-5 rounded-xl text-xs shadow-md shadow-purple-500/20 bg-purple-600 text-white";
                 loadProgressGuruData();
             }
         }
         // Inisialisasi tab aktif awal
-        document.getElementById('btnTabNilai').className = "transition-all duration-200 font-semibold py-2.5 px-5 rounded-xl text-sm shadow-md bg-blue-600 text-white";
+        document.getElementById('btnTabNilai').className = "transition-all duration-200 font-bold py-2.5 px-5 rounded-xl text-xs shadow-md shadow-blue-500/20 bg-blue-600 text-white";
 
         // ================= GRAFIK PROGRES NILAI SPESIFIK GURU (MODERN & PROFESIONAL) =================
         let myChartGuru = null;
@@ -449,7 +511,6 @@
                 return;
             }
 
-            // Update Info Card Status Aktif Mengelola
             infoStatusAktif.innerText = `${mapelText} - Kelas ${kelas}`;
 
             document.getElementById('areaTabelNilai').classList.remove('hidden');
@@ -460,7 +521,6 @@
             .then(res => res.json()).then(data => {
                 tabelBody.innerHTML = '';
                 
-                // Tampilkan info jumlah siswa secara profesional
                 const jumlahSiswa = data.data.length;
                 teksJumlahSiswa.innerText = `${jumlahSiswa} Siswa Terdaftar`;
                 infoJumlahSiswa.classList.remove('hidden');
@@ -468,12 +528,12 @@
                 data.data.forEach(s => {
                     tabelBody.innerHTML += `
                         <tr class="hover:bg-slate-50 transition data-siswa-row" data-nis="${s.nis}">
-                            <td class="px-5 py-3 font-medium text-slate-700">${s.nis}</td>
-                            <td class="px-5 py-3 font-bold text-slate-900">${s.nama}</td>
-                            <td class="px-3 py-3 text-center"><input type="number" class="w-16 bg-slate-50 border border-slate-200 rounded-lg p-1.5 text-center input-uh1 focus:outline-none focus:ring-2 focus:ring-blue-500 transition" value="" placeholder="-"></td>
-                            <td class="px-3 py-3 text-center"><input type="number" class="w-16 bg-slate-50 border border-slate-200 rounded-lg p-1.5 text-center input-uh2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition" value="" placeholder="-"></td>
-                            <td class="px-3 py-3 text-center"><input type="number" class="w-16 bg-slate-50 border border-slate-200 rounded-lg p-1.5 text-center input-uh3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition" value="" placeholder="-"></td>
-                            <td class="px-3 py-3 text-center"><input type="number" class="w-16 bg-slate-50 border border-slate-200 rounded-lg p-1.5 text-center input-pts focus:outline-none focus:ring-2 focus:ring-blue-500 transition" value="" placeholder="-"></td>
+                            <td class="px-5 py-3 font-semibold text-slate-700">${s.nis}</td>
+                            <td class="px-5 py-3 font-extrabold text-slate-900">${s.nama}</td>
+                            <td class="px-3 py-3 text-center"><input type="number" class="w-16 bg-slate-50 border border-slate-200 rounded-xl p-2 text-center input-uh1 focus:outline-none focus:ring-2 focus:ring-blue-500 transition font-bold" value="" placeholder="-"></td>
+                            <td class="px-3 py-3 text-center"><input type="number" class="w-16 bg-slate-50 border border-slate-200 rounded-xl p-2 text-center input-uh2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition font-bold" value="" placeholder="-"></td>
+                            <td class="px-3 py-3 text-center"><input type="number" class="w-16 bg-slate-50 border border-slate-200 rounded-xl p-2 text-center input-uh3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition font-bold" value="" placeholder="-"></td>
+                            <td class="px-3 py-3 text-center"><input type="number" class="w-16 bg-slate-50 border border-slate-200 rounded-xl p-2 text-center input-pts focus:outline-none focus:ring-2 focus:ring-blue-500 transition font-bold" value="" placeholder="-"></td>
                         </tr>`;
                 });
             });
@@ -557,8 +617,10 @@
             }).then(res => res.json()).then(data => {
                 btn.innerText = "💾 Simpan Nilai ke Database"; btn.disabled = false;
                 statusMsg.innerText = data.message;
-                statusMsg.className = "mt-4 p-4 rounded-xl font-bold text-sm " + (data.status === 'success' ? "bg-emerald-50 text-emerald-700 border border-emerald-200" : "bg-red-50 text-red-700 border border-red-200");
+                statusMsg.className = "mt-4 p-4 rounded-xl font-bold text-xs " + (data.status === 'success' ? "bg-emerald-50 text-emerald-700 border border-emerald-200" : "bg-red-50 text-red-700 border border-red-200");
                 statusMsg.classList.remove('hidden');
+                // Refresh data persentase ringkasan setelah menyimpan nilai
+                loadDaftarKelas();
             });
         }
 
@@ -574,12 +636,12 @@
                 data.data.forEach(s => {
                     tabelBody.innerHTML += `
                         <tr class="hover:bg-slate-50 transition data-wali-row" data-nis="${s.nis}">
-                            <td class="px-5 py-3 font-medium text-slate-700">${s.nis}</td>
-                            <td class="px-5 py-3 font-bold text-slate-900">${s.nama}</td>
-                            <td class="px-3 py-3 text-center"><input type="number" class="w-16 bg-slate-50 border border-slate-200 rounded-lg p-1.5 text-center input-sakit focus:outline-none focus:ring-2 focus:ring-emerald-500 transition" value="" placeholder="0"></td>
-                            <td class="px-3 py-3 text-center"><input type="number" class="w-16 bg-slate-50 border border-slate-200 rounded-lg p-1.5 text-center input-izin focus:outline-none focus:ring-2 focus:ring-emerald-500 transition" value="" placeholder="0"></td>
-                            <td class="px-3 py-3 text-center"><input type="number" class="w-16 bg-slate-50 border border-slate-200 rounded-lg p-1.5 text-center input-alpa focus:outline-none focus:ring-2 focus:ring-emerald-500 transition" value="" placeholder="0"></td>
-                            <td class="px-5 py-3"><input type="text" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 input-catatan focus:outline-none focus:ring-2 focus:ring-emerald-500 transition" placeholder="Cth: Tingkatkan belajarmu..."></td>
+                            <td class="px-5 py-3 font-semibold text-slate-700">${s.nis}</td>
+                            <td class="px-5 py-3 font-extrabold text-slate-900">${s.nama}</td>
+                            <td class="px-3 py-3 text-center"><input type="number" class="w-16 bg-slate-50 border border-slate-200 rounded-xl p-2 text-center input-sakit focus:outline-none focus:ring-2 focus:ring-emerald-500 transition font-bold" value="" placeholder="0"></td>
+                            <td class="px-3 py-3 text-center"><input type="number" class="w-16 bg-slate-50 border border-slate-200 rounded-xl p-2 text-center input-izin focus:outline-none focus:ring-2 focus:ring-emerald-500 transition font-bold" value="" placeholder="0"></td>
+                            <td class="px-3 py-3 text-center"><input type="number" class="w-16 bg-slate-50 border border-slate-200 rounded-xl p-2 text-center input-alpa focus:outline-none focus:ring-2 focus:ring-emerald-500 transition font-bold" value="" placeholder="0"></td>
+                            <td class="px-5 py-3"><input type="text" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 input-catatan focus:outline-none focus:ring-2 focus:ring-emerald-500 transition font-medium text-xs" placeholder="Cth: Tingkatkan belajarmu..."></td>
                         </tr>`;
                 });
             });
@@ -605,7 +667,7 @@
             }).then(res => res.json()).then(data => {
                 btn.innerText = "💾 Simpan Kehadiran ke Database"; btn.disabled = false;
                 statusMsg.innerText = data.message;
-                statusMsg.className = "mt-4 p-4 rounded-xl font-bold text-sm " + (data.status === 'success' ? "bg-emerald-50 text-emerald-700 border border-emerald-200" : "bg-red-50 text-red-700 border border-red-200");
+                statusMsg.className = "mt-4 p-4 rounded-xl font-bold text-xs " + (data.status === 'success' ? "bg-emerald-50 text-emerald-700 border border-emerald-200" : "bg-red-50 text-red-700 border border-red-200");
                 statusMsg.classList.remove('hidden');
             });
         }
