@@ -3,86 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Portal Rapot Sisipan</title>
+    <title>Login Portal Rapot Sisipan - SMAN 1 Wongsorejo</title>
     <!-- Menggunakan Tailwind CSS dari CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Animasi loading sederhana */
+        /* Animasi loading mewah */
         .loader {
-            border-top-color: #3b82f6;
-            -webkit-animation: spinner 1.2s linear infinite;
-            animation: spinner 1.2s linear infinite;
+            border-top-color: #0284c7;
+            -webkit-animation: spinner 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            animation: spinner 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
         }
         @keyframes spinner {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
 
-        /* Ambient Light & Background Animation */
+        /* Ambient Light & Background Luxury Animation (Light Theme) */
         @keyframes ambientGlow {
             0%, 100% {
                 transform: translate(0px, 0px) scale(1);
             }
             33% {
-                transform: translate(30px, -50px) scale(1.1);
+                transform: translate(40px, -40px) scale(1.1);
             }
             66% {
-                transform: translate(-20px, 20px) scale(0.95);
+                transform: translate(-30px, 30px) scale(0.95);
             }
         }
         .ambient-blob-1 {
-            animation: ambientGlow 8s ease-in-out infinite;
+            animation: ambientGlow 12s ease-in-out infinite;
         }
         .ambient-blob-2 {
-            animation: ambientGlow 10s ease-in-out infinite reverse;
+            animation: ambientGlow 15s ease-in-out infinite reverse;
         }
     </style>
 </head>
-<body class="bg-slate-900 flex flex-col items-center justify-center min-h-screen relative overflow-hidden font-sans selection:bg-blue-500 selection:text-white">
+<body class="bg-gradient-to-br from-slate-50 via-sky-50/40 to-blue-100/60 flex flex-col items-center justify-center min-h-screen relative overflow-hidden font-sans selection:bg-sky-500 selection:text-white">
 
-    <!-- Ambient Light Background Effects -->
-    <div class="absolute -top-40 -left-40 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl ambient-blob-1 pointer-events-none"></div>
-    <div class="absolute -bottom-40 -right-40 w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl ambient-blob-2 pointer-events-none"></div>
+    <!-- Ambient Light Background Effects (Lembut & Elegan) -->
+    <div class="absolute -top-32 -left-32 w-[450px] h-[450px] bg-sky-400/20 rounded-full blur-[100px] ambient-blob-1 pointer-events-none"></div>
+    <div class="absolute -bottom-32 -right-32 w-[450px] h-[450px] bg-indigo-400/15 rounded-full blur-[100px] ambient-blob-2 pointer-events-none"></div>
 
-    <!-- Main Container Card dengan Efek Glassmorphism -->
-    <div class="relative z-10 bg-white/95 backdrop-blur-xl p-8 rounded-2xl shadow-2xl shadow-black/20 w-full max-w-md border border-white/20 transform transition-all duration-300 hover:shadow-blue-500/10">
+    <!-- Main Container Card dengan Efek Glassmorphism Terang Mewah -->
+    <div class="relative z-10 bg-white/90 backdrop-blur-2xl p-8 md:p-10 rounded-3xl shadow-[0_20px_50px_rgba(15,23,42,0.08)] w-full max-w-md border border-white/80 transform transition-all duration-500 hover:shadow-[0_25px_60px_rgba(14,165,233,0.12)]">
         
         <!-- Header dengan Logo (Memanjang 210px) & Judul -->
-        <div class="flex flex-col items-center mb-6">
-            <div class="mb-3 p-2 bg-slate-50 rounded-xl shadow-inner border border-slate-100 flex items-center justify-center transition-transform duration-300 hover:scale-105">
-                <img src="https://i.ibb.co.com/zTHpGJ3W/20260513-105333-0000.png" alt="Logo Sekolah" style="width: 210px;" class="h-auto object-contain">
+        <div class="flex flex-col items-center mb-8">
+            <div class="mb-4 p-3 bg-slate-50/80 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center transition-transform duration-300 hover:scale-105">
+                <img src="https://i.ibb.co.com/zTHpGJ3W/20260513-105333-0000.png" alt="Logo Sekolah" style="width: 210px;" class="h-auto object-contain drop-shadow-sm">
             </div>
-            <h2 class="text-2xl font-extrabold text-slate-800 tracking-tight">Portal Rapot Sisipan</h2>
-            <p class="text-xs text-slate-500 mt-1 font-medium">Silakan masuk menggunakan akun Anda</p>
+            <h2 class="text-2xl font-black text-slate-900 tracking-tight">Portal Rapot Sisipan</h2>
+            <p class="text-xs text-slate-500 mt-1.5 font-medium tracking-wide">Silakan masuk menggunakan akun resmi Anda</p>
         </div>
         
         <!-- Notifikasi Error -->
-        <div id="error-msg" class="hidden mb-4 p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl text-center font-medium transition-all"></div>
+        <div id="error-msg" class="hidden mb-6 p-3.5 bg-red-50 border border-red-200 text-red-700 text-xs rounded-2xl text-center font-semibold transition-all shadow-sm"></div>
 
-        <form id="loginForm" class="space-y-4">
+        <form id="loginForm" class="space-y-5">
             <div>
-                <label class="block text-slate-700 text-xs font-bold uppercase tracking-wider mb-2" for="username">
-                    Username
+                <label class="block text-slate-700 text-[11px] font-bold uppercase tracking-wider mb-2" for="username">
+                    Username Akun
                 </label>
                 <div class="relative">
-                    <input class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-slate-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all duration-200 text-sm" 
-                           id="username" type="text" placeholder="Masukkan Username" required>
+                    <input class="w-full bg-slate-50/80 border border-slate-200/90 rounded-2xl py-3.5 px-4 text-slate-800 placeholder-slate-400 leading-tight focus:outline-none focus:ring-2 focus:ring-sky-500/60 focus:bg-white focus:border-sky-500 transition-all duration-300 text-sm shadow-inner" 
+                           id="username" type="text" placeholder="Masukkan Username Anda" required>
                 </div>
             </div>
             
             <div>
-                <label class="block text-slate-700 text-xs font-bold uppercase tracking-wider mb-2" for="password">
-                    Password
+                <label class="block text-slate-700 text-[11px] font-bold uppercase tracking-wider mb-2" for="password">
+                    Kata Sandi (Password)
                 </label>
                 <div class="relative flex items-center">
                     <!-- Input Password -->
-                    <input class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-4 pr-20 text-slate-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all duration-200 text-sm" 
+                    <input class="w-full bg-slate-50/80 border border-slate-200/90 rounded-2xl py-3.5 pl-4 pr-20 text-slate-800 placeholder-slate-400 leading-tight focus:outline-none focus:ring-2 focus:ring-sky-500/60 focus:bg-white focus:border-sky-500 transition-all duration-300 text-sm shadow-inner" 
                            id="password" type="password" placeholder="••••••••••••••••" required>
                     
                     <!-- Container Ikon di Kanan (Toggle Mata & Ikon Kunci) -->
-                    <div class="absolute right-3 flex items-center space-x-2 text-slate-400">
+                    <div class="absolute right-3.5 flex items-center space-x-2 text-slate-400">
                         <!-- Toggle Mata Flat -->
-                        <button type="button" id="togglePassword" class="focus:outline-none hover:text-slate-600 transition-colors" title="Lihat/Sembunyikan Password">
+                        <button type="button" id="togglePassword" class="focus:outline-none hover:text-sky-600 transition-colors p-1" title="Lihat/Sembunyikan Password">
                             <svg id="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
@@ -98,18 +98,18 @@
                 </div>
             </div>
             
-            <div class="pt-2">
-                <button id="loginBtn" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 px-4 rounded-xl shadow-lg shadow-blue-500/25 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex justify-center items-center transition-all duration-200 active:scale-[0.98]" type="submit">
-                    <span>Login Masuk</span>
+            <div class="pt-3">
+                <button id="loginBtn" class="w-full bg-gradient-to-r from-sky-600 via-blue-600 to-indigo-600 hover:from-sky-700 hover:via-blue-700 hover:to-indigo-700 text-white font-bold py-3.5 px-4 rounded-2xl shadow-[0_10px_25px_-5px_rgba(2,132,199,0.35)] focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 flex justify-center items-center transition-all duration-300 active:scale-[0.98] text-sm tracking-wide" type="submit">
+                    <span>Masuk ke Portal</span>
                     <!-- Indikator Loading disembunyikan saat default -->
-                    <div id="loading" class="hidden ml-2 loader ease-linear rounded-full border-2 border-t-2 border-white/30 h-4 w-4"></div>
+                    <div id="loading" class="hidden ml-2.5 loader ease-linear rounded-full border-2 border-t-2 border-sky-600/30 h-4 w-4"></div>
                 </button>
             </div>
         </form>
     </div>
 
     <!-- Copyright Footer -->
-    <footer class="relative z-10 mt-8 text-center text-slate-400 text-xs tracking-wide">
+    <footer class="relative z-10 mt-10 text-center text-slate-500 text-xs tracking-wider font-medium">
         Copyright &copy; 2026 Very_Andika All Rights Reserved
     </footer>
 
