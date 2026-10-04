@@ -60,47 +60,55 @@
             </div>
         </div>
 
-        <!-- INFO CARDS RINGKASAN MENGAJAR INTERAKTIF (KLIK UNTUK LIHAT DETAIL & PERSENTASE MAPEL) -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <!-- Card 1: Total Kelas -->
-            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 flex items-center gap-4">
-                <div class="p-3 bg-blue-50 text-blue-600 rounded-xl text-xl font-bold shadow-2xs">🏫</div>
-                <div>
-                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Kelas Diampu</p>
-                    <p id="infoTotalKelas" class="text-lg font-black text-slate-900">- Kelas</p>
+        <!-- INFO CARDS RINGKASAN MENGAJAR INTERAKTIF (VERSI PROFESIONAL & ELEGAN) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
+            
+            <!-- Card 1: Total Kelas Diampu -->
+            <div class="bg-gradient-to-br from-white to-blue-50/40 p-5 rounded-3xl shadow-xs border border-blue-100/80 flex items-center gap-4 relative overflow-hidden group hover:border-blue-300 transition-all duration-300">
+                <div class="absolute right-0 bottom-0 w-24 h-24 bg-blue-100/30 rounded-tl-full pointer-events-none transition-transform group-hover:scale-110"></div>
+                <div class="p-3.5 bg-blue-600 text-white rounded-2xl text-xl shadow-md shadow-blue-500/20">🏫</div>
+                <div class="relative z-10">
+                    <p class="text-[10px] font-extrabold text-blue-600 uppercase tracking-wider">Total Kelas Diampu</p>
+                    <p id="infoTotalKelas" class="text-xl font-black text-slate-900 mt-0.5">- Kelas</p>
+                    <p class="text-[11px] text-slate-400 font-medium mt-0.5">Ruang lingkup pengajaran</p>
                 </div>
             </div>
 
             <!-- Card 2: Total Mapel + Interaktif Dropdown Persentase -->
             <div class="relative">
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 flex items-center gap-4 cursor-pointer hover:border-indigo-300 transition group" onclick="toggleCardDetail('detailMapelGuru', 'arrowMapel')">
-                    <div class="p-3 bg-indigo-50 text-indigo-600 rounded-xl text-xl font-bold shadow-2xs">📖</div>
-                    <div class="flex-grow">
+                <div class="bg-gradient-to-br from-white to-indigo-50/40 p-5 rounded-3xl shadow-xs border border-indigo-100/80 flex items-center gap-4 cursor-pointer relative overflow-hidden group hover:border-indigo-300 transition-all duration-300" onclick="toggleCardDetail('detailMapelGuru', 'arrowMapel')">
+                    <div class="absolute right-0 bottom-0 w-24 h-24 bg-indigo-100/30 rounded-tl-full pointer-events-none transition-transform group-hover:scale-110"></div>
+                    <div class="p-3.5 bg-indigo-600 text-white rounded-2xl text-xl shadow-md shadow-indigo-500/20">📖</div>
+                    <div class="flex-grow relative z-10">
                         <div class="flex justify-between items-center">
-                            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Mata Pelajaran</p>
-                            <span id="arrowMapel" class="text-xs text-slate-400 font-bold transition-transform duration-300">▼</span>
+                            <p class="text-[10px] font-extrabold text-indigo-600 uppercase tracking-wider">Total Mata Pelajaran</p>
+                            <span id="arrowMapel" class="text-xs text-indigo-400 font-bold transition-transform duration-300 bg-indigo-50 p-1.5 rounded-lg">▼</span>
                         </div>
-                        <p id="infoTotalMapel" class="text-lg font-black text-slate-900">- Mapel (Klik Rincian)</p>
+                        <p id="infoTotalMapel" class="text-xl font-black text-slate-900 mt-0.5">- Mapel</p>
+                        <p class="text-[11px] text-indigo-500/80 font-bold mt-0.5">Klik untuk lihat persentase 💡</p>
                     </div>
                 </div>
+
                 <!-- Dropdown Rincian Mapel & Persentase Guru -->
-                <div id="detailMapelGuru" class="hidden absolute left-0 right-0 top-full mt-2 z-30 bg-white border border-slate-200 rounded-2xl p-4 shadow-xl text-xs">
-                    <p class="font-bold text-slate-800 mb-2 uppercase tracking-wider text-[10px] border-b border-slate-100 pb-1.5 flex justify-between">
-                        <span>Mapel & Persentase Input:</span>
-                        <span class="text-indigo-600">Status Nilai</span>
-                    </p>
-                    <div id="listMapelPersentaseContainer" class="max-h-48 overflow-y-auto space-y-1.5 pr-1">
+                <div id="detailMapelGuru" class="hidden absolute left-0 right-0 top-full mt-2.5 z-30 bg-white border border-slate-200 rounded-3xl p-5 shadow-2xl text-xs backdrop-blur-md">
+                    <div class="flex justify-between items-center mb-3 pb-2 border-b border-slate-100">
+                        <span class="font-extrabold text-slate-800 uppercase tracking-wider text-[10px]">Rincian & Persentase Input Nilai:</span>
+                        <span class="px-2 py-0.5 bg-indigo-50 text-indigo-700 font-bold text-[10px] rounded-full">Live Status</span>
+                    </div>
+                    <div id="listMapelPersentaseContainer" class="max-h-52 overflow-y-auto space-y-2 pr-1">
                         <span class="text-slate-400 italic">Memuat rincian persentase...</span>
                     </div>
                 </div>
             </div>
 
             <!-- Card 3: Status Aktif Mengelola -->
-            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 flex items-center gap-4">
-                <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl text-xl font-bold shadow-2xs">🎯</div>
-                <div>
-                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Sedang Dikelola</p>
-                    <p id="infoStatusAktif" class="text-xs font-bold text-slate-700 mt-0.5 truncate max-w-[200px]">Pilih Kelas & Mapel</p>
+            <div class="bg-gradient-to-br from-white to-emerald-50/40 p-5 rounded-3xl shadow-xs border border-emerald-100/80 flex items-center gap-4 relative overflow-hidden group hover:border-emerald-300 transition-all duration-300">
+                <div class="absolute right-0 bottom-0 w-24 h-24 bg-emerald-100/30 rounded-tl-full pointer-events-none transition-transform group-hover:scale-110"></div>
+                <div class="p-3.5 bg-emerald-600 text-white rounded-2xl text-xl shadow-md shadow-emerald-500/20">🎯</div>
+                <div class="relative z-10">
+                    <p class="text-[10px] font-extrabold text-emerald-600 uppercase tracking-wider">Sedang Dikelola</p>
+                    <p id="infoStatusAktif" class="text-xs font-black text-slate-900 mt-1 truncate max-w-[190px] bg-emerald-50/80 text-emerald-800 px-2.5 py-1 rounded-xl border border-emerald-200/60">Pilih Kelas & Mapel</p>
+                    <p class="text-[11px] text-slate-400 font-medium mt-1">Sesi aktif saat ini</p>
                 </div>
             </div>
         </div>
@@ -300,7 +308,7 @@
             .then(res => {
                 if(res.status === 'success') {
                     const totalMapel = res.data.length;
-                    document.getElementById('infoTotalMapel').innerText = totalMapel + " Mapel (Klik Rincian)";
+                    document.getElementById('infoTotalMapel').innerText = totalMapel + " Mapel";
                     
                     const listContainer = document.getElementById('listMapelPersentaseContainer');
                     listContainer.innerHTML = '';
@@ -312,9 +320,9 @@
                             else if(item.persentase > 0) badgeColor = "bg-blue-100 text-blue-800";
 
                             listContainer.innerHTML += `
-                                <div class="flex justify-between items-center py-1.5 border-b border-slate-100">
+                                <div class="flex justify-between items-center py-2 border-b border-slate-100 last:border-0">
                                     <span class="font-bold text-slate-700">${item.nama_mapel} <span class="text-slate-400 font-normal">(${item.kelas})</span></span>
-                                    <span class="px-2 py-0.5 rounded-full font-extrabold text-[10px] ${badgeColor}">${item.persentase}% Terisi</span>
+                                    <span class="px-2.5 py-1 rounded-full font-extrabold text-[10px] ${badgeColor}">${item.persentase}% Terisi</span>
                                 </div>
                             `;
                         });
@@ -523,26 +531,57 @@
 
             document.getElementById('areaTabelNilai').classList.remove('hidden');
             document.getElementById('areaExcel').classList.remove('hidden');
-            tabelBody.innerHTML = '<tr><td colspan="6" class="text-center py-6 text-slate-400">Memuat data siswa...</td></tr>';
+            tabelBody.innerHTML = '<tr><td colspan="6" class="text-center py-6 text-slate-400">Memuat data siswa dan nilai tersimpan...</td></tr>';
 
+            // Ambil data siswa DAN data nilai yang sudah tersimpan secara bersamaan
             fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_siswa', kelas: kelas }) })
-            .then(res => res.json()).then(data => {
-                tabelBody.innerHTML = '';
+            .then(res => res.json()).then(dataSiswa => {
                 
-                const jumlahSiswa = data.data.length;
-                teksJumlahSiswa.innerText = `${jumlahSiswa} Siswa Terdaftar`;
-                infoJumlahSiswa.classList.remove('hidden');
+                fetch(SCRIPT_URL, { 
+                    method: 'POST', 
+                    body: JSON.stringify({ action: 'get_nilai_tersimpan', id_mapel: mapel, kelas: kelas }) 
+                })
+                .then(res => res.json()).then(dataNilaiRes => {
+                    
+                    tabelBody.innerHTML = '';
+                    const jumlahSiswa = dataSiswa.data.length;
+                    teksJumlahSiswa.innerText = `${jumlahSiswa} Siswa Terdaftar`;
+                    infoJumlahSiswa.classList.remove('hidden');
 
-                data.data.forEach(s => {
-                    tabelBody.innerHTML += `
-                        <tr class="hover:bg-slate-50 transition data-siswa-row" data-nis="${s.nis}">
-                            <td class="px-5 py-3 font-semibold text-slate-700">${s.nis}</td>
-                            <td class="px-5 py-3 font-extrabold text-slate-900">${s.nama}</td>
-                            <td class="px-3 py-3 text-center"><input type="number" class="w-16 bg-slate-50 border border-slate-200 rounded-xl p-2 text-center input-uh1 focus:outline-none focus:ring-2 focus:ring-blue-500 transition font-bold" value="" placeholder="-"></td>
-                            <td class="px-3 py-3 text-center"><input type="number" class="w-16 bg-slate-50 border border-slate-200 rounded-xl p-2 text-center input-uh2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition font-bold" value="" placeholder="-"></td>
-                            <td class="px-3 py-3 text-center"><input type="number" class="w-16 bg-slate-50 border border-slate-200 rounded-xl p-2 text-center input-uh3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition font-bold" value="" placeholder="-"></td>
-                            <td class="px-3 py-3 text-center"><input type="number" class="w-16 bg-slate-50 border border-slate-200 rounded-xl p-2 text-center input-pts focus:outline-none focus:ring-2 focus:ring-blue-500 transition font-bold" value="" placeholder="-"></td>
-                        </tr>`;
+                    let mapNilai = {};
+                    if(dataNilaiRes.status === 'success' && dataNilaiRes.data) {
+                        dataNilaiRes.data.forEach(item => {
+                            mapNilai[String(item.nis)] = item;
+                        });
+                    }
+
+                    dataSiswa.data.forEach(s => {
+                        let n = mapNilai[String(s.nis)] || { uh1: '', uh2: '', uh3: '', pts: '' };
+
+                        tabelBody.innerHTML += `
+                            <tr class="hover:bg-slate-50 transition data-siswa-row" data-nis="${s.nis}">
+                                <td class="px-5 py-3 font-semibold text-slate-700">${s.nis}</td>
+                                <td class="px-5 py-3 font-extrabold text-slate-900">${s.nama}</td>
+                                <td class="px-3 py-3 text-center"><input type="number" class="w-16 bg-slate-50 border border-slate-200 rounded-xl p-2 text-center input-uh1 focus:outline-none focus:ring-2 focus:ring-blue-500 transition font-bold" value="${n.uh1 !== undefined && n.uh1 !== null ? n.uh1 : ''}" placeholder="-"></td>
+                                <td class="px-3 py-3 text-center"><input type="number" class="w-16 bg-slate-50 border border-slate-200 rounded-xl p-2 text-center input-uh2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition font-bold" value="${n.uh2 !== undefined && n.uh2 !== null ? n.uh2 : ''}" placeholder="-"></td>
+                                <td class="px-3 py-3 text-center"><input type="number" class="w-16 bg-slate-50 border border-slate-200 rounded-xl p-2 text-center input-uh3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition font-bold" value="${n.uh3 !== undefined && n.uh3 !== null ? n.uh3 : ''}" placeholder="-"></td>
+                                <td class="px-3 py-3 text-center"><input type="number" class="w-16 bg-slate-50 border border-slate-200 rounded-xl p-2 text-center input-pts focus:outline-none focus:ring-2 focus:ring-blue-500 transition font-bold" value="${n.pts !== undefined && n.pts !== null ? n.pts : ''}" placeholder="-"></td>
+                            </tr>`;
+                    });
+
+                }).catch(() => {
+                    tabelBody.innerHTML = '';
+                    dataSiswa.data.forEach(s => {
+                        tabelBody.innerHTML += `
+                            <tr class="hover:bg-slate-50 transition data-siswa-row" data-nis="${s.nis}">
+                                <td class="px-5 py-3 font-semibold text-slate-700">${s.nis}</td>
+                                <td class="px-5 py-3 font-extrabold text-slate-900">${s.nama}</td>
+                                <td class="px-3 py-3 text-center"><input type="number" class="w-16 bg-slate-50 border border-slate-200 rounded-xl p-2 text-center input-uh1 focus:outline-none focus:ring-2 focus:ring-blue-500 transition font-bold" value="" placeholder="-"></td>
+                                <td class="px-3 py-3 text-center"><input type="number" class="w-16 bg-slate-50 border border-slate-200 rounded-xl p-2 text-center input-uh2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition font-bold" value="" placeholder="-"></td>
+                                <td class="px-3 py-3 text-center"><input type="number" class="w-16 bg-slate-50 border border-slate-200 rounded-xl p-2 text-center input-uh3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition font-bold" value="" placeholder="-"></td>
+                                <td class="px-3 py-3 text-center"><input type="number" class="w-16 bg-slate-50 border border-slate-200 rounded-xl p-2 text-center input-pts focus:outline-none focus:ring-2 focus:ring-blue-500 transition font-bold" value="" placeholder="-"></td>
+                            </tr>`;
+                    });
                 });
             });
         }
