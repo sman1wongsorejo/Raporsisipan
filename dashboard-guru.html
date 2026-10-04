@@ -17,6 +17,14 @@
         input[type=number] {
             -moz-appearance: textfield; /* Mendukung browser Firefox */
         }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .animate-spin-custom {
+            display: inline-block;
+            animation: spin 1s linear infinite;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-slate-50 via-emerald-50/25 to-blue-50/30 min-h-screen text-slate-800 font-sans">
@@ -207,7 +215,7 @@
                                 <th class="px-3 py-3 font-bold w-24 text-center">Sakit</th>
                                 <th class="px-3 py-3 font-bold w-24 text-center">Izin</th>
                                 <th class="px-3 py-3 font-bold w-24 text-center">Alpa</th>
-                                <th class="px-5 py-3 font-bold">Catatan Wali Kelas</th>
+                                <th class="px-3 py-3 font-bold">Catatan Wali Kelas</th>
                             </tr>
                         </thead>
                         <tbody id="tabelBodyWali" class="divide-y divide-slate-200 bg-white font-medium"></tbody>
@@ -609,13 +617,16 @@
                     uh3: row.querySelector('.input-uh3').value, pts: row.querySelector('.input-pts').value
                 });
             });
-            btn.innerText = "Menyimpan..."; btn.disabled = true; statusMsg.classList.add('hidden');
+            btn.innerHTML = `<span class="animate-spin-custom inline-block mr-1.5">⏳</span> Sabar ya Bos kalo lama, maklum server mahal`; 
+            btn.disabled = true; 
+            statusMsg.classList.add('hidden');
             
             fetch(SCRIPT_URL, {
                 method: 'POST',
                 body: JSON.stringify({ action: 'simpan_nilai', id_mapel: document.getElementById('pilihMapel').value, data_nilai: dataNilai })
             }).then(res => res.json()).then(data => {
-                btn.innerText = "💾 Simpan Nilai ke Database"; btn.disabled = false;
+                btn.innerHTML = "💾 Simpan Nilai ke Database"; 
+                btn.disabled = false;
                 statusMsg.innerText = data.message;
                 statusMsg.className = "mt-4 p-4 rounded-xl font-bold text-xs " + (data.status === 'success' ? "bg-emerald-50 text-emerald-700 border border-emerald-200" : "bg-red-50 text-red-700 border border-red-200");
                 statusMsg.classList.remove('hidden');
@@ -659,13 +670,16 @@
                     catatan: row.querySelector('.input-catatan').value
                 });
             });
-            btn.innerText = "Menyimpan..."; btn.disabled = true; statusMsg.classList.add('hidden');
+            btn.innerHTML = `<span class="animate-spin-custom inline-block mr-1.5">⏳</span> Sabar ya Bos kalo lama, maklum server mahal`; 
+            btn.disabled = true; 
+            statusMsg.classList.add('hidden');
             
             fetch(SCRIPT_URL, {
                 method: 'POST',
                 body: JSON.stringify({ action: 'simpan_kehadiran', data_kehadiran: dataHadir })
             }).then(res => res.json()).then(data => {
-                btn.innerText = "💾 Simpan Kehadiran ke Database"; btn.disabled = false;
+                btn.innerHTML = "💾 Simpan Kehadiran ke Database"; 
+                btn.disabled = false;
                 statusMsg.innerText = data.message;
                 statusMsg.className = "mt-4 p-4 rounded-xl font-bold text-xs " + (data.status === 'success' ? "bg-emerald-50 text-emerald-700 border border-emerald-200" : "bg-red-50 text-red-700 border border-red-200");
                 statusMsg.classList.remove('hidden');
