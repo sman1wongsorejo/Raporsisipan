@@ -498,7 +498,7 @@
             return dateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
         }
 
-        // ================= TEMPLAT BUILDER (KOP SEIMBANG & SIMETRIS) =================
+        // ================= TEMPLAT BUILDER (UPDATED PDF STRUCTURE) =================
         function buildRapotTemplate(data) {
             const tema = document.getElementById('pilihTemplat').value;
             let headerStyle = "border-b-4 border-black pb-3 mb-3";
@@ -528,14 +528,36 @@
             }
 
             let tbody = '';
-            if(data.nilai.length === 0) {
-                tbody = '<tr><td colspan="7" class="text-center p-4">Belum ada data nilai</td></tr>';
+            if(!data.nilai || data.nilai.length === 0) {
+                tbody = '<tr><td colspan="11" class="text-center p-4">Belum ada data nilai</td></tr>';
             } else {
                 data.nilai.forEach((n, index) => {
-                    tbody += `<tr class="text-center"><td>${index + 1}</td><td class="text-left font-bold px-2">${n.nama_mapel}</td><td>${n.uh1}</td><td>${n.uh2}</td><td>${n.uh3}</td><td>${n.rata}</td><td>${n.pts}</td></tr>`;
+                    tbody += `<tr class="text-center">
+                        <td>${index + 1}</td>
+                        <td class="text-left font-bold px-2">${n.nama_mapel}</td>
+                        <td>${n.tugas1 || '-'}</td>
+                        <td>${n.tugas2 || '-'}</td>
+                        <td>${n.tugas3 || '-'}</td>
+                        <td>${n.tugas4 || '-'}</td>
+                        <td class="font-bold" style="background-color: #f8fafc;">${n.rata_tugas || '-'}</td>
+                        <td>${n.uh1 || '-'}</td>
+                        <td>${n.uh2 || '-'}</td>
+                        <td class="font-bold" style="background-color: #f8fafc;">${n.rata_uh || '-'}</td>
+                        <td class="font-bold">${n.sts || '-'}</td>
+                    </tr>`;
                 });
             }
             
+            // Proses data Ekstrakurikuler
+            let htmlEkskul = '';
+            if (data.ekskul && data.ekskul.ekskul1 && data.ekskul.ekskul1 !== '-') {
+                htmlEkskul += `<tr><td class="text-center py-1">1</td><td class="px-2 py-1">${data.ekskul.ekskul1}</td><td class="text-center font-bold">${data.ekskul.predikat1 || '-'}</td></tr>`;
+            }
+            if (data.ekskul && data.ekskul.ekskul2 && data.ekskul.ekskul2 !== '-') {
+                htmlEkskul += `<tr><td class="text-center py-1">2</td><td class="px-2 py-1">${data.ekskul.ekskul2}</td><td class="text-center font-bold">${data.ekskul.predikat2 || '-'}</td></tr>`;
+            }
+            if(htmlEkskul === '') htmlEkskul = `<tr><td colspan="3" class="text-center italic py-2 text-slate-500">Tidak mengikuti ekstrakurikuler</td></tr>`;
+
             const tanggalCetak = getFormattedDate();
 
             return `
@@ -574,25 +596,45 @@
 
                             <table class="w-full table-rapot mb-3 border-collapse border border-slate-900">
                                 <thead>
-                                    <tr><th width="5%" rowspan="2" style="${thBg}">No</th><th width="35%" rowspan="2" style="${thBg}">Mata Pelajaran</th><th colspan="3" style="${thBg}">Ulangan Harian</th><th width="12%" rowspan="2" style="${thBg}">Rata-rata UH</th><th width="12%" rowspan="2" style="${thBg}">PTS</th></tr>
-                                    <tr><th width="10%" style="${thBg}">UH 1</th><th width="10%" style="${thBg}">UH 2</th><th width="10%" style="${thBg}">UH 3</th></tr>
+                                    <tr>
+                                        <th rowspan="2" style="${thBg} width: 4%;">No</th>
+                                        <th rowspan="2" style="${thBg} width: 22%;">Mata Pelajaran</th>
+                                        <th colspan="5" style="${thBg}">Tugas / Latihan</th>
+                                        <th colspan="3" style="${thBg}">Ulangan Harian</th>
+                                        <th rowspan="2" style="${thBg} width: 8%;">STS</th>
+                                    </tr>
+                                    <tr>
+                                        <th style="${thBg} width: 6.5%;">T1</th>
+                                        <th style="${thBg} width: 6.5%;">T2</th>
+                                        <th style="${thBg} width: 6.5%;">T3</th>
+                                        <th style="${thBg} width: 6.5%;">T4</th>
+                                        <th style="${thBg} width: 8%;">Rata</th>
+                                        <th style="${thBg} width: 8%;">U1</th>
+                                        <th style="${thBg} width: 8%;">U2</th>
+                                        <th style="${thBg} width: 8%;">Rata</th>
+                                    </tr>
                                 </thead>
                                 <tbody>${tbody}</tbody>
                             </table>
 
-                            <div class="flex gap-3 mb-3">
-                                <div class="w-1/2">
-                                    <table class="w-full table-rapot border-collapse border border-slate-900">
+                            <!-- Grid Flex Bawah: Ketidakhadiran, Catatan, dan Ekstrakurikuler -->
+                            <div class="grid grid-cols-2 gap-4 mb-3">
+                                <div>
+                                    <table class="w-full table-rapot border-collapse border border-slate-900 mb-2">
                                         <tr><th colspan="3" style="${thBg}">Ketidakhadiran</th></tr>
-                                        <tr><td class="w-1/3 text-left pl-2">Sakit</td><td width="10%">:</td><td class="text-center">${data.kehadiran.sakit || '-'}</td></tr>
-                                        <tr><td class="text-left pl-2">Izin</td><td>:</td><td class="text-center">${data.kehadiran.izin || '-'}</td></tr>
-                                        <tr><td class="text-left pl-2">Tanpa Keterangan</td><td>:</td><td class="text-center">${data.kehadiran.alpa || '-'}</td></tr>
+                                        <tr><td class="w-1/3 text-left pl-2">Sakit</td><td width="10%" class="text-center">:</td><td class="text-center">${data.kehadiran ? (data.kehadiran.sakit || '0') : '0'} hari</td></tr>
+                                        <tr><td class="text-left pl-2">Izin</td><td class="text-center">:</td><td class="text-center">${data.kehadiran ? (data.kehadiran.izin || '0') : '0'} hari</td></tr>
+                                        <tr><td class="text-left pl-2">Tanpa Keterangan</td><td class="text-center">:</td><td class="text-center">${data.kehadiran ? (data.kehadiran.alpa || '0') : '0'} hari</td></tr>
                                     </table>
-                                </div>
-                                <div class="w-1/2">
                                     <table class="w-full table-rapot border-collapse border border-slate-900">
                                         <tr><th style="${thBg}">Catatan Wali Kelas</th></tr>
-                                        <tr><td class="p-1.5 italic align-top text-xs" style="height: 48px;">${data.kehadiran.catatan || '-'}</td></tr>
+                                        <tr><td class="p-1.5 italic align-top text-xs" style="height: 40px;">${data.kehadiran ? (data.kehadiran.catatan || '-') : '-'}</td></tr>
+                                    </table>
+                                </div>
+                                <div>
+                                    <table class="w-full table-rapot border-collapse border border-slate-900">
+                                        <tr><th width="10%" style="${thBg}">No</th><th style="${thBg}">Kegiatan Ekstrakurikuler</th><th width="25%" style="${thBg}">Predikat</th></tr>
+                                        ${htmlEkskul}
                                     </table>
                                 </div>
                             </div>
