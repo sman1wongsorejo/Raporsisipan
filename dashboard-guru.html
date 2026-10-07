@@ -473,7 +473,8 @@
             document.getElementById('areaExcel').classList.remove('hidden');
             tabelBody.innerHTML = '<tr><td colspan="9" class="text-center py-6 text-slate-400">Memuat data siswa & nilai...</td></tr>';
 
-            fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_siswa', kelas: kelas }) })
+            // --- PERUBAHAN DI SINI: MENAMBAHKAN id_mapel: mapel ---
+            fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_siswa', kelas: kelas, id_mapel: mapel }) })
             .then(res => res.json()).then(dataSiswa => {
                 document.getElementById('teksJumlahSiswa').innerText = `${dataSiswa.data.length} Siswa Terdaftar`;
                 document.getElementById('infoJumlahSiswa').classList.remove('hidden');
@@ -574,7 +575,7 @@
                     sts: row.querySelector('.input-sts').value
                 });
             });
-            btn.innerHTML = `<span class="animate-spin-custom inline-block mr-1.5">⏳</span> Mohon bersabar jika lama, Server mahal ni bos...`; 
+            btn.innerHTML = `<span class="animate-spin-custom inline-block mr-1.5">⏳</span> Sedang menyimpan...`; 
             btn.disabled = true; statusMsg.classList.add('hidden');
             fetch(SCRIPT_URL, {
                 method: 'POST',
