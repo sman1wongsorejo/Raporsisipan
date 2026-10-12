@@ -66,6 +66,15 @@
             font-weight: bold; 
         }
         
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .animate-spin-custom { display: inline-block; animation: spin 0.9s linear infinite; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+
         /* Scrollbar Minimalis */
         ::-webkit-scrollbar { height: 6px; width: 6px; }
         ::-webkit-scrollbar-track { background: #f8fafc; }
@@ -73,23 +82,21 @@
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
-<body class="bg-gradient-to-br from-slate-50 via-slate-100/50 to-indigo-50/30 min-h-screen text-slate-800 antialiased selection:bg-indigo-600 selection:text-white">
+<body class="bg-slate-100/70 min-h-screen text-slate-800 antialiased selection:bg-indigo-600 selection:text-white">
 
-    <!-- Top Navigation Bar (Sticky Minimalis Clean + Foto Kiri Atas Diperbesar 2.5x & Efek Profesional) -->
-    <nav class="bg-white/90 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-50 shadow-xs">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8 h-28 flex justify-between items-center">
-            <div class="flex items-center gap-5">
-                <!-- Foto Kiri Atas Diperbesar 2.5x dengan border gradien interaktif -->
+    <!-- Top Navigation Bar (Professional Glassmorphism) -->
+    <nav class="bg-white/90 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-40 transition-all shadow-xs">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 h-20 flex justify-between items-center">
+            <div class="flex items-center gap-4">
                 <div class="relative group">
-                    <div class="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-blue-600 rounded-2xl blur-xs opacity-50 group-hover:opacity-100 transition duration-300"></div>
-                    <img src="https://i.ibb.co.com/vvcntC7p/20261007-113237-0000.png" alt="Logo/Foto Admin" class="relative w-[100px] h-[100px] rounded-2xl object-cover border-2 border-white shadow-md my-2 transform group-hover:scale-[1.02] transition duration-300">
+                    <div class="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-blue-600 rounded-xl blur-xs opacity-50 group-hover:opacity-100 transition duration-300"></div>
+                    <img src="https://i.ibb.co.com/vvcntC7p/20261007-113237-0000.png" alt="Logo/Foto Admin" class="relative w-12 h-12 rounded-xl object-cover border-2 border-white shadow-sm my-1">
                 </div>
                 <div>
                     <div class="flex items-center gap-2">
-                        <span class="px-2 py-0.5 bg-indigo-50 text-indigo-700 text-[10px] font-extrabold rounded-md uppercase tracking-wider border border-indigo-100">Super Admin</span>
+                        <span class="px-2 py-0.5 bg-indigo-50 text-indigo-700 text-[9px] font-extrabold rounded-md uppercase tracking-wider border border-indigo-100">Super Admin</span>
                     </div>
-                    <h1 class="text-base font-extrabold text-slate-900 leading-tight mt-1">Panel Administrator</h1>
-                    <p class="text-xs text-slate-500 font-medium">SMAN 1 Wongsorejo • Sistem Rapot Sisipan</p>
+                    <h1 class="text-sm font-extrabold text-slate-900 leading-tight mt-0.5">Panel Administrator SMANJO</h1>
                 </div>
             </div>
             <div class="flex items-center gap-4">
@@ -98,190 +105,239 @@
                     <span class="text-xs font-bold text-emerald-700">Online System</span>
                 </div>
                 <div class="h-6 w-px bg-slate-200 hidden sm:block"></div>
-                <button onclick="logout()" class="bg-white border border-slate-200 hover:border-rose-300 hover:text-rose-600 hover:bg-rose-50/50 transition-all duration-200 px-4 py-2 rounded-xl text-xs font-bold text-slate-600 flex items-center gap-2 shadow-2xs">
+                <button onclick="logout()" class="border border-slate-200 hover:border-rose-300 hover:text-rose-600 hover:bg-rose-50/60 transition-all duration-200 px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 flex items-center gap-2 shadow-2xs">
                     🚪 Logout
                 </button>
             </div>
         </div>
     </nav>
 
-    <!-- Main Container -->
+    <!-- Main Layout with Sidebar -->
     <div class="max-w-7xl mx-auto px-6 lg:px-8 py-8">
-        
-        <!-- Welcome Section Modern & Elegan -->
-        <div class="bg-white/80 backdrop-blur border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-xs mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 relative overflow-hidden">
-            <div class="absolute right-0 top-0 w-64 h-64 bg-gradient-to-bl from-indigo-100/50 via-blue-50/30 to-transparent rounded-bl-full pointer-events-none"></div>
-            <div class="relative z-10">
-                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Halo, <span id="namaAdmin" class="text-indigo-600 font-black">Admin</span> 👋</h2>
-                <p class="text-xs sm:text-sm text-slate-500 mt-1 max-w-2xl font-medium leading-relaxed">Kelola pencetakan rapot resmi kedinasan, pantau progres pengisian nilai guru, dan rincian kelas secara terpusat dalam satu kendali.</p>
-            </div>
-            <div class="relative z-10 bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-sm text-xs font-semibold flex items-center gap-2.5">
-                <span class="text-base">🛡️</span>
-                <div>
-                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Hak Akses</p>
-                    <p class="text-xs font-bold">Full Kontrol Sekolah</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- INFO CARDS UTAMA (TOTAL KELAS & TOTAL KESELURUHAN SISWA) -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8">
-            <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs flex items-center gap-5 hover:border-indigo-300 transition-all duration-300 group">
-                <div class="p-4 bg-indigo-50 text-indigo-600 rounded-2xl font-bold text-xl group-hover:scale-110 transition duration-300 shadow-inner">🏫</div>
-                <div>
-                    <p class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Total Kelas Aktif</p>
-                    <p id="infoTotalKelasBadge" class="text-2xl font-black text-slate-900 mt-0.5">Memuat...</p>
-                </div>
-            </div>
-            <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs flex items-center gap-5 hover:border-blue-300 transition-all duration-300 group">
-                <div class="p-4 bg-blue-50 text-blue-600 rounded-2xl font-bold text-xl group-hover:scale-110 transition duration-300 shadow-inner">👥</div>
-                <div>
-                    <p class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Total Keseluruhan Siswa</p>
-                    <p id="infoTotalSiswa" class="text-2xl font-black text-slate-900 mt-0.5">Memuat...</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- CONTAINER GRID SUB-CARD PER KELAS -->
-        <div class="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200/80 shadow-xs mb-8">
-            <div class="flex items-center justify-between mb-5 pb-3 border-b border-slate-100">
-                <div class="flex items-center gap-3">
-                    <div class="p-2 bg-slate-100 text-slate-700 rounded-xl font-bold text-sm">📊</div>
-                    <div>
-                        <h3 class="font-extrabold text-sm text-slate-900">Rincian Per Kelas</h3>
-                        <p class="text-[11px] text-slate-400 font-medium">Klik kartu untuk melihat rincian mata pelajaran aktif.</p>
-                    </div>
-                </div>
-                <span class="text-[10px] font-bold text-indigo-700 bg-indigo-50 border border-indigo-100 px-3 py-1 rounded-full">Interactive View</span>
-            </div>
+        <div class="flex flex-col lg:flex-row gap-8 items-start">
             
-            <div id="gridSubCardKelas" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
-                <div class="p-5 rounded-2xl border border-slate-200 bg-slate-50 text-center text-slate-400 py-8 col-span-full font-medium text-xs">
-                    Memuat data rincian kelas...
+            <!-- Sidebar Navigation (Modern Clean) -->
+            <aside class="w-full lg:w-64 bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm lg:sticky lg:top-28 shrink-0">
+                <div class="mb-4 px-3 pt-1">
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Menu Navigasi Admin</p>
                 </div>
-            </div>
-        </div>
-        
-        <!-- Tab Navigation Modern & Interaktif -->
-        <div class="flex flex-wrap gap-2.5 mb-6 bg-white/60 p-2 rounded-2xl border border-slate-200/80 w-fit shadow-2xs">
-            <button onclick="bukaTab('tabCetak')" id="btnTabCetak" class="transition-all duration-200 text-xs font-bold py-2.5 px-5 rounded-xl bg-slate-900 text-white shadow-sm flex items-center gap-2">
-                🖨️ Cetak Rapot Resmi
-            </button>
-            <button onclick="bukaTab('tabProgress')" id="btnTabProgress" class="transition-all duration-200 text-xs font-bold py-2.5 px-5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 flex items-center gap-2">
-                📈 Pemantauan Progres Nilai
-            </button>
-            <button onclick="bukaTab('tabMaster')" id="btnTabMaster" class="transition-all duration-200 text-xs font-bold py-2.5 px-5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 flex items-center gap-2">
-                🗄️ Kelola Master Data
-            </button>
-        </div>
+                <div class="flex flex-col gap-1.5">
+                    <button onclick="bukaTab('tabCetak')" id="btnTabCetak" class="w-full text-left transition-all text-xs font-semibold py-3 px-3.5 rounded-xl bg-slate-900 text-white shadow-md flex items-center gap-3 group">
+                        <span class="text-sm group-hover:scale-110 transition-transform">🖨️</span> Cetak Rapot Resmi
+                    </button>
+                    <button onclick="bukaTab('tabProgress')" id="btnTabProgress" class="w-full text-left transition-all text-xs font-semibold py-3 px-3.5 rounded-xl text-slate-600 hover:bg-slate-100/80 flex items-center gap-3 group">
+                        <span class="text-sm group-hover:scale-110 transition-transform">📈</span> Pemantauan Progres
+                    </button>
+                    <button onclick="bukaTab('tabMaster')" id="btnTabMaster" class="w-full text-left transition-all text-xs font-semibold py-3 px-3.5 rounded-xl text-slate-600 hover:bg-slate-100/80 flex items-center gap-3 group">
+                        <span class="text-sm group-hover:scale-110 transition-transform">🗄️</span> Kelola Master Data
+                    </button>
+                </div>
+            </aside>
 
-        <!-- TAB PEMANTAUAN PROGRES NILAI -->
-        <div id="tabProgress" class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-xs hidden transition-all">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 pb-4 border-b border-slate-100">
-                <div class="flex items-center gap-3">
-                    <div class="p-2.5 bg-purple-50 text-purple-600 rounded-2xl font-bold text-base">📈</div>
-                    <div>
-                        <h3 class="font-extrabold text-base text-slate-900">Grafik Kelengkapan Pengisian Nilai per Mapel & Kelas</h3>
-                        <p class="text-xs text-slate-400 font-medium">Memantau progres pengisian nilai dari seluruh guru secara mendetail.</p>
+            <!-- Main Content Area -->
+            <main class="flex-grow w-full overflow-hidden">
+                
+                <!-- Welcome Section -->
+                <div class="bg-white border border-slate-200/80 rounded-2xl p-6 sm:p-8 shadow-xs mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 relative overflow-hidden">
+                    <div class="absolute right-0 top-0 w-64 h-64 bg-gradient-to-bl from-indigo-100/50 via-blue-50/30 to-transparent rounded-bl-full pointer-events-none"></div>
+                    <div class="relative z-10">
+                        <h2 class="text-2xl font-black text-slate-900 tracking-tight">Halo, <span id="namaAdmin" class="text-indigo-600">Admin</span> 👋</h2>
+                        <p class="text-xs text-slate-500 mt-1 max-w-2xl font-medium leading-relaxed">Kelola pencetakan rapot resmi kedinasan, pantau progres pengisian nilai guru, dan rincian kelas secara terpusat.</p>
+                    </div>
+                    <div class="relative z-10 bg-indigo-50 border border-indigo-100 px-3.5 py-2 rounded-xl flex items-center gap-2.5">
+                        <span class="relative flex h-2.5 w-2.5">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-indigo-600"></span>
+                        </span>
+                        <span class="text-[11px] font-bold text-indigo-900">Full Kontrol Sekolah</span>
                     </div>
                 </div>
-                <button onclick="loadProgressData()" class="bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 font-bold px-4 py-2.5 rounded-xl text-xs transition shadow-2xs flex items-center gap-2">
-                    🔄 Refresh Grafik
-                </button>
-            </div>
-            <div class="w-full bg-slate-50/60 border border-slate-200/80 p-5 rounded-2xl" style="height: 420px; position: relative;">
-                <canvas id="chartProgress"></canvas>
-            </div>
-        </div>
 
-        <!-- TAB KELOLA MASTER DATA -->
-        <div id="tabMaster" class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-xs hidden transition-all">
-            <div class="flex items-center gap-3 mb-4 pb-4 border-b border-slate-100">
-                <div class="p-2.5 bg-slate-100 text-slate-700 rounded-2xl font-bold text-base">🗄️</div>
-                <div>
-                    <h3 class="font-extrabold text-base text-slate-900">Manajemen Database Terpusat</h3>
-                    <p class="text-xs text-slate-400 font-medium">Pengelolaan data master Siswa, Guru, dan Mata Pelajaran secara massal.</p>
-                </div>
-            </div>
-            <p class="text-slate-600 text-xs sm:text-sm mb-6 bg-slate-50 p-5 rounded-2xl border border-slate-200 leading-relaxed font-medium">
-                Untuk menjaga integritas sistem, silakan kelola data Siswa, Guru, dan Mata Pelajaran secara langsung melalui lembar kerja Google Sheets resmi sekolah.
-            </p>
-            <a href="https://docs.google.com/spreadsheets/d/1ddne0Xdfhiiz1fQckAuAjjPmldLplyzlCCcyp6U9Jq8/edit" target="_blank" class="inline-flex items-center gap-2.5 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-bold py-3 px-6 rounded-2xl text-xs transition shadow-md shadow-emerald-600/20">
-                📊 Buka Google Sheets Database
-            </a>
-        </div>
-
-        <!-- TAB CETAK RAPOT -->
-        <div id="tabCetak" class="flex flex-col lg:flex-row gap-6">
-            <div class="w-full lg:w-1/3">
-                <div class="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200/80 shadow-xs">
-                    
-                    <div class="flex items-center gap-3 mb-5 pb-3 border-b border-slate-100">
-                        <div class="p-2.5 bg-blue-50 text-blue-600 rounded-xl font-bold text-sm">📜</div>
+                <!-- INFO CARDS UTAMA -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex items-center gap-4 transition hover:shadow-md">
+                        <div class="p-3.5 bg-indigo-50 text-indigo-600 rounded-2xl font-bold text-base shadow-2xs">🏫</div>
                         <div>
-                            <h3 class="font-extrabold text-sm text-slate-900">Pengaturan Dokumen</h3>
-                            <p class="text-[11px] text-slate-400 font-medium">Sesuaikan format dan unduh rapot.</p>
+                            <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Total Kelas Aktif</p>
+                            <p id="infoTotalKelasBadge" class="text-2xl font-black text-slate-900 mt-0.5">Memuat...</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex items-center gap-4 transition hover:shadow-md">
+                        <div class="p-3.5 bg-blue-50 text-blue-600 rounded-2xl font-bold text-base shadow-2xs">👥</div>
+                        <div>
+                            <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Total Keseluruhan Siswa</p>
+                            <p id="infoTotalSiswa" class="text-2xl font-black text-slate-900 mt-0.5">Memuat...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CONTAINER GRID SUB-CARD PER KELAS -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs mb-8">
+                    <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+                        <div class="flex items-center gap-2.5">
+                            <span class="text-sm">📊</span>
+                            <div>
+                                <h3 class="font-extrabold text-xs text-slate-900 uppercase tracking-wider">Rincian Per Kelas</h3>
+                                <p class="text-[11px] text-slate-400 font-medium">Klik kartu untuk melihat rincian mata pelajaran aktif.</p>
+                            </div>
+                        </div>
+                        <span class="text-[10px] font-bold text-indigo-700 bg-indigo-50 border border-indigo-100 px-3 py-1 rounded-lg">Interactive View</span>
+                    </div>
+                    
+                    <div id="gridSubCardKelas" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                        <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 text-center text-slate-400 py-6 col-span-full font-medium text-xs">
+                            <span class="animate-spin-custom inline-block mr-2 text-indigo-600 text-sm">⏳</span> mohon bersabar jika lama, server mahal nih bos ...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB PEMANTAUAN PROGRES NILAI -->
+                <div id="tabProgress" class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200/80 shadow-xs hidden transition-all animate-fade-in">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 pb-4 border-b border-slate-100">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2.5 bg-purple-50 text-purple-600 rounded-xl font-bold text-base">📈</div>
+                            <div>
+                                <h3 class="font-extrabold text-base text-slate-900">Pemantauan Progres Pengisian Nilai</h3>
+                                <p class="text-xs text-slate-400 font-medium">Pantau kelengkapan nilai dari seluruh guru secara mendetail (Grafik & Tabel).</p>
+                            </div>
+                        </div>
+                        <button onclick="loadProgressData()" class="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-semibold px-4 py-2.5 rounded-xl text-xs transition shadow-2xs flex items-center gap-2">
+                            🔄 Refresh Data
+                        </button>
+                    </div>
+                    
+                    <!-- GRAFIK -->
+                    <div class="w-full bg-slate-50/60 border border-slate-200/80 p-5 rounded-2xl mb-8 shadow-2xs" style="height: 400px; position: relative;">
+                        <canvas id="chartProgress"></canvas>
+                    </div>
+
+                    <!-- PANEL KONTROL / TABEL RINCIAN GURU -->
+                    <div>
+                        <h4 class="font-extrabold text-xs text-slate-900 uppercase tracking-wider mb-4 border-b border-slate-100 pb-2">📋 Tabel Rincian Progres Guru</h4>
+                        
+                        <div class="flex flex-col sm:flex-row justify-between gap-3 mb-4">
+                            <div class="relative w-full sm:w-1/3">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">🔍</span>
+                                <input type="text" id="searchProgress" onkeyup="filterProgressTable()" placeholder="Cari Nama Guru, Mapel, Kelas..." class="bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-9 pr-3 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition w-full text-slate-700 shadow-2xs">
+                            </div>
+                            <select id="filterStatus" onchange="filterProgressTable()" class="bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition w-full sm:w-1/4 text-slate-700 shadow-2xs">
+                                <option value="all">Semua Status</option>
+                                <option value="SELESAI">Selesai (100%)</option>
+                                <option value="PROSES">Proses (1-99%)</option>
+                                <option value="BELUM">Belum Input (0%)</option>
+                            </select>
+                        </div>
+
+                        <div class="overflow-x-auto rounded-xl border border-slate-200 shadow-xs">
+                            <table class="w-full text-xs text-left text-slate-600 border-collapse min-w-max">
+                                <thead class="bg-slate-50 border-b border-slate-200 text-[10px] uppercase text-slate-400 font-extrabold tracking-wider">
+                                    <tr>
+                                        <th class="px-4 py-3.5 text-center w-12">No</th>
+                                        <th class="px-4 py-3.5 min-w-[150px]">Guru Pengampu</th>
+                                        <th class="px-4 py-3.5">Mata Pelajaran</th>
+                                        <th class="px-4 py-3.5 text-center">Kelas</th>
+                                        <th class="px-4 py-3.5 text-center">Persentase</th>
+                                        <th class="px-4 py-3.5 text-center">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabelBodyProgress" class="divide-y divide-slate-100 bg-white font-medium">
+                                    <tr class="no-data"><td colspan="6" class="text-center py-8 text-slate-400 text-xs font-medium"><span class="animate-spin-custom inline-block mr-2 text-indigo-600 text-sm">⏳</span> mohon bersabar jika lama, server mahal nih bos ...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB KELOLA MASTER DATA -->
+                <div id="tabMaster" class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200/80 shadow-xs hidden transition-all animate-fade-in">
+                    <div class="flex items-center gap-3 mb-4 pb-4 border-b border-slate-100">
+                        <div class="p-2.5 bg-slate-100 text-slate-700 rounded-xl font-bold text-base">🗄️</div>
+                        <div>
+                            <h3 class="font-extrabold text-base text-slate-900">Manajemen Database Terpusat</h3>
+                            <p class="text-xs text-slate-400 font-medium">Pengelolaan data master Siswa, Guru, dan Mata Pelajaran secara massal.</p>
+                        </div>
+                    </div>
+                    <p class="text-slate-600 text-xs sm:text-sm mb-6 bg-slate-50 p-5 rounded-xl border border-slate-200/80 leading-relaxed font-medium shadow-2xs">
+                        Untuk menjaga integritas sistem, silakan kelola data Siswa, Guru, dan Mata Pelajaran secara langsung melalui lembar kerja Google Sheets resmi sekolah.
+                    </p>
+                    <a href="https://docs.google.com/spreadsheets/d/1ddne0Xdfhiiz1fQckAuAjjPmldLplyzlCCcyp6U9Jq8/edit" target="_blank" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-bold py-3 px-6 rounded-xl text-xs transition shadow-md">
+                        📊 Buka Google Sheets Database
+                    </a>
+                </div>
+
+                <!-- TAB CETAK RAPOT -->
+                <div id="tabCetak" class="flex flex-col lg:flex-row gap-6 animate-fade-in">
+                    <div class="w-full lg:w-1/3">
+                        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs">
+                            <div class="flex items-center gap-3 mb-5 pb-3 border-b border-slate-100">
+                                <div class="p-2.5 bg-blue-50 text-blue-600 rounded-xl font-bold text-sm">📜</div>
+                                <div>
+                                    <h3 class="font-extrabold text-sm text-slate-900">Pengaturan Dokumen</h3>
+                                    <p class="text-[11px] text-slate-400 font-medium">Sesuaikan format dan unduh rapot.</p>
+                                </div>
+                            </div>
+
+                            <label class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-wider mb-2">Pilih Templat Dokumen</label>
+                            <select id="pilihTemplat" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-semibold mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition text-slate-700 shadow-2xs">
+                                <option value="dinas_standard">1. Standar Kedinasan</option>
+                                <option value="dinas_formal">2. Formal Institusional</option>
+                                <option value="dinas_pemprov">3. Pemprov Birokrasi Klasik</option>
+                                <option value="dinas_akademik">4. Akademik Formal SMANJO</option>
+                                <option value="dinas_paripurna">5. Paripurna Kedinasan</option>
+                            </select>
+                            
+                            <label class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-wider mb-2">Tahun Pelajaran</label>
+                            <input type="text" id="inputTahunPelajaran" value="2026/2027" placeholder="Contoh: 2026/2027" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-semibold mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition text-slate-700 shadow-2xs">
+
+                            <label class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-wider mb-2">Semester</label>
+                            <select id="inputSemester" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-semibold mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition text-slate-700 shadow-2xs">
+                                <option value="Ganjil (Gasal)">Ganjil (Gasal)</option>
+                                <option value="Genap">Genap</option>
+                            </select>
+
+                            <label class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-wider mb-2">Tanggal Penetapan / Cetak</label>
+                            <input type="date" id="inputTanggalCetak" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-semibold mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition text-slate-700 shadow-2xs">
+
+                            <label class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-wider mb-2">1. Pilih Kelas</label>
+                            <select id="pilihKelas" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-semibold mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition text-slate-700 shadow-2xs" onchange="loadSiswa()">
+                                <option value="">-- Memuat Kelas... --</option>
+                            </select>
+
+                            <button id="btnDownloadKelas" onclick="downloadPDFKelas()" class="w-full bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 text-indigo-700 font-bold py-3 px-4 rounded-xl mb-4 hidden shadow-2xs text-xs transition flex items-center justify-center gap-2">
+                                📥 Unduh PDF 1 Kelas (Masal)
+                            </button>
+
+                            <div class="relative flex py-1 items-center mb-4">
+                                <div class="flex-grow border-t border-slate-200"></div>
+                                <span class="flex-shrink mx-3 text-[10px] text-slate-400 font-extrabold uppercase tracking-widest">Atau</span>
+                                <div class="flex-grow border-t border-slate-200"></div>
+                            </div>
+
+                            <label class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-wider mb-2">2. Pilih 1 Siswa Saja</label>
+                            <select id="pilihSiswa" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-semibold mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition text-slate-700 shadow-2xs" disabled onchange="enablePreview()">
+                                <option value="">-- Pilih Siswa --</option>
+                            </select>
+
+                            <button id="btnPreview" onclick="generatePreview()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 px-4 rounded-2xl mb-2.5 opacity-50 cursor-not-allowed shadow-sm text-xs transition" disabled>
+                                Tampilkan Pratinjau Rapot
+                            </button>
+                            <button id="btnDownload" onclick="downloadPDF()" class="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-bold py-3.5 px-4 rounded-2xl hidden shadow-md shadow-emerald-600/20 text-xs transition flex items-center justify-center gap-2">
+                                💾 Unduh Dokumen PDF
+                            </button>
                         </div>
                     </div>
 
-                    <label class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider mb-2">Pilih Templat Dokumen</label>
-                    <select id="pilihTemplat" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-xs font-semibold mb-4 focus:outline-none focus:ring-2 focus:ring-slate-900 transition text-slate-700">
-                        <option value="dinas_standard">1. Standar Kedinasan</option>
-                        <option value="dinas_formal">2. Formal Institusional</option>
-                        <option value="dinas_pemprov">3. Pemprov Birokrasi Klasik</option>
-                        <option value="dinas_akademik">4. Akademik Formal SMANJO</option>
-                        <option value="dinas_paripurna">5. Paripurna Kedinasan</option>
-                    </select>
-                    
-                    <label class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider mb-2">Tahun Pelajaran</label>
-                    <input type="text" id="inputTahunPelajaran" value="2026/2027" placeholder="Contoh: 2026/2027" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-xs font-semibold mb-4 focus:outline-none focus:ring-2 focus:ring-slate-900 transition text-slate-700">
-
-                    <label class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider mb-2">Semester</label>
-                    <select id="inputSemester" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-xs font-semibold mb-4 focus:outline-none focus:ring-2 focus:ring-slate-900 transition text-slate-700">
-                        <option value="Ganjil (Gasal)">Ganjil (Gasal)</option>
-                        <option value="Genap">Genap</option>
-                    </select>
-
-                    <label class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider mb-2">Tanggal Penetapan / Cetak</label>
-                    <input type="date" id="inputTanggalCetak" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-xs font-semibold mb-4 focus:outline-none focus:ring-2 focus:ring-slate-900 transition text-slate-700">
-
-                    <label class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider mb-2">1. Pilih Kelas</label>
-                    <select id="pilihKelas" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-xs font-semibold mb-4 focus:outline-none focus:ring-2 focus:ring-slate-900 transition text-slate-700" onchange="loadSiswa()">
-                        <option value="">-- Memuat Kelas... --</option>
-                    </select>
-
-                    <button id="btnDownloadKelas" onclick="downloadPDFKelas()" class="w-full bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 text-indigo-700 font-bold py-3 px-4 rounded-2xl mb-4 hidden shadow-2xs text-xs transition flex items-center justify-center gap-2">
-                        📥 Unduh PDF 1 Kelas (Masal)
-                    </button>
-
-                    <div class="relative flex py-1 items-center mb-4">
-                        <div class="flex-grow border-t border-slate-200"></div>
-                        <span class="flex-shrink mx-3 text-[10px] text-slate-400 font-extrabold uppercase tracking-widest">Atau</span>
-                        <div class="flex-grow border-t border-slate-200"></div>
-                    </div>
-
-                    <label class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider mb-2">2. Pilih 1 Siswa Saja</label>
-                    <select id="pilihSiswa" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-xs font-semibold mb-4 focus:outline-none focus:ring-2 focus:ring-slate-900 transition text-slate-700" disabled onchange="enablePreview()">
-                        <option value="">-- Pilih Siswa --</option>
-                    </select>
-
-                    <button id="btnPreview" onclick="generatePreview()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 px-4 rounded-2xl mb-2.5 opacity-50 cursor-not-allowed shadow-sm text-xs transition" disabled>
-                        Tampilkan Pratinjau Rapot
-                    </button>
-                    <button id="btnDownload" onclick="downloadPDF()" class="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-bold py-3.5 px-4 rounded-2xl hidden shadow-md shadow-emerald-600/20 text-xs transition flex items-center justify-center gap-2">
-                        💾 Unduh Dokumen PDF
-                    </button>
-                </div>
-            </div>
-
-            <div class="w-full lg:w-2/3 overflow-x-auto flex justify-center bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-xs items-start">
-                <div id="areaRapotContainer" class="flex justify-center w-full">
-                    <div class="text-center py-24 text-slate-400">
-                        <div class="text-5xl mb-3">📄</div>
-                        <p class="text-xs font-semibold">Pratinjau dokumen resmi akan muncul di sini setelah Anda memilih siswa.</p>
+                    <div class="w-full lg:w-2/3 overflow-x-auto flex justify-center bg-white p-6 sm:p-8 rounded-2xl border border-slate-200/80 shadow-xs items-start">
+                        <div id="areaRapotContainer" class="flex justify-center w-full">
+                            <div class="text-center py-24 text-slate-400">
+                                <div class="text-5xl mb-3">📄</div>
+                                <p class="text-xs font-semibold">Pratinjau dokumen resmi akan muncul di sini setelah Anda memilih siswa.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+
+            </main>
         </div>
     </div>
 
@@ -326,7 +382,7 @@
 
                         gridContainer.innerHTML += `
                             <div class="relative">
-                                <div class="bg-gradient-to-br from-slate-50/50 via-white to-indigo-50/10 hover:border-indigo-300 border border-slate-200/80 rounded-2xl p-4 shadow-2xs hover:shadow-md transition-all duration-300 cursor-pointer flex flex-col justify-between group" onclick="toggleDetailKelas(${index})">
+                                <div class="bg-gradient-to-br from-slate-50/50 via-white to-indigo-50/10 hover:border-indigo-300 border border-slate-200/80 rounded-xl p-3.5 shadow-2xs hover:shadow-md transition-all duration-300 cursor-pointer flex flex-col justify-between group" onclick="toggleDetailKelas(${index})">
                                     <div class="flex justify-between items-center mb-2">
                                         <span class="font-black text-slate-900 text-xs group-hover:text-indigo-600 transition">Kelas ${item.kelas}</span>
                                         <span id="icon-arrow-${index}" class="text-[10px] text-slate-400 font-bold transition-transform duration-300">▼</span>
@@ -342,7 +398,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div id="detail-kelas-${index}" class="hidden absolute left-0 right-0 top-full mt-2 z-30 bg-white border border-slate-200 rounded-2xl p-3.5 shadow-xl text-xs">
+                                <div id="detail-kelas-${index}" class="hidden absolute left-0 right-0 top-full mt-2 z-30 bg-white border border-slate-200 rounded-xl p-3 shadow-xl text-xs animate-fade-in">
                                     <p class="font-bold text-slate-800 mb-2 uppercase tracking-wider text-[10px] border-b border-slate-100 pb-1">Mapel Kelas ${item.kelas}:</p>
                                     <ul class="max-h-40 overflow-y-auto space-y-1 pr-1 font-medium text-slate-600">
                                         ${listMapelHtml}
@@ -395,31 +451,49 @@
                 document.getElementById(id).classList.add('hidden');
             });
             
-            document.getElementById('btnTabCetak').className = "transition-all duration-200 text-xs font-bold py-2.5 px-5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 flex items-center gap-2";
-            document.getElementById('btnTabProgress').className = "transition-all duration-200 text-xs font-bold py-2.5 px-5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 flex items-center gap-2";
-            document.getElementById('btnTabMaster').className = "transition-all duration-200 text-xs font-bold py-2.5 px-5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 flex items-center gap-2";
+            ['btnTabCetak', 'btnTabProgress', 'btnTabMaster'].forEach(btnId => {
+                document.getElementById(btnId).className = "w-full text-left transition-all text-xs font-semibold py-3 px-3.5 rounded-xl text-slate-600 hover:bg-slate-100/80 flex items-center gap-3 group";
+            });
             
             document.getElementById(tabId).classList.remove('hidden');
-            if(tabId === 'tabCetak') {
-                document.getElementById('tabCetak').classList.add('flex');
-                document.getElementById('btnTabCetak').className = "transition-all duration-200 text-xs font-bold py-2.5 px-5 rounded-xl bg-slate-900 text-white shadow-sm flex items-center gap-2";
-            } else if(tabId === 'tabProgress') {
-                document.getElementById('btnTabProgress').className = "transition-all duration-200 text-xs font-bold py-2.5 px-5 rounded-xl bg-slate-900 text-white shadow-sm flex items-center gap-2";
+            document.getElementById('btn' + tabId.charAt(0).toUpperCase() + tabId.slice(1)).className = "w-full text-left transition-all text-xs font-semibold py-3 px-3.5 rounded-xl bg-slate-900 text-white shadow-md flex items-center gap-3 group";
+
+            if(tabId === 'tabProgress') {
                 loadProgressData();
-            } else {
-                document.getElementById('btnTabMaster').className = "transition-all duration-200 text-xs font-bold py-2.5 px-5 rounded-xl bg-slate-900 text-white shadow-sm flex items-center gap-2";
             }
         }
-        document.getElementById('btnTabCetak').className = "transition-all duration-200 text-xs font-bold py-2.5 px-5 rounded-xl bg-slate-900 text-white shadow-sm flex items-center gap-2";
-        document.getElementById('tabCetak').classList.add('flex');
+
+        // FITUR FILTER TABEL PROGRESS
+        function filterProgressTable() {
+            const searchVal = document.getElementById('searchProgress').value.toLowerCase();
+            const statusVal = document.getElementById('filterStatus').value;
+            const rows = document.querySelectorAll('#tabelBodyProgress tr:not(.no-data)');
+            
+            rows.forEach(row => {
+                const textContent = row.innerText.toLowerCase();
+                const rowStatusText = row.querySelector('.status-badge') ? row.querySelector('.status-badge').innerText : '';
+                let show = true;
+                
+                if(searchVal && !textContent.includes(searchVal)) show = false;
+                if(statusVal !== 'all' && rowStatusText !== statusVal) show = false;
+                
+                row.style.display = show ? '' : 'none';
+            });
+        }
 
         let myChart = null;
         function loadProgressData() {
+            const tbody = document.getElementById('tabelBodyProgress');
+            tbody.innerHTML = '<tr class="no-data"><td colspan="6" class="text-center py-8 text-slate-400 text-xs font-medium"><span class="animate-spin-custom inline-block mr-2 text-indigo-600 text-sm">⏳</span> mohon bersabar jika lama, server mahal nih bos ...</td></tr>';
+            
             fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_progress_nilai_sekolah' }) })
             .then(res => res.json()).then(res => {
-                if(res.status !== 'success') return;
+                if(res.status !== 'success') {
+                    tbody.innerHTML = '<tr class="no-data"><td colspan="6" class="text-center py-8 text-rose-500 font-semibold">Gagal mengambil data.</td></tr>';
+                    return;
+                }
                 
-                const labels = res.data.map(item => `${item.nama_mapel} (Kelas ${item.kelas})`);
+                const labels = res.data.map(item => `${item.nama_mapel} (Kls ${item.kelas})`);
                 const percentages = res.data.map(item => item.persentase);
                 const ctx = document.getElementById('chartProgress').getContext('2d');
                 
@@ -431,9 +505,9 @@
                         datasets: [{
                             label: 'Kelengkapan (%)',
                             data: percentages,
-                            backgroundColor: '#0f172a',
+                            backgroundColor: '#4f46e5',
                             borderRadius: 6,
-                            barThickness: 18
+                            barThickness: 20
                         }]
                     },
                     options: {
@@ -442,11 +516,44 @@
                         maintainAspectRatio: false,
                         scales: { 
                             x: { beginAtZero: true, max: 100, grid: { color: '#e2e8f0', drawBorder: false } },
-                            y: { grid: { display: false }, ticks: { font: { family: 'Inter', weight: '600', size: 11 }, color: '#475569' } }
+                            y: { grid: { display: false }, ticks: { font: { family: 'Inter', weight: '700', size: 10 }, color: '#334155' } }
                         },
                         plugins: { legend: { display: false } }
                     }
                 });
+
+                tbody.innerHTML = '';
+                if(res.data.length === 0) {
+                    tbody.innerHTML = '<tr class="no-data"><td colspan="6" class="text-center py-8 text-slate-400">Belum ada data progress mata pelajaran.</td></tr>';
+                } else {
+                    res.data.forEach((item, idx) => {
+                        let statusHtml = '';
+                        let persen = item.persentase || 0;
+                        let namaGuru = item.nama_guru ? item.nama_guru : '-';
+
+                        if(persen === 100) {
+                            statusHtml = '<span class="status-badge bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-lg text-[10px] font-extrabold uppercase tracking-wider block w-max mx-auto">SELESAI</span>';
+                        } else if (persen > 0) {
+                            statusHtml = '<span class="status-badge bg-indigo-50 text-indigo-700 border border-indigo-200 px-2.5 py-1 rounded-lg text-[10px] font-extrabold uppercase tracking-wider block w-max mx-auto">PROSES</span>';
+                        } else {
+                            statusHtml = '<span class="status-badge bg-rose-50 text-rose-700 border border-rose-200 px-2.5 py-1 rounded-lg text-[10px] font-extrabold uppercase tracking-wider block w-max mx-auto">BELUM</span>';
+                        }
+                        
+                        tbody.innerHTML += `
+                            <tr class="table-row-hover transition border-b border-slate-100">
+                                <td class="px-4 py-3 text-center text-slate-500">${idx + 1}</td>
+                                <td class="px-4 py-3 font-bold text-slate-800 uppercase text-[11px]">${namaGuru}</td>
+                                <td class="px-4 py-3 text-indigo-600 font-bold">${item.nama_mapel}</td>
+                                <td class="px-4 py-3 text-center font-bold text-slate-700">${item.kelas}</td>
+                                <td class="px-4 py-3 text-center font-black">${persen}%</td>
+                                <td class="px-4 py-3 text-center">${statusHtml}</td>
+                            </tr>
+                        `;
+                    });
+                }
+                document.getElementById('searchProgress').value = '';
+                document.getElementById('filterStatus').value = 'all';
+                filterProgressTable();
             });
         }
 
@@ -486,7 +593,6 @@
         function buildRapotTemplate(data) {
             const tema = document.getElementById('pilihTemplat').value;
             
-            // Mengambil nilai inputan Tahun Pelajaran dan Semester secara dinamis
             const semesterVal = document.getElementById('inputSemester').value || 'Ganjil (Gasal)';
             const tahunPelajaranVal = document.getElementById('inputTahunPelajaran').value || '2026/2027';
             
@@ -572,7 +678,6 @@
 
                             <h3 class="text-center font-bold text-base underline mb-3 ${titleColor} tracking-wide uppercase">RAPORT SISIPAN TENGAH SEMESTER</h3>
 
-                            <!-- Disini tabel identitas diperbarui dengan nilai Semester dan Tahun Pelajaran Dinamis -->
                             <table class="w-full mb-3 font-bold text-xs">
                                 <tr><td width="20%">Nama Peserta Didik</td><td width="3%">:</td><td width="47%">${data.nama_siswa}</td><td width="15%">Kelas</td><td width="3%">:</td><td width="12%">${data.kelas}</td></tr>
                                 <tr><td>Nomor Induk / NIS</td><td>:</td><td>${data.nis}</td><td>Semester</td><td>:</td><td>${semesterVal}</td></tr>

@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Guru - Portal Akademik</title>
+    <title>Dashboard Guru - Portal Akademik SMANJO</title>
     
     <!-- Font Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -30,7 +30,13 @@
         input[type=number] { -moz-appearance: textfield; }
         
         @keyframes spin { 100% { transform: rotate(360deg); } }
-        .animate-spin-custom { display: inline-block; animation: spin 1s linear infinite; }
+        .animate-spin-custom { display: inline-block; animation: spin 0.9s linear infinite; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
         
         /* Custom Scrollbar Minimalis */
         ::-webkit-scrollbar { height: 6px; width: 6px; }
@@ -43,384 +49,403 @@
         .sticky-col-2 { position: sticky; left: 70px; background-color: #ffffff; z-index: 10; box-shadow: 1px 0 0 #e2e8f0; }
         @media (min-width: 640px) { .sticky-col-2 { left: 90px; } }
 
-        .table-row-hover:hover td { background-color: #f8fafc; }
-        .table-row-hover:hover td.sticky-col, .table-row-hover:hover td.sticky-col-2 { background-color: #f8fafc; }
+        .table-row-hover:hover td { background-color: #f1f5f9; }
+        .table-row-hover:hover td.sticky-col, .table-row-hover:hover td.sticky-col-2 { background-color: #f1f5f9; }
     </style>
 </head>
-<body class="bg-slate-50 min-h-screen text-slate-800 antialiased selection:bg-blue-600 selection:text-white">
+<body class="bg-slate-100/70 min-h-screen text-slate-800 antialiased selection:bg-indigo-600 selection:text-white">
 
-    <!-- Top Navigation Bar (Minimalis Clean) -->
-    <nav class="bg-white border-b border-slate-200 sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8 h-16 flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <div class="bg-slate-900 text-white font-bold text-xs p-2.5 rounded-lg tracking-wider">
+    <!-- Top Navigation Bar (Professional Glassmorphism) -->
+    <nav class="bg-white/90 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-40 transition-all shadow-xs">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 h-18 flex justify-between items-center">
+            <div class="flex items-center gap-3.5">
+                <div class="bg-gradient-to-br from-indigo-600 to-slate-900 text-white font-black text-xs px-3 py-2.5 rounded-xl shadow-md tracking-wider">
                     SMANJO
                 </div>
                 <div>
-                    <h1 class="text-sm font-bold text-slate-900 leading-none">Portal Guru</h1>
-                    <p class="text-[11px] text-slate-400 mt-1">Sistem Rapot Sisipan</p>
+                    <h1 class="text-sm font-extrabold text-slate-900 leading-tight">Portal Akademik Guru</h1>
+                    <p class="text-[11px] text-slate-400 font-medium mt-0.5">Sistem Rapot Sisipan & Penilaian Terpadu</p>
                 </div>
             </div>
             <div class="flex items-center gap-4">
                 <div class="hidden sm:flex flex-col items-end">
-                    <span class="text-[10px] font-semibold text-slate-400 uppercase">Wali Kelas</span>
-                    <span id="statusWaliBadge" class="text-xs font-bold text-slate-700">-</span>
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Wali Kelas</span>
+                    <span id="statusWaliBadge" class="text-xs font-extrabold text-slate-700">-</span>
                 </div>
-                <div class="h-6 w-px bg-slate-200 hidden sm:block"></div>
-                <button onclick="logout()" class="border border-slate-200 hover:border-rose-300 hover:text-rose-600 hover:bg-rose-50/50 transition px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-600 flex items-center gap-1.5">
-                    Logout
+                <div class="h-7 w-px bg-slate-200 hidden sm:block"></div>
+                <button onclick="logout()" class="border border-slate-200 hover:border-rose-300 hover:text-rose-600 hover:bg-rose-50/60 transition-all duration-200 px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 flex items-center gap-2 shadow-2xs">
+                    🚪 Logout
                 </button>
             </div>
         </div>
     </nav>
 
-    <!-- Main Container -->
+    <!-- Main Layout with Sidebar -->
     <div class="max-w-7xl mx-auto px-6 lg:px-8 py-8">
-        
-        <!-- Welcome Section -->
-        <div class="mb-8">
-            <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Halo, <span id="namaGuru" class="text-blue-600">Guru</span></h2>
-            <p class="text-xs text-slate-500 mt-1">Kelola nilai akademik, absensi, dan data ekstrakurikuler siswa dengan bersih dan terstruktur.</p>
-        </div>
-
-        <!-- KPI Cards Minimalis Modern -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <!-- Card 1 -->
-            <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-2xs flex items-center gap-4">
-                <div class="p-3 bg-slate-100 text-slate-700 rounded-xl font-bold text-sm">🏫</div>
-                <div>
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Kelas Diampu</p>
-                    <p id="infoTotalKelas" class="text-xl font-bold text-slate-900 mt-0.5">-</p>
+        <div class="flex flex-col lg:flex-row gap-8 items-start">
+            
+            <!-- Sidebar Navigation (Modern Clean) -->
+            <aside class="w-full lg:w-64 bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm lg:sticky lg:top-24 shrink-0">
+                <div class="mb-4 px-3 pt-1">
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Menu Navigasi</p>
                 </div>
-            </div>
-
-            <!-- Card 2 -->
-            <div class="relative">
-                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-2xs flex items-center gap-4 cursor-pointer hover:border-slate-300 transition" onclick="toggleCardDetail('detailMapelGuru', 'arrowMapel')">
-                    <div class="p-3 bg-slate-100 text-slate-700 rounded-xl font-bold text-sm">📚</div>
-                    <div class="flex-grow">
-                        <div class="flex justify-between items-center">
-                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Mata Pelajaran</p>
-                            <span id="arrowMapel" class="text-xs text-slate-400 font-bold transition-transform duration-200">▼</span>
-                        </div>
-                        <p id="infoTotalMapel" class="text-xl font-bold text-slate-900 mt-0.5">-</p>
-                    </div>
-                </div>
-                <!-- Dropdown Detail -->
-                <div id="detailMapelGuru" class="hidden absolute left-0 right-0 top-full mt-2 z-50 bg-white border border-slate-200 rounded-2xl p-4 shadow-xl text-xs">
-                    <div class="font-bold text-slate-700 uppercase tracking-wider text-[10px] mb-3 pb-2 border-b border-slate-100">Rincian Pengisian Nilai:</div>
-                    <div id="listMapelPersentaseContainer" class="max-h-48 overflow-y-auto space-y-2 pr-1">
-                        <span class="text-slate-400 italic">Memuat rincian...</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 3 -->
-            <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-2xs flex items-center gap-4">
-                <div class="p-3 bg-slate-100 text-slate-700 rounded-xl font-bold text-sm">⚡</div>
-                <div>
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Sesi Dikelola</p>
-                    <p id="infoStatusAktif" class="text-xs font-bold text-slate-800 mt-1 truncate max-w-[200px]">Pilih Kelas & Mapel</p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Tab Navigation Minimalis -->
-        <div class="flex flex-wrap gap-2 mb-6 border-b border-slate-200 pb-3">
-            <button onclick="bukaTab('tabNilai')" id="btnTabNilai" class="transition text-xs font-semibold py-2 px-4 rounded-xl bg-slate-900 text-white shadow-2xs">
-                Nilai Mapel
-            </button>
-            <button onclick="bukaTab('tabWali')" id="btnTabWali" class="transition text-xs font-semibold py-2 px-4 rounded-xl text-slate-600 hover:bg-slate-200/60 hidden">
-                Wali Kelas
-            </button>
-            <button onclick="bukaTab('tabBK')" id="btnTabBK" class="transition text-xs font-semibold py-2 px-4 rounded-xl text-slate-600 hover:bg-slate-200/60 hidden">
-                Guru BK
-            </button>
-            <button onclick="bukaTab('tabPembina')" id="btnTabPembina" class="transition text-xs font-semibold py-2 px-4 rounded-xl text-slate-600 hover:bg-slate-200/60 hidden">
-                Pembina Ekskul
-            </button>
-            <button onclick="bukaTab('tabProgress')" id="btnTabProgress" class="transition text-xs font-semibold py-2 px-4 rounded-xl text-slate-600 hover:bg-slate-200/60">
-                Grafik Progres
-            </button>
-        </div>
-
-        <!-- ================= INPUT NILAI ================= -->
-        <div id="tabNilai" class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200/80 shadow-2xs transition-all">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 pb-4 border-b border-slate-100">
-                <div>
-                    <h3 class="font-bold text-base text-slate-900">Input Nilai Mata Pelajaran</h3>
-                    <p class="text-xs text-slate-400 mt-0.5">Kelola nilai tugas, ulangan harian, dan STS.</p>
-                </div>
-                <div id="infoJumlahSiswa" class="hidden bg-slate-50 border border-slate-200 px-3.5 py-2 rounded-xl flex items-center gap-2.5">
-                    <span class="text-xs">👥</span>
-                    <div>
-                        <p class="text-[9px] uppercase font-bold text-slate-400">Total Siswa</p>
-                        <p id="teksJumlahSiswa" class="text-xs font-bold text-slate-700">0 Siswa</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Pilih Kelas</label>
-                    <select id="pilihKelas" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition" onchange="loadMapel()">
-                        <option value="">-- Memuat Kelas... --</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Pilih Mata Pelajaran</label>
-                    <select id="pilihMapel" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition disabled:opacity-50" disabled onchange="loadSiswaNilai()">
-                        <option value="">-- Pilih Mapel --</option>
-                    </select>
-                </div>
-            </div>
-
-            <div id="areaExcel" class="hidden flex flex-wrap items-center gap-3 mb-6 p-3.5 bg-slate-50 border border-slate-200/80 rounded-xl">
-                <button onclick="downloadTemplateExcel()" class="bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-semibold py-2 px-3.5 rounded-lg text-xs shadow-2xs transition flex items-center gap-1.5">
-                    📥 Download Format Excel
-                </button>
-                <div class="relative">
-                    <input type="file" id="uploadExcel" accept=".xlsx, .xls" onchange="uploadTemplateExcel(event)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
-                    <button class="bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-semibold py-2 px-3.5 rounded-lg text-xs shadow-2xs transition pointer-events-none flex items-center gap-1.5">
-                        📤 Upload File Excel
+                <div class="flex flex-col gap-1.5">
+                    <button onclick="bukaTab('tabNilai')" id="btnTabNilai" class="w-full text-left transition-all text-xs font-semibold py-3 px-3.5 rounded-xl bg-slate-900 text-white shadow-md flex items-center gap-3 group">
+                        <span class="text-sm group-hover:scale-110 transition-transform">📚</span> Nilai Mapel
+                    </button>
+                    <button onclick="bukaTab('tabWali')" id="btnTabWali" class="w-full text-left transition-all text-xs font-semibold py-3 px-3.5 rounded-xl text-slate-600 hover:bg-slate-100/80 hidden flex items-center gap-3 group">
+                        <span class="text-sm group-hover:scale-110 transition-transform">🏫</span> Wali Kelas
+                    </button>
+                    <button onclick="bukaTab('tabBK')" id="btnTabBK" class="w-full text-left transition-all text-xs font-semibold py-3 px-3.5 rounded-xl text-slate-600 hover:bg-slate-100/80 hidden flex items-center gap-3 group">
+                        <span class="text-sm group-hover:scale-110 transition-transform">🧑‍⚕️</span> Guru BK
+                    </button>
+                    <button onclick="bukaTab('tabPembina')" id="btnTabPembina" class="w-full text-left transition-all text-xs font-semibold py-3 px-3.5 rounded-xl text-slate-600 hover:bg-slate-100/80 hidden flex items-center gap-3 group">
+                        <span class="text-sm group-hover:scale-110 transition-transform">🏆</span> Pembina Ekskul
+                    </button>
+                    <button onclick="bukaTab('tabProgress')" id="btnTabProgress" class="w-full text-left transition-all text-xs font-semibold py-3 px-3.5 rounded-xl text-slate-600 hover:bg-slate-100/80 flex items-center gap-3 group">
+                        <span class="text-sm group-hover:scale-110 transition-transform">📊</span> Grafik Progres
                     </button>
                 </div>
-                <span class="text-[11px] text-slate-400 ml-auto">*Format kolom otomatis</span>
-            </div>
+            </aside>
 
-            <div id="areaTabelNilai" class="hidden">
-                <div class="overflow-x-auto rounded-xl border border-slate-200 mb-6">
-                    <table class="w-full text-xs text-left text-slate-600 min-w-max border-collapse">
-                        <thead class="text-[10px] text-slate-400 uppercase bg-slate-50 border-b border-slate-200 tracking-wider font-bold">
-                            <tr>
-                                <th class="px-4 py-3 sticky-col">NIS</th>
-                                <th class="px-4 py-3 sticky-col-2">Nama Siswa</th>
-                                <th class="px-2 py-3 text-center w-16">Tugas 1</th>
-                                <th class="px-2 py-3 text-center w-16">Tugas 2</th>
-                                <th class="px-2 py-3 text-center w-16">Tugas 3</th>
-                                <th class="px-2 py-3 text-center w-16">Tugas 4</th>
-                                <th class="px-2 py-3 text-center w-16">UH 1</th>
-                                <th class="px-2 py-3 text-center w-16">UH 2</th>
-                                <th class="px-2 py-3 text-center w-16">STS</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabelBodyNilai" class="divide-y divide-slate-100 bg-white font-medium"></tbody>
-                    </table>
-                </div>
-                <button onclick="simpanNilai()" id="btnSimpanNilai" class="bg-slate-900 hover:bg-slate-800 text-white font-semibold py-2.5 px-5 rounded-xl text-xs transition shadow-2xs">
-                    Simpan Nilai
-                </button>
-                <div id="statusMsgNilai" class="mt-3 text-xs font-medium hidden p-3 rounded-xl border"></div>
-            </div>
-        </div>
-
-        <!-- ================= WALI KELAS ================= -->
-        <div id="tabWali" class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200/80 shadow-2xs transition-all hidden">
-            <div class="mb-6 pb-4 border-b border-slate-100">
-                <h3 class="font-bold text-base text-slate-900">Portal Wali Kelas <span id="lblKelasWali" class="text-emerald-600"></span></h3>
-                <p class="text-xs text-slate-400 mt-0.5">Kelola kehadiran dan master data ekstrakurikuler kelas binaan.</p>
-            </div>
-
-            <div class="inline-flex bg-slate-100 p-1 rounded-xl mb-6 border border-slate-200/60">
-                <button onclick="subTabWali('hadir')" id="btnSubHadir" class="px-4 py-1.5 text-xs font-semibold rounded-lg bg-white text-slate-800 shadow-2xs transition">
-                    Kehadiran
-                </button>
-                <button onclick="subTabWali('ekskul')" id="btnSubEkskul" class="px-4 py-1.5 text-xs font-semibold rounded-lg text-slate-500 hover:text-slate-700 transition">
-                    Ekstrakurikuler
-                </button>
-            </div>
-
-            <div id="panelHadir">
-                <button onclick="loadSiswaWaliHadir()" class="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold py-2 px-4 rounded-xl text-xs shadow-2xs transition mb-4">
-                    Muat Data Kehadiran
-                </button>
+            <!-- Main Content Area -->
+            <main class="flex-grow w-full overflow-hidden">
                 
-                <div id="areaTabelWaliHadir" class="hidden">
-                    
-                    <!-- Area Tombol Excel Wali Kelas Kehadiran -->
-                    <div id="areaExcelHadirWali" class="hidden flex flex-wrap items-center gap-3 mb-6 p-3.5 bg-slate-50 border border-slate-200/80 rounded-xl">
-                        <button onclick="downloadTemplateHadir('Wali')" class="bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-semibold py-2 px-3.5 rounded-lg text-xs shadow-2xs transition flex items-center gap-1.5">
+                <!-- Welcome Section -->
+                <div class="mb-8 bg-white border border-slate-200/80 p-6 rounded-2xl shadow-xs flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-900 tracking-tight">Halo, <span id="namaGuru" class="text-indigo-600">Guru</span> 👋</h2>
+                        <p class="text-xs text-slate-500 mt-1 font-medium">Kelola nilai akademik, absensi, dan data ekstrakurikuler siswa dengan cepat dan transparan.</p>
+                    </div>
+                    <div class="bg-indigo-50 border border-indigo-100 px-3.5 py-2 rounded-xl flex items-center gap-2">
+                        <span class="relative flex h-2.5 w-2.5">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-indigo-600"></span>
+                        </span>
+                        <span class="text-[11px] font-bold text-indigo-900">Sesi Aktif</span>
+                    </div>
+                </div>
+
+                <!-- KPI Cards Modern -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                    <!-- Card 1 -->
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex items-center gap-4 transition hover:shadow-md">
+                        <div class="p-3.5 bg-indigo-50 text-indigo-600 rounded-2xl font-bold text-base shadow-2xs">🏫</div>
+                        <div>
+                            <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Total Kelas Diampu</p>
+                            <p id="infoTotalKelas" class="text-2xl font-black text-slate-900 mt-0.5">-</p>
+                        </div>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div class="relative">
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex items-center gap-4 cursor-pointer hover:border-indigo-300 transition hover:shadow-md" onclick="toggleCardDetail('detailMapelGuru', 'arrowMapel')">
+                            <div class="p-3.5 bg-sky-50 text-sky-600 rounded-2xl font-bold text-base shadow-2xs">📚</div>
+                            <div class="flex-grow">
+                                <div class="flex justify-between items-center">
+                                    <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Total Mata Pelajaran</p>
+                                    <span id="arrowMapel" class="text-xs text-slate-400 font-bold transition-transform duration-200">▼</span>
+                                </div>
+                                <p id="infoTotalMapel" class="text-2xl font-black text-slate-900 mt-0.5">-</p>
+                            </div>
+                        </div>
+                        <!-- Dropdown Detail -->
+                        <div id="detailMapelGuru" class="hidden absolute left-0 right-0 top-full mt-2 z-50 bg-white border border-slate-200 rounded-2xl p-4 shadow-xl text-xs animate-fade-in">
+                            <div class="font-bold text-slate-700 uppercase tracking-wider text-[10px] mb-3 pb-2 border-b border-slate-100 flex justify-between items-center">
+                                <span>Rincian Pengisian Nilai</span>
+                                <span class="text-[9px] text-slate-400">Klik card untuk menutup</span>
+                            </div>
+                            <div id="listMapelPersentaseContainer" class="max-h-48 overflow-y-auto space-y-2 pr-1">
+                                <span class="text-slate-400 italic">Memuat rincian...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex items-center gap-4 transition hover:shadow-md">
+                        <div class="p-3.5 bg-emerald-50 text-emerald-600 rounded-2xl font-bold text-base shadow-2xs">⚡</div>
+                        <div>
+                            <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Status Sesi</p>
+                            <p id="infoStatusAktif" class="text-xs font-bold text-slate-800 mt-1 truncate max-w-[190px]">Pilih Kelas & Mapel</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ================= INPUT NILAI ================= -->
+                <div id="tabNilai" class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200/80 shadow-xs transition-all animate-fade-in">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 pb-4 border-b border-slate-100">
+                        <div>
+                            <h3 class="font-black text-base text-slate-900">Input Nilai Mata Pelajaran</h3>
+                            <p class="text-xs text-slate-400 mt-0.5">Kelola nilai tugas, ulangan harian, dan STS.</p>
+                        </div>
+                        <div id="infoJumlahSiswa" class="hidden bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl flex items-center gap-3">
+                            <span class="text-sm">👥</span>
+                            <div>
+                                <p class="text-[9px] uppercase font-black text-slate-400 tracking-wider">Total Siswa</p>
+                                <p id="teksJumlahSiswa" class="text-xs font-bold text-slate-700">0 Siswa</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Pilih Kelas</label>
+                            <select id="pilihKelas" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition" onchange="loadMapel()">
+                                <option value="">-- Memuat Kelas... --</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Pilih Mata Pelajaran</label>
+                            <select id="pilihMapel" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition disabled:opacity-50" disabled onchange="loadSiswaNilai()">
+                                <option value="">-- Pilih Mapel --</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="areaExcel" class="hidden flex flex-wrap items-center gap-3 mb-6 p-4 bg-slate-50/80 border border-slate-200/80 rounded-xl">
+                        <button onclick="downloadTemplateExcel()" class="bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-semibold py-2.5 px-4 rounded-xl text-xs shadow-2xs transition flex items-center gap-2">
                             📥 Download Format Excel
                         </button>
                         <div class="relative">
-                            <input type="file" id="uploadExcelHadirWali" accept=".xlsx, .xls" onchange="uploadTemplateHadir(event, 'Wali')" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
-                            <button class="bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-semibold py-2 px-3.5 rounded-lg text-xs shadow-2xs transition pointer-events-none flex items-center gap-1.5">
+                            <input type="file" id="uploadExcel" accept=".xlsx, .xls" onchange="uploadTemplateExcel(event)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                            <button class="bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-semibold py-2.5 px-4 rounded-xl text-xs shadow-2xs transition pointer-events-none flex items-center gap-2">
                                 📤 Upload File Excel
                             </button>
                         </div>
-                        <span class="text-[11px] text-slate-400 ml-auto">*Format kolom otomatis</span>
+                        <span class="text-[11px] text-slate-400 ml-auto italic">*Format kolom tersinkronisasi otomatis</span>
                     </div>
 
-                    <div class="overflow-x-auto rounded-xl border border-slate-200 mb-6">
-                        <table class="w-full text-xs text-left text-slate-600 border-collapse min-w-max">
-                            <thead class="text-[10px] text-slate-400 uppercase bg-slate-50 border-b border-slate-200 tracking-wider font-bold">
-                                <tr>
-                                    <th class="px-4 py-3 sticky-col">NIS</th>
-                                    <th class="px-4 py-3 sticky-col-2">Nama Siswa</th>
-                                    <th class="px-3 py-3 w-20 text-center">Sakit</th>
-                                    <th class="px-3 py-3 w-20 text-center">Izin</th>
-                                    <th class="px-3 py-3 w-20 text-center">Alpa</th>
-                                    <th class="px-4 py-3">Catatan Wali Kelas</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabelBodyWaliHadir" class="divide-y divide-slate-100 bg-white font-medium"></tbody>
-                        </table>
+                    <div id="areaTabelNilai" class="hidden">
+                        <div class="overflow-x-auto rounded-xl border border-slate-200 mb-6 shadow-xs">
+                            <table class="w-full text-xs text-left text-slate-600 min-w-max border-collapse">
+                                <thead class="text-[10px] text-slate-400 uppercase bg-slate-50 border-b border-slate-200 tracking-wider font-extrabold">
+                                    <tr>
+                                        <th class="px-4 py-3.5 sticky-col">NIS</th>
+                                        <th class="px-4 py-3.5 sticky-col-2">Nama Siswa</th>
+                                        <th class="px-2 py-3.5 text-center w-16">Tugas 1</th>
+                                        <th class="px-2 py-3.5 text-center w-16">Tugas 2</th>
+                                        <th class="px-2 py-3.5 text-center w-16">Tugas 3</th>
+                                        <th class="px-2 py-3.5 text-center w-16">Tugas 4</th>
+                                        <th class="px-2 py-3.5 text-center w-16">UH 1</th>
+                                        <th class="px-2 py-3.5 text-center w-16">UH 2</th>
+                                        <th class="px-2 py-3.5 text-center w-16">STS</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabelBodyNilai" class="divide-y divide-slate-100 bg-white font-medium"></tbody>
+                            </table>
+                        </div>
+                        <button onclick="simpanNilai()" id="btnSimpanNilai" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-xl text-xs transition shadow-md flex items-center gap-2">
+                            💾 Simpan Nilai
+                        </button>
+                        <div id="statusMsgNilai" class="mt-3 text-xs font-medium hidden p-3.5 rounded-xl border"></div>
                     </div>
-                    <button onclick="simpanKehadiran('Wali')" id="btnSimpanWaliHadir" class="bg-slate-900 hover:bg-slate-800 text-white font-semibold py-2.5 px-5 rounded-xl text-xs transition shadow-2xs">
-                        Simpan Kehadiran
-                    </button>
-                    <div id="statusMsgWaliHadir" class="mt-3 text-xs font-medium hidden p-3 rounded-xl border"></div>
                 </div>
-            </div>
 
-            <div id="panelEkskul" class="hidden">
-                <button onclick="loadSiswaWaliEkskul()" class="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold py-2 px-4 rounded-xl text-xs shadow-2xs transition mb-4">
-                    Muat Master Ekstrakurikuler
-                </button>
-                <div id="areaTabelWaliEkskul" class="hidden">
-                    <div class="overflow-x-auto rounded-xl border border-slate-200 mb-6">
-                        <table class="w-full text-xs text-left text-slate-600 border-collapse min-w-max">
-                            <thead class="text-[10px] text-slate-400 uppercase bg-slate-50 border-b border-slate-200 tracking-wider font-bold">
-                                <tr>
-                                    <th class="px-4 py-3 sticky-col">NIS</th>
-                                    <th class="px-4 py-3 sticky-col-2">Nama Siswa</th>
-                                    <th class="px-3 py-3 min-w-[160px]">Ekskul 1</th>
-                                    <th class="px-3 py-3 w-28">Predikat 1</th>
-                                    <th class="px-3 py-3 min-w-[160px]">Ekskul 2</th>
-                                    <th class="px-3 py-3 w-28">Predikat 2</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabelBodyWaliEkskul" class="divide-y divide-slate-100 bg-white font-medium"></tbody>
-                        </table>
+                <!-- ================= WALI KELAS ================= -->
+                <div id="tabWali" class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200/80 shadow-xs transition-all hidden animate-fade-in">
+                    <div class="mb-6 pb-4 border-b border-slate-100">
+                        <h3 class="font-black text-base text-slate-900">Portal Wali Kelas <span id="lblKelasWali" class="text-indigo-600"></span></h3>
+                        <p class="text-xs text-slate-400 mt-0.5">Kelola kehadiran dan master data ekstrakurikuler kelas binaan.</p>
                     </div>
-                    <button onclick="simpanEkskul()" id="btnSimpanWaliEkskul" class="bg-slate-900 hover:bg-slate-800 text-white font-semibold py-2.5 px-5 rounded-xl text-xs transition shadow-2xs">
-                        Simpan Master Ekskul
-                    </button>
-                    <div id="statusMsgWaliEkskul" class="mt-3 text-xs font-medium hidden p-3 rounded-xl border"></div>
-                </div>
-            </div>
-        </div>
 
-        <!-- ================= GURU BK ================= -->
-        <div id="tabBK" class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200/80 shadow-2xs transition-all hidden">
-            <div class="mb-6 pb-4 border-b border-slate-100">
-                <h3 class="font-bold text-base text-slate-900">Portal Kehadiran Guru BK</h3>
-                <p class="text-xs text-slate-400 mt-0.5">Pantau dan kelola kehadiran siswa di seluruh kelas.</p>
-            </div>
-
-            <div class="bg-slate-50 border border-slate-200/80 p-4 rounded-xl mb-6 flex flex-col sm:flex-row items-end gap-4">
-                <div class="w-full sm:w-1/2">
-                    <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Pilih Kelas</label>
-                    <select id="pilihKelasBK" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-900 transition">
-                        <option value="">-- Memuat Kelas... --</option>
-                    </select>
-                </div>
-                <button onclick="loadSiswaBKHadir()" class="bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-semibold py-3 px-5 rounded-xl text-xs shadow-2xs transition w-full sm:w-auto">
-                    Tampilkan Data Absensi
-                </button>
-            </div>
-
-            <div id="areaTabelBKHadir" class="hidden">
-                
-                <!-- Area Tombol Excel BK Kehadiran -->
-                <div id="areaExcelHadirBK" class="hidden flex flex-wrap items-center gap-3 mb-6 p-3.5 bg-slate-50 border border-slate-200/80 rounded-xl">
-                    <button onclick="downloadTemplateHadir('BK')" class="bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-semibold py-2 px-3.5 rounded-lg text-xs shadow-2xs transition flex items-center gap-1.5">
-                        📥 Download Format Excel
-                    </button>
-                    <div class="relative">
-                        <input type="file" id="uploadExcelHadirBK" accept=".xlsx, .xls" onchange="uploadTemplateHadir(event, 'BK')" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
-                        <button class="bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-semibold py-2 px-3.5 rounded-lg text-xs shadow-2xs transition pointer-events-none flex items-center gap-1.5">
-                            📤 Upload File Excel
+                    <div class="inline-flex bg-slate-100 p-1.5 rounded-xl mb-6 border border-slate-200/60 shadow-2xs">
+                        <button onclick="subTabWali('hadir')" id="btnSubHadir" class="px-4 py-2 text-xs font-bold rounded-lg bg-white text-slate-800 shadow-xs transition">
+                            Kehadiran Siswa
+                        </button>
+                        <button onclick="subTabWali('ekskul')" id="btnSubEkskul" class="px-4 py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-700 transition">
+                            Ekstrakurikuler
                         </button>
                     </div>
-                    <span class="text-[11px] text-slate-400 ml-auto">*Format kolom otomatis</span>
-                </div>
 
-                <div class="overflow-x-auto rounded-xl border border-slate-200 mb-6">
-                    <table class="w-full text-xs text-left text-slate-600 border-collapse min-w-max">
-                        <thead class="text-[10px] text-slate-400 uppercase bg-slate-50 border-b border-slate-200 tracking-wider font-bold">
-                            <tr>
-                                <th class="px-4 py-3 sticky-col">NIS</th>
-                                <th class="px-4 py-3 sticky-col-2">Nama Siswa</th>
-                                <th class="px-3 py-3 w-20 text-center">Sakit</th>
-                                <th class="px-3 py-3 w-20 text-center">Izin</th>
-                                <th class="px-3 py-3 w-20 text-center">Alpa</th>
-                                <th class="px-4 py-3">Catatan BK / Wali Kelas</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabelBodyBKHadir" class="divide-y divide-slate-100 bg-white font-medium"></tbody>
-                    </table>
-                </div>
-                <button onclick="simpanKehadiran('BK')" id="btnSimpanBKHadir" class="bg-slate-900 hover:bg-slate-800 text-white font-semibold py-2.5 px-5 rounded-xl text-xs transition shadow-2xs">
-                    Simpan Kehadiran (BK)
-                </button>
-                <div id="statusMsgBKHadir" class="mt-3 text-xs font-medium hidden p-3 rounded-xl border"></div>
-            </div>
-        </div>
+                    <div id="panelHadir">
+                        <button onclick="loadSiswaWaliHadir()" class="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold py-2.5 px-4 rounded-xl text-xs shadow-2xs transition mb-4 flex items-center gap-2">
+                            🔄 Muat Data Kehadiran
+                        </button>
+                        
+                        <div id="areaTabelWaliHadir" class="hidden">
+                            <div id="areaExcelHadirWali" class="hidden flex flex-wrap items-center gap-3 mb-6 p-4 bg-slate-50 border border-slate-200/80 rounded-xl">
+                                <button onclick="downloadTemplateHadir('Wali')" class="bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-semibold py-2 px-3.5 rounded-lg text-xs shadow-2xs transition flex items-center gap-1.5">
+                                    📥 Download Format Excel
+                                </button>
+                                <div class="relative">
+                                    <input type="file" id="uploadExcelHadirWali" accept=".xlsx, .xls" onchange="uploadTemplateHadir(event, 'Wali')" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                                    <button class="bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-semibold py-2 px-3.5 rounded-lg text-xs shadow-2xs transition pointer-events-none flex items-center gap-1.5">
+                                        📤 Upload File Excel
+                                    </button>
+                                </div>
+                                <span class="text-[11px] text-slate-400 ml-auto">*Format kolom otomatis</span>
+                            </div>
 
-        <!-- ================= PEMBINA EKSKUL ================= -->
-        <div id="tabPembina" class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200/80 shadow-2xs transition-all hidden">
-            <div class="mb-6 pb-4 border-b border-slate-100">
-                <h3 class="font-bold text-base text-slate-900">Portal Pembina Ekstrakurikuler</h3>
-                <p class="text-xs text-slate-400 mt-0.5">Input predikat penilaian khusus untuk anggota ekskul binaan Anda.</p>
-            </div>
-
-            <div class="bg-slate-50 border border-slate-200/80 p-4 rounded-xl mb-6">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Pilih Kelas</label>
-                        <select id="pilihKelasPembina" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-900 transition">
-                            <option value="">-- Semua Kelas --</option>
-                        </select>
+                            <div class="overflow-x-auto rounded-xl border border-slate-200 mb-6 shadow-xs">
+                                <table class="w-full text-xs text-left text-slate-600 border-collapse min-w-max">
+                                    <thead class="text-[10px] text-slate-400 uppercase bg-slate-50 border-b border-slate-200 tracking-wider font-extrabold">
+                                        <tr>
+                                            <th class="px-4 py-3.5 sticky-col">NIS</th>
+                                            <th class="px-4 py-3.5 sticky-col-2">Nama Siswa</th>
+                                            <th class="px-3 py-3.5 w-20 text-center">Sakit</th>
+                                            <th class="px-3 py-3.5 w-20 text-center">Izin</th>
+                                            <th class="px-3 py-3.5 w-20 text-center">Alpa</th>
+                                            <th class="px-4 py-3.5">Catatan Wali Kelas</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tabelBodyWaliHadir" class="divide-y divide-slate-100 bg-white font-medium"></tbody>
+                                </table>
+                            </div>
+                            <button onclick="simpanKehadiran('Wali')" id="btnSimpanWaliHadir" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-xl text-xs transition shadow-md">
+                                💾 Simpan Kehadiran
+                            </button>
+                            <div id="statusMsgWaliHadir" class="mt-3 text-xs font-medium hidden p-3.5 rounded-xl border"></div>
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Pilih Ekstrakurikuler</label>
-                        <select id="inputNamaEkskulPembina" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-900 transition uppercase">
-                            <option value="">-- Pilih Ekstrakurikuler --</option>
-                        </select>
+
+                    <div id="panelEkskul" class="hidden">
+                        <button onclick="loadSiswaWaliEkskul()" class="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold py-2.5 px-4 rounded-xl text-xs shadow-2xs transition mb-4 flex items-center gap-2">
+                            🔄 Muat Master Ekstrakurikuler
+                        </button>
+                        <div id="areaTabelWaliEkskul" class="hidden">
+                            <div class="overflow-x-auto rounded-xl border border-slate-200 mb-6 shadow-xs">
+                                <table class="w-full text-xs text-left text-slate-600 border-collapse min-w-max">
+                                    <thead class="text-[10px] text-slate-400 uppercase bg-slate-50 border-b border-slate-200 tracking-wider font-extrabold">
+                                        <tr>
+                                            <th class="px-4 py-3.5 sticky-col">NIS</th>
+                                            <th class="px-4 py-3.5 sticky-col-2">Nama Siswa</th>
+                                            <th class="px-3 py-3.5 min-w-[160px]">Ekskul 1</th>
+                                            <th class="px-3 py-3.5 w-28">Predikat 1</th>
+                                            <th class="px-3 py-3.5 min-w-[160px]">Ekskul 2</th>
+                                            <th class="px-3 py-3.5 w-28">Predikat 2</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tabelBodyWaliEkskul" class="divide-y divide-slate-100 bg-white font-medium"></tbody>
+                                </table>
+                            </div>
+                            <button onclick="simpanEkskul()" id="btnSimpanWaliEkskul" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-xl text-xs transition shadow-md">
+                                💾 Simpan Master Ekskul
+                            </button>
+                            <div id="statusMsgWaliEkskul" class="mt-3 text-xs font-medium hidden p-3.5 rounded-xl border"></div>
+                        </div>
                     </div>
                 </div>
-                <button onclick="loadDataEkskulPembina()" class="bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-semibold py-2 px-4 rounded-xl text-xs shadow-2xs transition">
-                    Tampilkan Anggota
-                </button>
-            </div>
 
-            <div id="areaTabelPembina" class="hidden">
-                <div class="overflow-x-auto rounded-xl border border-slate-200 mb-6">
-                    <table class="w-full text-xs text-left text-slate-600 border-collapse">
-                        <thead class="text-[10px] text-slate-400 uppercase bg-slate-50 border-b border-slate-200 tracking-wider font-bold">
-                            <tr>
-                                <th class="px-4 py-3 w-28">NIS</th>
-                                <th class="px-4 py-3">Nama Siswa</th>
-                                <th class="px-4 py-3 text-center">Predikat</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabelBodyPembina" class="divide-y divide-slate-100 bg-white font-medium"></tbody>
-                    </table>
+                <!-- ================= GURU BK ================= -->
+                <div id="tabBK" class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200/80 shadow-xs transition-all hidden animate-fade-in">
+                    <div class="mb-6 pb-4 border-b border-slate-100">
+                        <h3 class="font-black text-base text-slate-900">Portal Kehadiran Guru BK</h3>
+                        <p class="text-xs text-slate-400 mt-0.5">Pantau dan kelola rekap kehadiran siswa di seluruh kelas.</p>
+                    </div>
+
+                    <div class="bg-slate-50 border border-slate-200/80 p-5 rounded-2xl mb-6 flex flex-col sm:flex-row items-end gap-4 shadow-2xs">
+                        <div class="w-full sm:w-1/2">
+                            <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Pilih Kelas</label>
+                            <select id="pilihKelasBK" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition">
+                                <option value="">-- Memuat Kelas... --</option>
+                            </select>
+                        </div>
+                        <button onclick="loadSiswaBKHadir()" class="bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-bold py-3 px-5 rounded-xl text-xs shadow-2xs transition w-full sm:w-auto">
+                            🔍 Tampilkan Data Absensi
+                        </button>
+                    </div>
+
+                    <div id="areaTabelBKHadir" class="hidden">
+                        <div id="areaExcelHadirBK" class="hidden flex flex-wrap items-center gap-3 mb-6 p-4 bg-slate-50 border border-slate-200/80 rounded-xl">
+                            <button onclick="downloadTemplateHadir('BK')" class="bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-semibold py-2 px-3.5 rounded-lg text-xs shadow-2xs transition flex items-center gap-1.5">
+                                📥 Download Format Excel
+                            </button>
+                            <div class="relative">
+                                <input type="file" id="uploadExcelHadirBK" accept=".xlsx, .xls" onchange="uploadTemplateHadir(event, 'BK')" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                                <button class="bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-semibold py-2 px-3.5 rounded-lg text-xs shadow-2xs transition pointer-events-none flex items-center gap-1.5">
+                                    📤 Upload File Excel
+                                </button>
+                            </div>
+                            <span class="text-[11px] text-slate-400 ml-auto">*Format kolom otomatis</span>
+                        </div>
+
+                        <div class="overflow-x-auto rounded-xl border border-slate-200 mb-6 shadow-xs">
+                            <table class="w-full text-xs text-left text-slate-600 border-collapse min-w-max">
+                                <thead class="text-[10px] text-slate-400 uppercase bg-slate-50 border-b border-slate-200 tracking-wider font-extrabold">
+                                    <tr>
+                                        <th class="px-4 py-3.5 sticky-col">NIS</th>
+                                        <th class="px-4 py-3.5 sticky-col-2">Nama Siswa</th>
+                                        <th class="px-3 py-3.5 w-20 text-center">Sakit</th>
+                                        <th class="px-3 py-3.5 w-20 text-center">Izin</th>
+                                        <th class="px-3 py-3.5 w-20 text-center">Alpa</th>
+                                        <th class="px-4 py-3.5">Catatan BK / Wali Kelas</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabelBodyBKHadir" class="divide-y divide-slate-100 bg-white font-medium"></tbody>
+                            </table>
+                        </div>
+                        <button onclick="simpanKehadiran('BK')" id="btnSimpanBKHadir" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-xl text-xs transition shadow-md">
+                            💾 Simpan Kehadiran (BK)
+                        </button>
+                        <div id="statusMsgBKHadir" class="mt-3 text-xs font-medium hidden p-3.5 rounded-xl border"></div>
+                    </div>
                 </div>
-                <button onclick="simpanDataEkskulPembina()" id="btnSimpanPembina" class="bg-slate-900 hover:bg-slate-800 text-white font-semibold py-2.5 px-5 rounded-xl text-xs transition shadow-2xs">
-                    Simpan Predikat
-                </button>
-                <div id="statusMsgPembina" class="mt-3 text-xs font-medium hidden p-3 rounded-xl border"></div>
-            </div>
-        </div>
 
-        <!-- ================= GRAFIK PROGRES ================= -->
-        <div id="tabProgress" class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200/80 shadow-2xs hidden transition-all">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 pb-4 border-b border-slate-100">
-                <div>
-                    <h3 class="font-bold text-base text-slate-900">Grafik Progres Input Nilai</h3>
-                    <p class="text-xs text-slate-400 mt-0.5">Persentase kelengkapan pengisian nilai mata pelajaran.</p>
+                <!-- ================= PEMBINA EKSKUL ================= -->
+                <div id="tabPembina" class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200/80 shadow-xs transition-all hidden animate-fade-in">
+                    <div class="mb-6 pb-4 border-b border-slate-100">
+                        <h3 class="font-black text-base text-slate-900">Portal Pembina Ekstrakurikuler</h3>
+                        <p class="text-xs text-slate-400 mt-0.5">Input predikat penilaian khusus untuk anggota ekstrakurikuler binaan Anda.</p>
+                    </div>
+
+                    <div class="bg-slate-50 border border-slate-200/80 p-5 rounded-2xl mb-6 shadow-2xs">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Pilih Kelas</label>
+                                <select id="pilihKelasPembina" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition">
+                                    <option value="">-- Semua Kelas --</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Pilih Ekstrakurikuler</label>
+                                <select id="inputNamaEkskulPembina" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition uppercase">
+                                    <option value="">-- Pilih Ekstrakurikuler --</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button onclick="loadDataEkskulPembina()" class="bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-bold py-2.5 px-4 rounded-xl text-xs shadow-2xs transition flex items-center gap-2">
+                            🔍 Tampilkan Anggota
+                        </button>
+                    </div>
+
+                    <div id="areaTabelPembina" class="hidden">
+                        <div class="overflow-x-auto rounded-xl border border-slate-200 mb-6 shadow-xs">
+                            <table class="w-full text-xs text-left text-slate-600 border-collapse">
+                                <thead class="text-[10px] text-slate-400 uppercase bg-slate-50 border-b border-slate-200 tracking-wider font-extrabold">
+                                    <tr>
+                                        <th class="px-4 py-3.5 w-28">NIS</th>
+                                        <th class="px-4 py-3.5">Nama Siswa</th>
+                                        <th class="px-4 py-3.5 text-center">Predikat</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabelBodyPembina" class="divide-y divide-slate-100 bg-white font-medium"></tbody>
+                            </table>
+                        </div>
+                        <button onclick="simpanDataEkskulPembina()" id="btnSimpanPembina" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-xl text-xs transition shadow-md">
+                            💾 Simpan Predikat
+                        </button>
+                        <div id="statusMsgPembina" class="mt-3 text-xs font-medium hidden p-3.5 rounded-xl border"></div>
+                    </div>
                 </div>
-                <button onclick="loadProgressGuruData()" class="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold px-4 py-2 rounded-xl text-xs shadow-2xs transition">
-                    Refresh Grafik
-                </button>
-            </div>
-            <div class="w-full bg-slate-50/50 border border-slate-200/60 p-4 rounded-xl" style="height: 400px; position: relative;">
-                <canvas id="chartProgressGuru"></canvas>
-            </div>
-        </div>
 
+                <!-- ================= GRAFIK PROGRES ================= -->
+                <div id="tabProgress" class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200/80 shadow-xs hidden transition-all animate-fade-in">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 pb-4 border-b border-slate-100">
+                        <div>
+                            <h3 class="font-black text-base text-slate-900">Grafik Progres Input Nilai</h3>
+                            <p class="text-xs text-slate-400 mt-0.5">Persentase kelengkapan pengisian nilai mata pelajaran.</p>
+                        </div>
+                        <button onclick="loadProgressGuruData()" class="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold px-4 py-2.5 rounded-xl text-xs shadow-2xs transition flex items-center gap-2">
+                            🔄 Refresh Grafik
+                        </button>
+                    </div>
+                    <div class="w-full bg-slate-50/50 border border-slate-200/60 p-4 rounded-2xl shadow-2xs" style="height: 400px; position: relative;">
+                        <canvas id="chartProgressGuru"></canvas>
+                    </div>
+                </div>
+
+            </main>
+        </div>
     </div>
 
     <!-- SCRIPT JAVASCRIPT -->
@@ -440,31 +465,52 @@
 
         document.getElementById('namaGuru').innerText = sessionStorage.getItem('nama_guru');
         const idGuru = sessionStorage.getItem('id_guru');
-        const statusWali = sessionStorage.getItem('status_wali') ? sessionStorage.getItem('status_wali').toString().trim() : 'Tidak';
-        const kelasWali = sessionStorage.getItem('kelas_wali') ? sessionStorage.getItem('kelas_wali').toString().trim() : '-';
         
-        // Status Pembina Ekskul
-        const statusPembina = sessionStorage.getItem('status_pembina') ? sessionStorage.getItem('status_pembina').toString().trim() : 'Tidak';
-        if (statusPembina === 'Ya') {
-            document.getElementById('btnTabPembina').classList.remove('hidden');
+        // Pengecekan Hak Akses Aman & Bersih
+        const rawWali = sessionStorage.getItem('status_wali');
+        const rawPembina = sessionStorage.getItem('status_pembina');
+        
+        // Pemetaan manual ID Guru BK (G19 dan G22) untuk bypass tanpa ubah code GS
+        const daftarIdGuruBK = ['G19', 'G22'];
+        const isBK_manual = daftarIdGuruBK.includes(idGuru);
+        const rawBK = sessionStorage.getItem('guru_bk') || sessionStorage.getItem('status_bk') || (isBK_manual ? 'Ya' : 'Tidak');
+
+        const isWali = rawWali && (rawWali.toString().trim().toLowerCase() === 'ya' || rawWali === 'true' || rawWali === '1');
+        const isPembina = rawPembina && (rawPembina.toString().trim().toLowerCase() === 'ya' || rawPembina === 'true' || rawPembina === '1');
+        const isBK = rawBK && (rawBK.toString().trim().toLowerCase() === 'ya' || rawBK === 'true' || rawBK === '1');
+
+        const kelasWali = sessionStorage.getItem('kelas_wali') ? sessionStorage.getItem('kelas_wali').toString().trim() : '-';
+
+        // Element Tombol Sidebar
+        const btnWali = document.getElementById('btnTabWali');
+        const btnBK = document.getElementById('btnTabBK');
+        const btnPembina = document.getElementById('btnTabPembina');
+        const badge = document.getElementById('statusWaliBadge');
+
+        // Pengaturan Tampil/Sembunyi Menu Pembina Ekskul
+        if (isPembina) {
+            btnPembina.classList.remove('hidden');
+        } else {
+            btnPembina.classList.add('hidden');
         }
 
-        // Status Guru BK
-        const statusBK = sessionStorage.getItem('guru_bk') ? sessionStorage.getItem('guru_bk').toString().trim() : 'Tidak';
-        if (statusBK.toLowerCase() === 'ya') {
-            document.getElementById('btnTabBK').classList.remove('hidden');
+        // Pengaturan Tampil/Sembunyi Menu Guru BK
+        if (isBK) {
+            btnBK.classList.remove('hidden');
+        } else {
+            btnBK.classList.add('hidden');
         }
         
-        // Setup Badge Wali Kelas
-        const badge = document.getElementById('statusWaliBadge');
-        if(statusWali === 'Ya') {
+        // Pengaturan Menu & Badge Wali Kelas
+        if (isWali) {
             badge.innerText = kelasWali;
-            badge.className = "text-xs font-bold mt-0.5 text-emerald-600";
+            badge.className = "text-xs font-black mt-0.5 text-emerald-600";
             document.getElementById('lblKelasWali').innerText = "(" + kelasWali + ")";
-            document.getElementById('btnTabWali').classList.remove('hidden');
+            btnWali.classList.remove('hidden');
         } else {
             badge.innerText = "Bukan";
             badge.className = "text-xs font-bold mt-0.5 text-slate-400";
+            btnWali.classList.add('hidden');
         }
 
         function loadDaftarKelas() {
@@ -491,11 +537,11 @@
                         res.data.forEach(item => {
                             let badgeColor = "bg-slate-100 text-slate-600";
                             if(item.persentase === 100) badgeColor = "bg-emerald-50 text-emerald-700";
-                            else if(item.persentase > 0) badgeColor = "bg-blue-50 text-blue-700";
+                            else if(item.persentase > 0) badgeColor = "bg-indigo-50 text-indigo-700";
                             listContainer.innerHTML += `
-                                <div class="flex justify-between items-center py-1.5 border-b border-slate-100 last:border-0">
-                                    <span class="text-slate-700 font-medium">${item.nama_mapel} <span class="text-slate-400">(${item.kelas})</span></span>
-                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold ${badgeColor}">${item.persentase}%</span>
+                                <div class="flex justify-between items-center py-2 border-b border-slate-100 last:border-0">
+                                    <span class="text-slate-700 font-semibold">${item.nama_mapel} <span class="text-slate-400">(${item.kelas})</span></span>
+                                    <span class="px-2 py-0.5 rounded-lg text-[10px] font-extrabold ${badgeColor}">${item.persentase}%</span>
                                 </div>
                             `;
                         });
@@ -514,7 +560,6 @@
         }
         loadDaftarKelas();
 
-        // Fungsi Global untuk Memuat Daftar Kelas (Digunakan BK & Pembina)
         function loadKelasGlobal(elementId, placeholderText) {
             const selectElement = document.getElementById(elementId);
             if(!selectElement) return;
@@ -553,14 +598,20 @@
                 document.getElementById(id).classList.add('hidden');
                 let btn = document.getElementById('btn' + id.charAt(0).toUpperCase() + id.slice(1));
                 if(btn) {
-                    btn.className = "transition text-xs font-semibold py-2 px-4 rounded-xl text-slate-600 hover:bg-slate-200/60";
+                    btn.className = "w-full text-left transition-all text-xs font-semibold py-3 px-3.5 rounded-xl text-slate-600 hover:bg-slate-100/80 flex items-center gap-3 group";
                 }
             });
             
             document.getElementById(tabId).classList.remove('hidden');
             let activeBtn = document.getElementById('btn' + tabId.charAt(0).toUpperCase() + tabId.slice(1));
-            activeBtn.className = "transition text-xs font-semibold py-2 px-4 rounded-xl bg-slate-900 text-white shadow-2xs";
+            if(activeBtn) {
+                activeBtn.className = "w-full text-left transition-all text-xs font-semibold py-3 px-3.5 rounded-xl bg-slate-900 text-white shadow-md flex items-center gap-3 group";
+            }
             
+            if (isPembina) document.getElementById('btnTabPembina').classList.remove('hidden');
+            if (isBK) document.getElementById('btnTabBK').classList.remove('hidden');
+            if (isWali) document.getElementById('btnTabWali').classList.remove('hidden');
+
             if(tabId === 'tabProgress') {
                 loadProgressGuruData();
             }
@@ -573,15 +624,15 @@
             const btnHadir = document.getElementById('btnSubHadir');
             const btnEkskul = document.getElementById('btnSubEkskul');
             
-            btnHadir.className = "px-4 py-1.5 text-xs font-semibold rounded-lg text-slate-500 hover:text-slate-700 transition";
-            btnEkskul.className = "px-4 py-1.5 text-xs font-semibold rounded-lg text-slate-500 hover:text-slate-700 transition";
+            btnHadir.className = "px-4 py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-700 transition";
+            btnEkskul.className = "px-4 py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-700 transition";
             
             if(tab === 'hadir') {
                 document.getElementById('panelHadir').classList.remove('hidden');
-                btnHadir.className = "px-4 py-1.5 text-xs font-semibold rounded-lg bg-white text-slate-800 shadow-2xs transition";
+                btnHadir.className = "px-4 py-2 text-xs font-bold rounded-lg bg-white text-slate-800 shadow-xs transition";
             } else {
                 document.getElementById('panelEkskul').classList.remove('hidden');
-                btnEkskul.className = "px-4 py-1.5 text-xs font-semibold rounded-lg bg-white text-slate-800 shadow-2xs transition";
+                btnEkskul.className = "px-4 py-2 text-xs font-bold rounded-lg bg-white text-slate-800 shadow-xs transition";
             }
         }
 
@@ -602,9 +653,9 @@
                         datasets: [{ 
                             label: 'Persentase %', 
                             data: percentages, 
-                            backgroundColor: '#0f172a', 
-                            borderRadius: 4,
-                            barThickness: 20
+                            backgroundColor: '#4f46e5', 
+                            borderRadius: 6,
+                            barThickness: 22
                         }] 
                     },
                     options: { 
@@ -613,7 +664,7 @@
                         maintainAspectRatio: false, 
                         scales: { 
                             x: { max: 100, grid: { color: '#e2e8f0', drawBorder: false } }, 
-                            y: { grid: { display: false }, ticks: { font: { family: 'Inter', weight: '600' }, color: '#475569' } } 
+                            y: { grid: { display: false }, ticks: { font: { family: 'Inter', weight: '700' }, color: '#334155' } } 
                         }, 
                         plugins: { legend: { display: false } } 
                     }
@@ -655,7 +706,7 @@
 
             document.getElementById('areaTabelNilai').classList.remove('hidden');
             document.getElementById('areaExcel').classList.remove('hidden');
-            tabelBody.innerHTML = `<tr><td colspan="9" class="text-center py-8 text-slate-400 text-xs font-bold"><span class="animate-spin-custom inline-block mr-2 text-slate-600">⏳</span> mohon bersabar jika lama, server mahal nih bos ...</td></tr>`;
+            tabelBody.innerHTML = `<tr><td colspan="9" class="text-center py-10 text-slate-400 text-xs font-bold"><span class="animate-spin-custom inline-block mr-2 text-indigo-600 text-base">⏳</span> mohon bersabar jika lama, server mahal nih bos ...</td></tr>`;
 
             fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_siswa', kelas: kelas, id_mapel: mapel }) })
             .then(res => res.json()).then(dataSiswa => {
@@ -671,26 +722,25 @@
                     }
                     dataSiswa.data.forEach(s => {
                         let n = mapNilai[String(s.nis)] || { tugas1:'', tugas2:'', tugas3:'', tugas4:'', uh1:'', uh2:'', sts:'' };
-                        const inStyle = "w-12 bg-slate-50 border border-slate-200 rounded-lg p-2 text-center text-xs font-bold text-slate-700 focus:bg-white focus:ring-2 focus:ring-slate-900 outline-none transition mx-auto block";
+                        const inStyle = "w-12 bg-slate-50 border border-slate-200 rounded-lg p-2 text-center text-xs font-bold text-slate-700 focus:bg-white focus:ring-2 focus:ring-indigo-600 outline-none transition mx-auto block shadow-2xs";
                         
                         tabelBody.innerHTML += `
                             <tr class="data-siswa-row table-row-hover transition" data-nis="${s.nis}">
-                                <td class="px-4 py-2.5 text-slate-500 bg-white sticky-col">${s.nis}</td>
-                                <td class="px-4 py-2.5 font-bold text-slate-800 bg-white sticky-col-2 min-w-[160px]">${s.nama}</td>
-                                <td class="px-2 py-2"><input type="number" class="${inStyle} input-t1" value="${n.tugas1 !== undefined ? n.tugas1 : ''}"></td>
-                                <td class="px-2 py-2"><input type="number" class="${inStyle} input-t2" value="${n.tugas2 !== undefined ? n.tugas2 : ''}"></td>
-                                <td class="px-2 py-2"><input type="number" class="${inStyle} input-t3" value="${n.tugas3 !== undefined ? n.tugas3 : ''}"></td>
-                                <td class="px-2 py-2"><input type="number" class="${inStyle} input-t4" value="${n.tugas4 !== undefined ? n.tugas4 : ''}"></td>
-                                <td class="px-2 py-2"><input type="number" class="${inStyle} input-uh1" value="${n.uh1 !== undefined ? n.uh1 : ''}"></td>
-                                <td class="px-2 py-2"><input type="number" class="${inStyle} input-uh2" value="${n.uh2 !== undefined ? n.uh2 : ''}"></td>
-                                <td class="px-2 py-2"><input type="number" class="${inStyle} border-slate-300 font-extrabold input-sts" value="${n.sts !== undefined ? n.sts : ''}"></td>
+                                <td class="px-4 py-3 text-slate-500 bg-white sticky-col font-medium">${s.nis}</td>
+                                <td class="px-4 py-3 font-bold text-slate-800 bg-white sticky-col-2 min-w-[160px]">${s.nama}</td>
+                                <td class="px-2 py-2.5"><input type="number" class="${inStyle} input-t1" value="${n.tugas1 !== undefined ? n.tugas1 : ''}"></td>
+                                <td class="px-2 py-2.5"><input type="number" class="${inStyle} input-t2" value="${n.tugas2 !== undefined ? n.tugas2 : ''}"></td>
+                                <td class="px-2 py-2.5"><input type="number" class="${inStyle} input-t3" value="${n.tugas3 !== undefined ? n.tugas3 : ''}"></td>
+                                <td class="px-2 py-2.5"><input type="number" class="${inStyle} input-t4" value="${n.tugas4 !== undefined ? n.tugas4 : ''}"></td>
+                                <td class="px-2 py-2.5"><input type="number" class="${inStyle} input-uh1" value="${n.uh1 !== undefined ? n.uh1 : ''}"></td>
+                                <td class="px-2 py-2.5"><input type="number" class="${inStyle} input-uh2" value="${n.uh2 !== undefined ? n.uh2 : ''}"></td>
+                                <td class="px-2 py-2.5"><input type="number" class="${inStyle} border-indigo-200 font-extrabold input-sts" value="${n.sts !== undefined ? n.sts : ''}"></td>
                             </tr>`;
                     });
                 });
             });
         }
 
-        // ================= DOWNLOAD/UPLOAD EXCEL NILAI =================
         function downloadTemplateExcel() {
             const kelas = document.getElementById('pilihKelas').value;
             const selectMapel = document.getElementById('pilihMapel');
@@ -746,7 +796,6 @@
             reader.readAsArrayBuffer(file);
         }
 
-        // ================= DOWNLOAD/UPLOAD EXCEL KEHADIRAN =================
         function downloadTemplateHadir(tipe) {
             let targetKelas = tipe === 'Wali' ? kelasWali : document.getElementById('pilihKelasBK').value;
             const rows = document.querySelectorAll(`.data-hadir-row-${tipe}`);
@@ -791,7 +840,7 @@
                     }
                 });
                 alert('File Excel berhasil diunggah! Jangan lupa klik Simpan Kehadiran.');
-                event.target.value = ''; // Reset input file
+                event.target.value = '';
             };
             reader.readAsArrayBuffer(file);
         }
@@ -817,16 +866,15 @@
                 method: 'POST',
                 body: JSON.stringify({ action: 'simpan_nilai', id_mapel: document.getElementById('pilihMapel').value, data_nilai: dataNilai })
             }).then(res => res.json()).then(data => {
-                btn.innerHTML = "Simpan Nilai"; btn.disabled = false;
+                btn.innerHTML = "💾 Simpan Nilai"; btn.disabled = false;
                 statusMsg.innerText = data.message;
-                statusMsg.className = "mt-3 text-xs font-medium p-3 rounded-xl border " + (data.status === 'success' ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-red-50 text-red-700 border-red-200");
+                statusMsg.className = "mt-3 text-xs font-medium p-3.5 rounded-xl border " + (data.status === 'success' ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-red-50 text-red-700 border-red-200");
                 statusMsg.classList.remove('hidden');
                 loadDaftarKelas();
                 setTimeout(() => statusMsg.classList.add('hidden'), 5000);
             });
         }
 
-        // ================= WALI KELAS & GURU BK KEHADIRAN =================
         function loadSiswaWaliHadir() {
             renderTabelKehadiran('areaTabelWaliHadir', 'tabelBodyWaliHadir', kelasWali, 'Wali');
         }
@@ -845,23 +893,23 @@
             area.classList.remove('hidden');
             if(areaExcel) areaExcel.classList.remove('hidden');
 
-            tabelBody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-slate-400 text-xs font-bold"><span class="animate-spin-custom inline-block mr-2 text-slate-600">⏳</span> memuat data absensi...</td></tr>`;
+            tabelBody.innerHTML = `<tr><td colspan="6" class="text-center py-10 text-slate-400 text-xs font-bold"><span class="animate-spin-custom inline-block mr-2 text-indigo-600 text-base">⏳</span> mohon bersabar jika lama, server mahal nih bos ...</td></tr>`;
             
             fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_siswa', kelas: targetKelas }) })
             .then(res => res.json()).then(data => {
                 tabelBody.innerHTML = '';
-                const inStyle = "w-12 bg-slate-50 border border-slate-200 rounded-lg p-2 text-center text-xs font-bold text-slate-700 focus:bg-white focus:ring-2 focus:ring-slate-900 outline-none transition mx-auto block";
+                const inStyle = "w-12 bg-slate-50 border border-slate-200 rounded-lg p-2 text-center text-xs font-bold text-slate-700 focus:bg-white focus:ring-2 focus:ring-indigo-600 outline-none transition mx-auto block shadow-2xs";
                 
                 if(data.data && data.data.length > 0) {
                     data.data.forEach(s => {
                         tabelBody.innerHTML += `
                             <tr class="data-hadir-row-${tipe} table-row-hover transition" data-nis="${s.nis}">
-                                <td class="px-4 py-2.5 text-slate-500 bg-white sticky-col">${s.nis}</td>
-                                <td class="px-4 py-2.5 font-bold text-slate-800 bg-white sticky-col-2 min-w-[160px]">${s.nama}</td>
-                                <td class="px-3 py-2"><input type="number" class="${inStyle} input-sakit" placeholder="0"></td>
-                                <td class="px-3 py-2"><input type="number" class="${inStyle} input-izin" placeholder="0"></td>
-                                <td class="px-3 py-2"><input type="number" class="${inStyle} input-alpa" placeholder="0"></td>
-                                <td class="px-4 py-2"><input type="text" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-xs focus:bg-white focus:ring-2 focus:ring-slate-900 outline-none input-catatan font-medium" placeholder="Catatan..."></td>
+                                <td class="px-4 py-3 text-slate-500 bg-white sticky-col font-medium">${s.nis}</td>
+                                <td class="px-4 py-3 font-bold text-slate-800 bg-white sticky-col-2 min-w-[160px]">${s.nama}</td>
+                                <td class="px-3 py-2.5"><input type="number" class="${inStyle} input-sakit" placeholder="0"></td>
+                                <td class="px-3 py-2.5"><input type="number" class="${inStyle} input-izin" placeholder="0"></td>
+                                <td class="px-3 py-2.5"><input type="number" class="${inStyle} input-alpa" placeholder="0"></td>
+                                <td class="px-4 py-2.5"><input type="text" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-xs focus:bg-white focus:ring-2 focus:ring-indigo-600 outline-none input-catatan font-medium shadow-2xs" placeholder="Catatan..."></td>
                             </tr>`;
                     });
                 } else {
@@ -891,30 +939,29 @@
 
             if(dataHadir.length === 0) return;
 
-            btn.innerHTML = `<span class="animate-spin-custom inline-block mr-1.5">⏳</span> menyimpan...`; 
+            btn.innerHTML = `<span class="animate-spin-custom inline-block mr-1.5">⏳</span> mohon bersabar jika lama, server mahal nih bos ...`; 
             btn.disabled = true; statusMsg.classList.add('hidden');
             
             fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'simpan_kehadiran', data_kehadiran: dataHadir }) })
             .then(res => res.json()).then(data => {
-                btn.innerHTML = tipe === 'Wali' ? "Simpan Kehadiran" : "Simpan Kehadiran (BK)"; 
+                btn.innerHTML = tipe === 'Wali' ? "💾 Simpan Kehadiran" : "💾 Simpan Kehadiran (BK)"; 
                 btn.disabled = false;
                 statusMsg.innerText = data.message;
-                statusMsg.className = "mt-3 text-xs font-medium p-3 rounded-xl border " + (data.status === 'success' ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-red-50 text-red-700 border-red-200");
+                statusMsg.className = "mt-3 text-xs font-medium p-3.5 rounded-xl border " + (data.status === 'success' ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-red-50 text-red-700 border-red-200");
                 statusMsg.classList.remove('hidden');
                 setTimeout(() => statusMsg.classList.add('hidden'), 5000);
             });
         }
 
-        // ================= WALI KELAS EKSKUL =================
         function loadSiswaWaliEkskul() { 
             const tabelBody = document.getElementById('tabelBodyWaliEkskul');
             document.getElementById('areaTabelWaliEkskul').classList.remove('hidden');
-            tabelBody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-slate-400 text-xs font-bold"><span class="animate-spin-custom inline-block mr-2 text-slate-600">⏳</span> memuat data ekskul...</td></tr>`;
+            tabelBody.innerHTML = `<tr><td colspan="6" class="text-center py-10 text-slate-400 text-xs font-bold"><span class="animate-spin-custom inline-block mr-2 text-indigo-600 text-base">⏳</span> mohon bersabar jika lama, server mahal nih bos ...</td></tr>`;
             fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_ekskul_tersimpan', kelas: kelasWali }) })
             .then(res => res.json()).then(data => {
                 tabelBody.innerHTML = '';
                 if(data.status === 'success') {
-                    const selStyle = "w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-xs font-bold text-slate-700 focus:bg-white focus:ring-2 focus:ring-slate-900 outline-none uppercase";
+                    const selStyle = "w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-xs font-bold text-slate-700 focus:bg-white focus:ring-2 focus:ring-indigo-600 outline-none uppercase shadow-2xs";
                     data.data.forEach(s => {
                         let optionsE1 = '<option value="">- KOSONG -</option>';
                         let optionsE2 = '<option value="">- KOSONG -</option>';
@@ -925,10 +972,10 @@
 
                         tabelBody.innerHTML += `
                             <tr class="data-ekskul-row table-row-hover transition" data-nis="${s.nis}" data-nama="${s.nama}">
-                                <td class="px-4 py-2.5 text-slate-500 bg-white sticky-col">${s.nis}</td>
-                                <td class="px-4 py-2.5 font-bold text-slate-800 bg-white sticky-col-2 min-w-[160px]">${s.nama}</td>
-                                <td class="px-3 py-2"><select class="${selStyle} input-e1">${optionsE1}</select></td>
-                                <td class="px-3 py-2">
+                                <td class="px-4 py-3 text-slate-500 bg-white sticky-col font-medium">${s.nis}</td>
+                                <td class="px-4 py-3 font-bold text-slate-800 bg-white sticky-col-2 min-w-[160px]">${s.nama}</td>
+                                <td class="px-3 py-2.5"><select class="${selStyle} input-e1">${optionsE1}</select></td>
+                                <td class="px-3 py-2.5">
                                     <select class="${selStyle} input-p1">
                                         <option value="">-</option>
                                         <option value="Sangat Baik" ${s.predikat1=='Sangat Baik'?'selected':''}>SANGAT BAIK</option>
@@ -936,8 +983,8 @@
                                         <option value="Cukup" ${s.predikat1=='Cukup'?'selected':''}>CUKUP</option>
                                     </select>
                                 </td>
-                                <td class="px-3 py-2"><select class="${selStyle} input-e2">${optionsE2}</select></td>
-                                <td class="px-3 py-2">
+                                <td class="px-3 py-2.5"><select class="${selStyle} input-e2">${optionsE2}</select></td>
+                                <td class="px-3 py-2.5">
                                     <select class="${selStyle} input-p2">
                                         <option value="">-</option>
                                         <option value="Sangat Baik" ${s.predikat2=='Sangat Baik'?'selected':''}>SANGAT BAIK</option>
@@ -961,19 +1008,18 @@
                     ekskul2: row.querySelector('.input-e2').value, predikat2: row.querySelector('.input-p2').value
                 });
             });
-            btn.innerHTML = `<span class="animate-spin-custom inline-block mr-1.5">⏳</span> menyimpan...`; 
+            btn.innerHTML = `<span class="animate-spin-custom inline-block mr-1.5">⏳</span> mohon bersabar jika lama, server mahal nih bos ...`; 
             btn.disabled = true; statusMsg.classList.add('hidden');
             fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'simpan_ekskul', data_ekskul: dataEkskul }) })
             .then(res => res.json()).then(data => {
-                btn.innerHTML = "Simpan Master Ekskul"; btn.disabled = false;
+                btn.innerHTML = "💾 Simpan Master Ekskul"; btn.disabled = false;
                 statusMsg.innerText = data.message;
-                statusMsg.className = "mt-3 text-xs font-medium p-3 rounded-xl border " + (data.status === 'success' ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-red-50 text-red-700 border-red-200");
+                statusMsg.className = "mt-3 text-xs font-medium p-3.5 rounded-xl border " + (data.status === 'success' ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-red-50 text-red-700 border-red-200");
                 statusMsg.classList.remove('hidden');
                 setTimeout(() => statusMsg.classList.add('hidden'), 5000);
             });
         }
 
-        // ================= PEMBINA EKSKUL =================
         function loadDataEkskulPembina() { 
             const kelas = document.getElementById('pilihKelasPembina').value;
             const namaEkskul = document.getElementById('inputNamaEkskulPembina').value;
@@ -983,7 +1029,7 @@
             if(!kelas || !namaEkskul) return alert("Pilih kelas dan ekstrakurikuler terlebih dahulu!");
 
             areaTabel.classList.remove('hidden');
-            tabelBody.innerHTML = `<tr><td colspan="3" class="text-center py-8 text-slate-400 text-xs font-bold"><span class="animate-spin-custom inline-block mr-2 text-slate-600">⏳</span> memuat anggota...</td></tr>`;
+            tabelBody.innerHTML = `<tr><td colspan="3" class="text-center py-10 text-slate-400 text-xs font-bold"><span class="animate-spin-custom inline-block mr-2 text-indigo-600 text-base">⏳</span> mohon bersabar jika lama, server mahal nih bos ...</td></tr>`;
 
             fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_ekskul_pembina', kelas: kelas, nama_ekskul: namaEkskul }) })
             .then(res => res.json()).then(data => {
@@ -992,10 +1038,10 @@
                     data.data.forEach(s => {
                         tabelBody.innerHTML += `
                             <tr class="data-pembina-row table-row-hover transition" data-nis="${s.nis}" data-nama="${s.nama}" data-kelas="${kelas}">
-                                <td class="px-4 py-2.5 text-slate-500">${s.nis}</td>
-                                <td class="px-4 py-2.5 font-bold text-slate-800">${s.nama}</td>
-                                <td class="px-4 py-2.5 text-center">
-                                    <select class="w-full sm:w-1/2 bg-slate-50 border border-slate-200 rounded-lg p-2 text-xs font-bold text-slate-700 focus:bg-white focus:ring-2 focus:ring-slate-900 outline-none mx-auto uppercase">
+                                <td class="px-4 py-3 text-slate-500 font-medium">${s.nis}</td>
+                                <td class="px-4 py-3 font-bold text-slate-800">${s.nama}</td>
+                                <td class="px-4 py-3 text-center">
+                                    <select class="w-full sm:w-1/2 bg-slate-50 border border-slate-200 rounded-lg p-2 text-xs font-bold text-slate-700 focus:bg-white focus:ring-2 focus:ring-indigo-600 outline-none mx-auto uppercase shadow-2xs">
                                         <option value="">- KOSONG -</option>
                                         <option value="Sangat Baik" ${s.predikat=='Sangat Baik'?'selected':''}>SANGAT BAIK</option>
                                         <option value="Baik" ${s.predikat=='Baik'?'selected':''}>BAIK</option>
@@ -1025,14 +1071,14 @@
             });
 
             if (dataEkskul.length === 0) return;
-            btn.innerHTML = `<span class="animate-spin-custom inline-block mr-1.5">⏳</span> menyimpan...`; 
+            btn.innerHTML = `<span class="animate-spin-custom inline-block mr-1.5">⏳</span> mohon bersabar jika lama, server mahal nih bos ...`; 
             btn.disabled = true; statusMsg.classList.add('hidden');
 
             fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'simpan_ekskul_pembina', nama_ekskul: namaEkskul, data_ekskul: dataEkskul }) })
             .then(res => res.json()).then(data => {
-                btn.innerHTML = "Simpan Predikat"; btn.disabled = false;
+                btn.innerHTML = "💾 Simpan Predikat"; btn.disabled = false;
                 statusMsg.innerText = data.message;
-                statusMsg.className = "mt-3 text-xs font-medium p-3 rounded-xl border " + (data.status === 'success' ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-red-50 text-red-700 border-red-200");
+                statusMsg.className = "mt-3 text-xs font-medium p-3.5 rounded-xl border " + (data.status === 'success' ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-red-50 text-red-700 border-red-200");
                 statusMsg.classList.remove('hidden');
                 setTimeout(() => statusMsg.classList.add('hidden'), 5000);
             });

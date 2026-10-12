@@ -4,60 +4,66 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Portal Rapot Sisipan - SMAN 1 Wongsorejo</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Menggunakan Tailwind CSS dari CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* Animasi loading mewah */
-        .loader {
-            border-top-color: #0284c7;
-            -webkit-animation: spinner 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-            animation: spinner 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                }
+            }
         }
-        @keyframes spinner {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+    </script>
+    <style>
+        /* Animasi loading mewah berputar */
+        @keyframes spinCustom { 
+            100% { transform: rotate(360deg); } 
+        }
+        .animate-spin-custom { 
+            display: inline-block; 
+            animation: spinCustom 0.8s linear infinite; 
         }
 
-        /* Ambient Light & Background Luxury Animation (Light Theme) */
+        /* Ambient Light & Background Luxury Animation */
         @keyframes ambientGlow {
-            0%, 100% {
-                transform: translate(0px, 0px) scale(1);
-            }
-            33% {
-                transform: translate(40px, -40px) scale(1.1);
-            }
-            66% {
-                transform: translate(-30px, 30px) scale(0.95);
-            }
+            0%, 100% { transform: translate(0px, 0px) scale(1); }
+            33% { transform: translate(50px, -50px) scale(1.15); }
+            66% { transform: translate(-40px, 40px) scale(0.9); }
         }
-        .ambient-blob-1 {
-            animation: ambientGlow 12s ease-in-out infinite;
-        }
-        .ambient-blob-2 {
-            animation: ambientGlow 15s ease-in-out infinite reverse;
-        }
+        .ambient-blob-1 { animation: ambientGlow 14s ease-in-out infinite; }
+        .ambient-blob-2 { animation: ambientGlow 18s ease-in-out infinite reverse; }
+
+        /* Custom Scrollbar Minimalis */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f8fafc; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
     </style>
 </head>
-<body class="bg-gradient-to-br from-slate-50 via-sky-50/40 to-blue-100/60 flex flex-col items-center justify-center min-h-screen relative overflow-hidden font-sans selection:bg-sky-500 selection:text-white">
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 flex flex-col items-center justify-center min-h-screen relative overflow-hidden font-sans selection:bg-sky-500 selection:text-white p-4">
 
-    <!-- Ambient Light Background Effects (Lembut & Elegan) -->
-    <div class="absolute -top-32 -left-32 w-[450px] h-[450px] bg-sky-400/20 rounded-full blur-[100px] ambient-blob-1 pointer-events-none"></div>
-    <div class="absolute -bottom-32 -right-32 w-[450px] h-[450px] bg-indigo-400/15 rounded-full blur-[100px] ambient-blob-2 pointer-events-none"></div>
+    <!-- Ambient Light Background Effects (Mewah & Estetik) -->
+    <div class="absolute -top-40 -left-40 w-[500px] h-[500px] bg-sky-500/15 rounded-full blur-[120px] ambient-blob-1 pointer-events-none"></div>
+    <div class="absolute -bottom-40 -right-40 w-[500px] h-[500px] bg-indigo-500/15 rounded-full blur-[120px] ambient-blob-2 pointer-events-none"></div>
 
-    <!-- Main Container Card dengan Efek Glassmorphism Terang Mewah -->
-    <div class="relative z-10 bg-white/90 backdrop-blur-2xl p-8 md:p-10 rounded-3xl shadow-[0_20px_50px_rgba(15,23,42,0.08)] w-full max-w-md border border-white/80 transform transition-all duration-500 hover:shadow-[0_25px_60px_rgba(14,165,233,0.12)]">
+    <!-- Main Container Card dengan Efek Glassmorphism Profesional -->
+    <div class="relative z-10 bg-white/95 backdrop-blur-2xl p-8 md:p-10 rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.3)] w-full max-w-md border border-white/20 transform transition-all duration-500">
         
-        <!-- Header dengan Logo (Memanjang 210px) & Judul -->
+        <!-- Header dengan Logo & Judul -->
         <div class="flex flex-col items-center mb-8">
-            <div class="mb-4 p-3 bg-slate-50/80 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center transition-transform duration-300 hover:scale-105">
-                <img src="https://i.ibb.co.com/zTHpGJ3W/20260513-105333-0000.png" alt="Logo Sekolah" style="width: 210px;" class="h-auto object-contain drop-shadow-sm">
+            <div class="mb-4 p-3.5 bg-slate-50 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center transition-transform duration-300 hover:scale-105">
+                <img src="https://i.ibb.co.com/zTHpGJ3W/20260513-105333-0000.png" alt="Logo Sekolah" style="width: 190px;" class="h-auto object-contain drop-shadow-sm">
             </div>
-            <h2 class="text-2xl font-black text-slate-900 tracking-tight">Portal Rapot Sisipan</h2>
-            <p class="text-xs text-slate-500 mt-1.5 font-medium tracking-wide">Silakan masuk menggunakan akun resmi Anda</p>
+            <h2 class="text-2xl font-black text-slate-900 tracking-tight text-center">Portal Rapot Sisipan</h2>
+            <p class="text-xs text-slate-500 mt-1.5 font-medium tracking-wide text-center">SMAN 1 Wongsorejo • Silakan Masuk ke Akun Anda</p>
         </div>
         
         <!-- Notifikasi Error -->
-        <div id="error-msg" class="hidden mb-6 p-3.5 bg-red-50 border border-red-200 text-red-700 text-xs rounded-2xl text-center font-semibold transition-all shadow-sm"></div>
+        <div id="error-msg" class="hidden mb-6 p-3.5 bg-rose-50 border border-rose-200 text-rose-700 text-xs rounded-2xl text-center font-semibold transition-all shadow-sm"></div>
 
         <form id="loginForm" class="space-y-5">
             <div>
@@ -65,7 +71,7 @@
                     Username Akun
                 </label>
                 <div class="relative">
-                    <input class="w-full bg-slate-50/80 border border-slate-200/90 rounded-2xl py-3.5 px-4 text-slate-800 placeholder-slate-400 leading-tight focus:outline-none focus:ring-2 focus:ring-sky-500/60 focus:bg-white focus:border-sky-500 transition-all duration-300 text-sm shadow-inner" 
+                    <input class="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-4 text-slate-800 placeholder-slate-400 leading-tight focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white transition-all duration-300 text-xs font-semibold shadow-inner" 
                            id="username" type="text" placeholder="Masukkan Username Anda" required>
                 </div>
             </div>
@@ -75,41 +81,33 @@
                     Kata Sandi (Password)
                 </label>
                 <div class="relative flex items-center">
-                    <!-- Input Password -->
-                    <input class="w-full bg-slate-50/80 border border-slate-200/90 rounded-2xl py-3.5 pl-4 pr-20 text-slate-800 placeholder-slate-400 leading-tight focus:outline-none focus:ring-2 focus:ring-sky-500/60 focus:bg-white focus:border-sky-500 transition-all duration-300 text-sm shadow-inner" 
+                    <input class="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 pl-4 pr-16 text-slate-800 placeholder-slate-400 leading-tight focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white transition-all duration-300 text-xs font-semibold shadow-inner" 
                            id="password" type="password" placeholder="••••••••••••••••" required>
                     
-                    <!-- Container Ikon di Kanan (Toggle Mata & Ikon Kunci) -->
-                    <div class="absolute right-3.5 flex items-center space-x-2 text-slate-400">
-                        <!-- Toggle Mata Flat -->
-                        <button type="button" id="togglePassword" class="focus:outline-none hover:text-sky-600 transition-colors p-1" title="Lihat/Sembunyikan Password">
-                            <svg id="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                            </svg>
-                        </button>
-                        <!-- Garis Pemisah Kecil -->
-                        <div class="w-[1px] h-4 bg-slate-300"></div>
-                        <!-- Ikon Kunci -->
-                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    <!-- Toggle Mata (Show/Hide Password) -->
+                    <button type="button" id="togglePassword" class="absolute right-4 focus:outline-none text-slate-400 hover:text-sky-600 transition-colors p-1" title="Lihat/Sembunyikan Password">
+                        <svg id="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                         </svg>
-                    </div>
+                    </button>
                 </div>
             </div>
             
             <div class="pt-3">
-                <button id="loginBtn" class="w-full bg-gradient-to-r from-sky-600 via-blue-600 to-indigo-600 hover:from-sky-700 hover:via-blue-700 hover:to-indigo-700 text-white font-bold py-3.5 px-4 rounded-2xl shadow-[0_10px_25px_-5px_rgba(2,132,199,0.35)] focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 flex justify-center items-center transition-all duration-300 active:scale-[0.98] text-sm tracking-wide" type="submit">
-                    <span>Masuk ke Portal</span>
-                    <!-- Indikator Loading disembunyikan saat default -->
-                    <div id="loading" class="hidden ml-2.5 loader ease-linear rounded-full border-2 border-t-2 border-sky-600/30 h-4 w-4"></div>
+                <button id="loginBtn" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 px-4 rounded-2xl shadow-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2 flex justify-center items-center transition-all duration-300 active:scale-[0.98] text-xs tracking-wide" type="submit">
+                    <span id="btnText">Masuk ke Portal</span>
+                    <div id="loading" class="hidden flex items-center gap-2">
+                        <span class="animate-spin-custom text-base">⏳</span>
+                        <span id="loadingText" class="text-[11px] font-medium tracking-normal normal-case">mohon bersabar jika lama, server mahal nih bos ...</span>
+                    </div>
                 </button>
             </div>
         </form>
     </div>
 
     <!-- Copyright Footer -->
-    <footer class="relative z-10 mt-10 text-center text-slate-500 text-xs tracking-wider font-medium">
+    <footer class="relative z-10 mt-8 text-center text-slate-400 text-[11px] tracking-wider font-medium">
         Copyright &copy; 2026 Very_Andika All Rights Reserved
     </footer>
 
@@ -124,61 +122,51 @@
             passwordInput.setAttribute('type', type);
             
             if (type === 'text') {
-                // Ubah ikon mata menjadi coret (password terlihat)
-                eyeIcon.innerHTML = `
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.05 10.05 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/>
-                `;
+                eyeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.05 10.05 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/>`;
             } else {
-                // Ubah kembali ke ikon mata normal
-                eyeIcon.innerHTML = `
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                `;
+                eyeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>`;
             }
         });
 
-        // Masukkan URL Google Apps Script Anda di sini
+        // URL Google Apps Script Backend
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbymL6pCjOtQSXVoDP-01PXZBYrVv86dDx7qAjcwYrW_oIWwYgylCfL2RS8dtCXBpXKP1g/exec';
 
         document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault(); // Mencegah reload halaman
+            e.preventDefault();
             
-            const user = document.getElementById('username').value;
-            const pass = document.getElementById('password').value;
+            const user = document.getElementById('username').value.trim();
+            const pass = document.getElementById('password').value.trim();
             const btn = document.getElementById('loginBtn');
+            const btnText = document.getElementById('btnText');
             const loading = document.getElementById('loading');
             const errorMsg = document.getElementById('error-msg');
 
-            // Reset UI
+            // Reset UI & Tampilkan Animasi Loading Server Mahal
             errorMsg.classList.add('hidden');
             btn.disabled = true;
-            btn.classList.add('opacity-75', 'cursor-not-allowed');
+            btn.classList.add('opacity-90', 'cursor-not-allowed');
+            btnText.classList.add('hidden');
             loading.classList.remove('hidden');
 
-            // Siapkan Data JSON
             const payload = {
                 action: 'login',
                 username: user,
                 password: pass
             };
 
-            // Kirim POST Request menggunakan fetch
             fetch(SCRIPT_URL, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'text/plain;charset=utf-8', 
-                },
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify(payload)
             })
-            .then(response => response.json()) // Parsing ke JSON
+            .then(response => response.json())
             .then(data => {
-                // Kembalikan tombol UI seperti semula
                 btn.disabled = false;
-                btn.classList.remove('opacity-75', 'cursor-not-allowed');
+                btn.classList.remove('opacity-90', 'cursor-not-allowed');
+                btnText.classList.remove('hidden');
                 loading.classList.add('hidden');
 
                 if (data.status === 'success') {
-                    // Simpan data user di Session Storage
                     sessionStorage.setItem('isLoggedIn', 'true');
                     sessionStorage.setItem('role', data.data.role);
                     sessionStorage.setItem('username', data.data.username);
@@ -188,26 +176,24 @@
                         sessionStorage.setItem('nama_guru', data.data.nama_guru);
                         sessionStorage.setItem('status_wali', data.data.status_wali);
                         sessionStorage.setItem('kelas_wali', data.data.kelas_wali);
-                        // KODE YANG BARU DITAMBAHKAN UNTUK STATUS PEMBINA
                         sessionStorage.setItem('status_pembina', data.data.status_pembina);
                     }
 
-                    // Arahkan ke halaman Dashboard berdasarkan Role
                     if (data.data.role === 'Admin') {
                         window.location.href = 'dashboard-admin.html';
                     } else if (data.data.role === 'Guru') {
                         window.location.href = 'dashboard-guru.html';
                     }
                 } else {
-                    // Jika password salah / error
-                    errorMsg.innerText = data.message;
+                    errorMsg.innerText = data.message || 'Username atau password salah.';
                     errorMsg.classList.remove('hidden');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
                 btn.disabled = false;
-                btn.classList.remove('opacity-75', 'cursor-not-allowed');
+                btn.classList.remove('opacity-90', 'cursor-not-allowed');
+                btnText.classList.remove('hidden');
                 loading.classList.add('hidden');
                 errorMsg.innerText = 'Terjadi kesalahan jaringan atau server.';
                 errorMsg.classList.remove('hidden');
