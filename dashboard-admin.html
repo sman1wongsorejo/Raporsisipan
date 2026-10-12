@@ -232,6 +232,15 @@
                         <option value="dinas_akademik">4. Akademik Formal SMANJO</option>
                         <option value="dinas_paripurna">5. Paripurna Kedinasan</option>
                     </select>
+                    
+                    <label class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider mb-2">Tahun Pelajaran</label>
+                    <input type="text" id="inputTahunPelajaran" value="2026/2027" placeholder="Contoh: 2026/2027" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-xs font-semibold mb-4 focus:outline-none focus:ring-2 focus:ring-slate-900 transition text-slate-700">
+
+                    <label class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider mb-2">Semester</label>
+                    <select id="inputSemester" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-xs font-semibold mb-4 focus:outline-none focus:ring-2 focus:ring-slate-900 transition text-slate-700">
+                        <option value="Ganjil (Gasal)">Ganjil (Gasal)</option>
+                        <option value="Genap">Genap</option>
+                    </select>
 
                     <label class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider mb-2">Tanggal Penetapan / Cetak</label>
                     <input type="date" id="inputTanggalCetak" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-xs font-semibold mb-4 focus:outline-none focus:ring-2 focus:ring-slate-900 transition text-slate-700">
@@ -476,6 +485,11 @@
 
         function buildRapotTemplate(data) {
             const tema = document.getElementById('pilihTemplat').value;
+            
+            // Mengambil nilai inputan Tahun Pelajaran dan Semester secara dinamis
+            const semesterVal = document.getElementById('inputSemester').value || 'Ganjil (Gasal)';
+            const tahunPelajaranVal = document.getElementById('inputTahunPelajaran').value || '2026/2027';
+            
             let headerStyle = "border-b-4 border-black pb-3 mb-3";
             let thBg = "background-color: #f1f5f9; color: #0f172a;";
             let titleColor = "text-black";
@@ -558,9 +572,11 @@
 
                             <h3 class="text-center font-bold text-base underline mb-3 ${titleColor} tracking-wide uppercase">RAPORT SISIPAN TENGAH SEMESTER</h3>
 
+                            <!-- Disini tabel identitas diperbarui dengan nilai Semester dan Tahun Pelajaran Dinamis -->
                             <table class="w-full mb-3 font-bold text-xs">
                                 <tr><td width="20%">Nama Peserta Didik</td><td width="3%">:</td><td width="47%">${data.nama_siswa}</td><td width="15%">Kelas</td><td width="3%">:</td><td width="12%">${data.kelas}</td></tr>
-                                <tr><td>Nomor Induk / NIS</td><td>:</td><td>${data.nis}</td><td>Semester</td><td>:</td><td>Ganjil (Gasal)</td></tr>
+                                <tr><td>Nomor Induk / NIS</td><td>:</td><td>${data.nis}</td><td>Semester</td><td>:</td><td>${semesterVal}</td></tr>
+                                <tr><td>Tahun Pelajaran</td><td>:</td><td>${tahunPelajaranVal}</td><td colspan="3"></td></tr>
                             </table>
 
                             <table class="w-full table-rapot mb-3 border-collapse border border-slate-900">
