@@ -51,16 +51,29 @@
 
         .table-row-hover:hover td { background-color: #f1f5f9; }
         .table-row-hover:hover td.sticky-col, .table-row-hover:hover td.sticky-col-2 { background-color: #f1f5f9; }
+
+        /* Ambient Display & Glow Effect untuk Chart Container */
+        .ambient-chart-box {
+            position: relative;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 12px 35px -10px rgba(79, 70, 229, 0.1), 0 4px 12px -2px rgba(0, 0, 0, 0.03);
+            transition: all 0.3s ease;
+        }
+        .ambient-chart-box:hover {
+            box-shadow: 0 18px 40px -10px rgba(79, 70, 229, 0.18), 0 6px 16px -2px rgba(0, 0, 0, 0.05);
+        }
     </style>
 </head>
 <body class="bg-slate-100/70 min-h-screen text-slate-800 antialiased selection:bg-indigo-600 selection:text-white">
 
     <!-- Top Navigation Bar (Professional Glassmorphism) -->
-    <nav class="bg-white/90 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-40 transition-all shadow-xs">
+    <nav class="bg-white/90 backdrop-blur-md border-b border-slate-200/85 sticky top-0 z-40 transition-all shadow-xs">
         <div class="max-w-7xl mx-auto px-6 lg:px-8 h-18 flex justify-between items-center">
-            <div class="flex items-center gap-3.5">
-                <div class="bg-gradient-to-br from-indigo-600 to-slate-900 text-white font-black text-xs px-3 py-2.5 rounded-xl shadow-md tracking-wider">
-                    SMANJO
+            <div class="flex items-center gap-4">
+                <!-- Logo SMANJO Diperlebar -->
+                <div class="h-14 w-auto flex items-center justify-center shrink-0">
+                    <img src="https://i.ibb.co.com/zTHpGJ3W/20260513-105333-0000.png" alt="Logo SMANJO" class="h-full w-auto object-contain drop-shadow-xs">
                 </div>
                 <div>
                     <h1 class="text-sm font-extrabold text-slate-900 leading-tight">Portal Akademik Guru</h1>
@@ -84,7 +97,7 @@
     <div class="max-w-7xl mx-auto px-6 lg:px-8 py-8">
         <div class="flex flex-col lg:flex-row gap-8 items-start">
             
-            <!-- Sidebar Navigation (Modern Clean) -->
+            <!-- Sidebar Navigation -->
             <aside class="w-full lg:w-64 bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm lg:sticky lg:top-24 shrink-0">
                 <div class="mb-4 px-3 pt-1">
                     <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Menu Navigasi</p>
@@ -199,6 +212,39 @@
                             <select id="pilihMapel" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition disabled:opacity-50" disabled onchange="loadSiswaNilai()">
                                 <option value="">-- Pilih Mapel --</option>
                             </select>
+                        </div>
+                    </div>
+
+                    <!-- STATISTIK RINGKASAN KELAS FLEKSIBEL -->
+                    <div id="areaStatistikKelas" class="hidden grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+                        <div class="bg-indigo-50/60 border border-indigo-100 p-3.5 rounded-xl flex items-center gap-3">
+                            <div class="p-2.5 bg-indigo-600 text-white rounded-lg text-xs font-bold">📊</div>
+                            <div>
+                                <p class="text-[9px] font-extrabold uppercase text-indigo-400 tracking-wider">Rata-Rata Kelas (STS)</p>
+                                <p id="statRataRata" class="text-base font-black text-indigo-900 mt-0.5">0.0</p>
+                            </div>
+                        </div>
+                        <div class="bg-emerald-50/60 border border-emerald-100 p-3.5 rounded-xl flex items-center gap-3">
+                            <div class="p-2.5 bg-emerald-600 text-white rounded-lg text-xs font-bold">👥</div>
+                            <div>
+                                <p class="text-[9px] font-extrabold uppercase text-emerald-400 tracking-wider">Siswa Terdata</p>
+                                <p id="statTotalSiswa" class="text-base font-black text-emerald-900 mt-0.5">0 Siswa</p>
+                            </div>
+                        </div>
+                        <div class="bg-sky-50/60 border border-sky-100 p-3.5 rounded-xl flex items-center gap-3">
+                            <div class="p-2.5 bg-sky-600 text-white rounded-lg text-xs font-bold">📝</div>
+                            <div>
+                                <p class="text-[9px] font-extrabold uppercase text-sky-500 tracking-wider">Status Input Aktif</p>
+                                <p id="statInputAktif" class="text-base font-black text-sky-900 mt-0.5">0 Baris Terisi</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live Search (Pencarian Cepat Siswa) -->
+                    <div id="areaCariSiswa" class="hidden mb-4">
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400 text-xs">🔍</span>
+                            <input type="text" id="inputCariSiswa" onkeyup="filterTabelSiswa()" placeholder="Cari nama atau NIS siswa di kelas ini..." class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-xs font-semibold text-slate-700 focus:bg-white focus:ring-2 focus:ring-indigo-600 outline-none transition shadow-2xs">
                         </div>
                     </div>
 
@@ -433,14 +479,33 @@
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 pb-4 border-b border-slate-100">
                         <div>
                             <h3 class="font-black text-base text-slate-900">Grafik Progres Input Nilai</h3>
-                            <p class="text-xs text-slate-400 mt-0.5">Persentase kelengkapan pengisian nilai mata pelajaran.</p>
+                            <p class="text-xs text-slate-400 mt-0.5">Detail kelengkapan pengisian nilai berdasarkan Mata Pelajaran dan Kelas.</p>
                         </div>
                         <button onclick="loadProgressGuruData()" class="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold px-4 py-2.5 rounded-xl text-xs shadow-2xs transition flex items-center gap-2">
                             🔄 Refresh Grafik
                         </button>
                     </div>
-                    <div class="w-full bg-slate-50/50 border border-slate-200/60 p-4 rounded-2xl shadow-2xs" style="height: 400px; position: relative;">
-                        <canvas id="chartProgressGuru"></canvas>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
+                        <!-- Chart Container dengan Ambient Display -->
+                        <div class="ambient-chart-box p-6 rounded-2xl flex justify-center items-center lg:col-span-1" style="height: 360px; position: relative;">
+                            <div style="max-width: 290px; width: 100%; height: 100%; position: relative;">
+                                <canvas id="chartProgressGuru"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Panel Detail per Mapel & Kelas -->
+                        <div class="lg:col-span-2 space-y-4">
+                            <div class="p-4 rounded-2xl bg-slate-50/80 border border-slate-200/60 shadow-2xs">
+                                <div class="flex justify-between items-center mb-3">
+                                    <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Rincian Progres per Mata Pelajaran</h4>
+                                    <span class="text-[10px] text-slate-400 font-medium">Status Pengisian Real-Time</span>
+                                </div>
+                                <div id="detailListProsesContainer" class="max-h-72 overflow-y-auto space-y-2 pr-1">
+                                    <span class="text-xs text-slate-400 italic">Memuat rincian mapel...</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -466,11 +531,8 @@
         document.getElementById('namaGuru').innerText = sessionStorage.getItem('nama_guru');
         const idGuru = sessionStorage.getItem('id_guru');
         
-        // Pengecekan Hak Akses Aman & Bersih
         const rawWali = sessionStorage.getItem('status_wali');
         const rawPembina = sessionStorage.getItem('status_pembina');
-        
-        // Pemetaan manual ID Guru BK (G19 dan G22) untuk bypass tanpa ubah code GS
         const daftarIdGuruBK = ['G19', 'G22'];
         const isBK_manual = daftarIdGuruBK.includes(idGuru);
         const rawBK = sessionStorage.getItem('guru_bk') || sessionStorage.getItem('status_bk') || (isBK_manual ? 'Ya' : 'Tidak');
@@ -481,24 +543,16 @@
 
         const kelasWali = sessionStorage.getItem('kelas_wali') ? sessionStorage.getItem('kelas_wali').toString().trim() : '-';
 
-        // Element Tombol Sidebar
         const btnWali = document.getElementById('btnTabWali');
         const btnBK = document.getElementById('btnTabBK');
         const btnPembina = document.getElementById('btnTabPembina');
         const badge = document.getElementById('statusWaliBadge');
 
-        // Inisialisasi Tampil/Sembunyi Menu Berdasarkan Hak Akses Sejak Awal Load
-        if (isPembina) {
-            btnPembina.classList.remove('hidden');
-        } else {
-            btnPembina.classList.add('hidden');
-        }
+        if (isPembina) btnPembina.classList.remove('hidden');
+        else btnPembina.classList.add('hidden');
 
-        if (isBK) {
-            btnBK.classList.remove('hidden');
-        } else {
-            btnBK.classList.add('hidden');
-        }
+        if (isBK) btnBK.classList.remove('hidden');
+        else btnBK.classList.add('hidden');
         
         if (isWali) {
             badge.innerText = kelasWali;
@@ -523,7 +577,7 @@
                     selectKelas.innerHTML = '<option value="">-- Kosong --</option>';
                     document.getElementById('infoTotalKelas').innerText = "0";
                 }
-            });
+            }).catch(err => console.error("Gagal memuat kelas guru:", err));
 
             fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_progress_nilai_guru', id_guru: idGuru }) })
             .then(res => res.json()).then(res => {
@@ -545,7 +599,7 @@
                         });
                     }
                 }
-            });
+            }).catch(err => console.error("Gagal memuat progres mapel:", err));
 
             loadKelasGlobal('pilihKelasPembina', '-- Semua Kelas --');
             loadKelasGlobal('pilihKelasBK', '-- Pilih Kelas --');
@@ -606,7 +660,6 @@
                 activeBtn.className = "w-full text-left transition-all text-xs font-semibold py-3 px-3.5 rounded-xl bg-slate-900 text-white shadow-md flex items-center gap-3 group";
             }
             
-            // PERBAIKAN: Selalu validasi ulang hak akses setiap kali fungsi tab dipanggil
             if (isPembina) document.getElementById('btnTabPembina').classList.remove('hidden');
             else document.getElementById('btnTabPembina').classList.add('hidden');
 
@@ -645,32 +698,79 @@
             fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_progress_nilai_guru', id_guru: idGuru }) })
             .then(res => res.json()).then(res => {
                 if(res.status !== 'success') return;
-                const labels = res.data.map(item => `${item.nama_mapel} (${item.kelas})`);
-                const percentages = res.data.map(item => item.persentase);
-                const ctx = document.getElementById('chartProgressGuru').getContext('2d');
                 
+                const labels = res.data.map(item => `${item.nama_mapel} - ${item.kelas}`);
+                const percentages = res.data.map(item => Number(item.persentase));
+
+                const elegantPalette = [
+                    '#4f46e5', '#0ea5e9', '#10b981', '#f59e0b', '#ec4899', 
+                    '#8b5cf6', '#14b8a6', '#f43f5e', '#6366f1', '#3b82f6'
+                ];
+                const backgroundColors = percentages.map((_, i) => elegantPalette[i % elegantPalette.length]);
+
+                const detailContainer = document.getElementById('detailListProsesContainer');
+                detailContainer.innerHTML = '';
+                
+                res.data.forEach((item, index) => {
+                    const p = Number(item.persentase);
+                    let badgeClass = "bg-slate-100 text-slate-700";
+                    let statusText = `${p}% (Belum Diinput)`;
+                    
+                    if (p === 100) {
+                        badgeClass = "bg-emerald-50 text-emerald-700 border border-emerald-200";
+                        statusText = "Selesai (100%)";
+                    } else if (p > 0 && p < 100) {
+                        badgeClass = "bg-amber-50 text-amber-700 border border-amber-200";
+                        statusText = `Dalam Proses (${p}%)`;
+                    } else {
+                        badgeClass = "bg-rose-50 text-rose-700 border border-rose-200";
+                        statusText = "Belum Diinput (0%)";
+                    }
+
+                    detailContainer.innerHTML += `
+                        <div class="flex justify-between items-center p-2.5 bg-white rounded-xl border border-slate-200/80 shadow-2xs hover:bg-slate-50 transition">
+                            <div class="flex items-center gap-2.5">
+                                <span class="w-3 h-3 rounded-full shrink-0" style="background-color: ${elegantPalette[index % elegantPalette.length]}"></span>
+                                <div>
+                                    <p class="text-xs font-bold text-slate-800">${item.nama_mapel}</p>
+                                    <p class="text-[10px] text-slate-400 font-semibold">Kelas: ${item.kelas}</p>
+                                </div>
+                            </div>
+                            <span class="px-2.5 py-1 rounded-lg text-[10px] font-extrabold ${badgeClass}">${statusText}</span>
+                        </div>
+                    `;
+                });
+
+                const ctx = document.getElementById('chartProgressGuru').getContext('2d');
                 if(myChartGuru) myChartGuru.destroy();
                 myChartGuru = new Chart(ctx, {
-                    type: 'bar',
+                    type: 'doughnut', 
                     data: { 
                         labels: labels, 
                         datasets: [{ 
-                            label: 'Persentase %', 
                             data: percentages, 
-                            backgroundColor: '#4f46e5', 
-                            borderRadius: 6,
-                            barThickness: 22
+                            backgroundColor: backgroundColors,
+                            borderWidth: 2,
+                            borderColor: '#ffffff',
+                            hoverOffset: 6
                         }] 
                     },
                     options: { 
-                        indexAxis: 'y', 
                         responsive: true, 
                         maintainAspectRatio: false, 
-                        scales: { 
-                            x: { max: 100, grid: { color: '#e2e8f0', drawBorder: false } }, 
-                            y: { grid: { display: false }, ticks: { font: { family: 'Inter', weight: '700' }, color: '#334155' } } 
-                        }, 
-                        plugins: { legend: { display: false } } 
+                        plugins: { 
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.label || '';
+                                        let value = context.raw || 0;
+                                        return ` ${label}: ${value}% Selesai`;
+                                    }
+                                }
+                            }
+                        },
+                        cutout: '60%'
                     }
                 });
             });
@@ -685,6 +785,8 @@
                 document.getElementById('areaTabelNilai').classList.add('hidden'); 
                 document.getElementById('areaExcel').classList.add('hidden'); 
                 document.getElementById('infoJumlahSiswa').classList.add('hidden');
+                document.getElementById('areaStatistikKelas').classList.add('hidden');
+                document.getElementById('areaCariSiswa').classList.add('hidden');
                 infoStatusAktif.innerText = "Pilih Kelas & Mapel"; return; 
             }
 
@@ -695,6 +797,103 @@
                 selectMapel.innerHTML = '<option value="">-- Pilih Mapel --</option>';
                 if(data.status === 'success') data.data.forEach(m => { selectMapel.innerHTML += `<option value="${m.id_mapel}">${m.nama_mapel}</option>`; });
                 selectMapel.disabled = false;
+            });
+        }
+
+        // Validasi Input Nilai Pintar (Range 0-100)
+        function validasiNilaiInput(input) {
+            let val = parseFloat(input.value);
+            if (input.value !== '' && (val < 0 || val > 100 || isNaN(val))) {
+                input.style.borderColor = '#f43f5e';
+                input.style.backgroundColor = '#fff1f2';
+            } else {
+                input.style.borderColor = '#e2e8f0';
+                input.style.backgroundColor = '#f8fafc';
+            }
+            hitungStatistikKelas();
+        }
+
+        // Navigasi Keyboard Arrow Keys & Enter pada Tabel Nilai (Aman & Terproteksi)
+        document.addEventListener('keydown', function(e) {
+            const target = e.target;
+            if (!target || !target.classList.contains('input-nilai-cell')) return;
+
+            const inputs = Array.from(document.querySelectorAll('.input-nilai-cell'));
+            const index = inputs.indexOf(target);
+            if (index === -1) return;
+            
+            const colsPerRow = 7; // Total kolom input nilai per baris
+            let nextIndex = -1;
+
+            if (e.key === 'ArrowDown' || e.key === 'Enter') {
+                e.preventDefault();
+                nextIndex = index + colsPerRow;
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                nextIndex = index - colsPerRow;
+            } else if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                nextIndex = index + 1;
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                nextIndex = index - 1;
+            }
+
+            if (nextIndex >= 0 && nextIndex < inputs.length) {
+                inputs[nextIndex].focus();
+                inputs[nextIndex].select();
+            }
+        });
+
+        // Statistik Ringkasan Kelas Fleksibel
+        function hitungStatistikKelas() {
+            const rows = document.querySelectorAll('.data-siswa-row');
+            if(rows.length === 0) return;
+
+            let totalSiswa = rows.length;
+            let totalSts = 0;
+            let countSts = 0;
+            let countInputAktif = 0;
+
+            rows.forEach(row => {
+                const inputs = row.querySelectorAll('input[type="number"]');
+                let rowHasInput = false;
+                
+                inputs.forEach(input => {
+                    const val = input.value.trim();
+                    if(val !== '') {
+                        rowHasInput = true;
+                        if(input.classList.contains('input-sts') && !isNaN(val)) {
+                            totalSts += parseFloat(val);
+                            countSts++;
+                        }
+                    }
+                });
+
+                if(rowHasInput) {
+                    countInputAktif++;
+                }
+            });
+
+            let rataRata = countSts > 0 ? (totalSts / countSts).toFixed(1) : '0.0';
+
+            document.getElementById('statRataRata').innerText = rataRata;
+            document.getElementById('statTotalSiswa').innerText = `${totalSiswa} Siswa`;
+            document.getElementById('statInputAktif').innerText = `${countInputAktif} Baris Terisi`;
+        }
+
+        // Live Search (Pencarian Cepat Siswa)
+        function filterTabelSiswa() {
+            const keyword = document.getElementById('inputCariSiswa').value.toLowerCase();
+            const rows = document.querySelectorAll('.data-siswa-row');
+            rows.forEach(row => {
+                const nis = row.getAttribute('data-nis').toLowerCase();
+                const nama = row.getAttribute('data-nama').toLowerCase();
+                if(nis.includes(keyword) || nama.includes(keyword)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
             });
         }
 
@@ -710,6 +909,8 @@
 
             document.getElementById('areaTabelNilai').classList.remove('hidden');
             document.getElementById('areaExcel').classList.remove('hidden');
+            document.getElementById('areaStatistikKelas').classList.remove('hidden');
+            document.getElementById('areaCariSiswa').classList.remove('hidden');
             tabelBody.innerHTML = `<tr><td colspan="9" class="text-center py-10 text-slate-400 text-xs font-bold"><span class="animate-spin-custom inline-block mr-2 text-indigo-600 text-base">⏳</span> mohon bersabar jika lama, server mahal nih bos ...</td></tr>`;
 
             fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_siswa', kelas: kelas, id_mapel: mapel }) })
@@ -726,22 +927,27 @@
                     }
                     dataSiswa.data.forEach(s => {
                         let n = mapNilai[String(s.nis)] || { tugas1:'', tugas2:'', tugas3:'', tugas4:'', uh1:'', uh2:'', sts:'' };
-                        const inStyle = "w-12 bg-slate-50 border border-slate-200 rounded-lg p-2 text-center text-xs font-bold text-slate-700 focus:bg-white focus:ring-2 focus:ring-indigo-600 outline-none transition mx-auto block shadow-2xs";
+                        const inStyle = "w-12 bg-slate-50 border border-slate-200 rounded-lg p-2 text-center text-xs font-bold text-slate-700 focus:bg-white focus:ring-2 focus:ring-indigo-600 outline-none transition mx-auto block shadow-2xs input-nilai-cell";
                         
                         tabelBody.innerHTML += `
-                            <tr class="data-siswa-row table-row-hover transition" data-nis="${s.nis}">
+                            <tr class="data-siswa-row table-row-hover transition" data-nis="${s.nis}" data-nama="${s.nama}">
                                 <td class="px-4 py-3 text-slate-500 bg-white sticky-col font-medium">${s.nis}</td>
                                 <td class="px-4 py-3 font-bold text-slate-800 bg-white sticky-col-2 min-w-[160px]">${s.nama}</td>
-                                <td class="px-2 py-2.5"><input type="number" class="${inStyle} input-t1" value="${n.tugas1 !== undefined ? n.tugas1 : ''}"></td>
-                                <td class="px-2 py-2.5"><input type="number" class="${inStyle} input-t2" value="${n.tugas2 !== undefined ? n.tugas2 : ''}"></td>
-                                <td class="px-2 py-2.5"><input type="number" class="${inStyle} input-t3" value="${n.tugas3 !== undefined ? n.tugas3 : ''}"></td>
-                                <td class="px-2 py-2.5"><input type="number" class="${inStyle} input-t4" value="${n.tugas4 !== undefined ? n.tugas4 : ''}"></td>
-                                <td class="px-2 py-2.5"><input type="number" class="${inStyle} input-uh1" value="${n.uh1 !== undefined ? n.uh1 : ''}"></td>
-                                <td class="px-2 py-2.5"><input type="number" class="${inStyle} input-uh2" value="${n.uh2 !== undefined ? n.uh2 : ''}"></td>
-                                <td class="px-2 py-2.5"><input type="number" class="${inStyle} border-indigo-200 font-extrabold input-sts" value="${n.sts !== undefined ? n.sts : ''}"></td>
+                                <td class="px-2 py-2.5"><input type="number" class="${inStyle} input-t1" value="${n.tugas1 !== undefined ? n.tugas1 : ''}" oninput="validasiNilaiInput(this)"></td>
+                                <td class="px-2 py-2.5"><input type="number" class="${inStyle} input-t2" value="${n.tugas2 !== undefined ? n.tugas2 : ''}" oninput="validasiNilaiInput(this)"></td>
+                                <td class="px-2 py-2.5"><input type="number" class="${inStyle} input-t3" value="${n.tugas3 !== undefined ? n.tugas3 : ''}" oninput="validasiNilaiInput(this)"></td>
+                                <td class="px-2 py-2.5"><input type="number" class="${inStyle} input-t4" value="${n.tugas4 !== undefined ? n.tugas4 : ''}" oninput="validasiNilaiInput(this)"></td>
+                                <td class="px-2 py-2.5"><input type="number" class="${inStyle} input-uh1" value="${n.uh1 !== undefined ? n.uh1 : ''}" oninput="validasiNilaiInput(this)"></td>
+                                <td class="px-2 py-2.5"><input type="number" class="${inStyle} input-uh2" value="${n.uh2 !== undefined ? n.uh2 : ''}" oninput="validasiNilaiInput(this)"></td>
+                                <td class="px-2 py-2.5"><input type="number" class="${inStyle} border-indigo-200 font-extrabold input-sts" value="${n.sts !== undefined ? n.sts : ''}" oninput="validasiNilaiInput(this)"></td>
                             </tr>`;
                     });
+                    hitungStatistikKelas();
+                }).catch(err => {
+                    tabelBody.innerHTML = `<tr><td colspan="9" class="text-center py-8 text-rose-500 text-xs font-bold">Gagal memuat data nilai tersimpan.</td></tr>`;
                 });
+            }).catch(err => {
+                tabelBody.innerHTML = `<tr><td colspan="9" class="text-center py-8 text-rose-500 text-xs font-bold">Gagal memuat data siswa.</td></tr>`;
             });
         }
 
@@ -756,7 +962,7 @@
             rows.forEach(row => {
                 dataExcel.push({
                     "NIS": row.getAttribute('data-nis'),
-                    "Nama Siswa": row.children[1].innerText,
+                    "Nama Siswa": row.getAttribute('data-nama'),
                     "Tugas 1": row.querySelector('.input-t1').value,
                     "Tugas 2": row.querySelector('.input-t2').value,
                     "Tugas 3": row.querySelector('.input-t3').value,
@@ -794,6 +1000,7 @@
                         if(row["STS"] !== undefined) tr.querySelector('.input-sts').value = row["STS"];
                     }
                 });
+                hitungStatistikKelas();
                 alert('Berhasil diunggah! Jangan lupa klik Simpan Nilai.');
                 event.target.value = '';
             };
@@ -809,7 +1016,7 @@
             rows.forEach(row => {
                 dataExcel.push({
                     "NIS": row.getAttribute('data-nis'),
-                    "Nama Siswa": row.children[1].innerText,
+                    "Nama Siswa": row.getAttribute('data-nama'),
                     "Sakit": row.querySelector('.input-sakit').value,
                     "Izin": row.querySelector('.input-izin').value,
                     "Alpa": row.querySelector('.input-alpa').value,
@@ -876,6 +1083,11 @@
                 statusMsg.classList.remove('hidden');
                 loadDaftarKelas();
                 setTimeout(() => statusMsg.classList.add('hidden'), 5000);
+            }).catch(err => {
+                btn.innerHTML = "💾 Simpan Nilai"; btn.disabled = false;
+                statusMsg.innerText = "Gagal terhubung ke server.";
+                statusMsg.className = "mt-3 text-xs font-medium p-3.5 rounded-xl border bg-red-50 text-red-700 border-red-200";
+                statusMsg.classList.remove('hidden');
             });
         }
 
@@ -907,7 +1119,7 @@
                 if(data.data && data.data.length > 0) {
                     data.data.forEach(s => {
                         tabelBody.innerHTML += `
-                            <tr class="data-hadir-row-${tipe} table-row-hover transition" data-nis="${s.nis}">
+                            <tr class="data-hadir-row-${tipe} table-row-hover transition" data-nis="${s.nis}" data-nama="${s.nama}">
                                 <td class="px-4 py-3 text-slate-500 bg-white sticky-col font-medium">${s.nis}</td>
                                 <td class="px-4 py-3 font-bold text-slate-800 bg-white sticky-col-2 min-w-[160px]">${s.nama}</td>
                                 <td class="px-3 py-2.5"><input type="number" class="${inStyle} input-sakit" placeholder="0"></td>
@@ -919,6 +1131,8 @@
                 } else {
                     tabelBody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-slate-400 text-xs font-medium">Tidak ada data siswa ditemukan.</td></tr>`;
                 }
+            }).catch(err => {
+                tabelBody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-rose-500 text-xs font-bold">Gagal memuat data kehadiran.</td></tr>`;
             });
         }
 
@@ -954,6 +1168,12 @@
                 statusMsg.className = "mt-3 text-xs font-medium p-3.5 rounded-xl border " + (data.status === 'success' ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-red-50 text-red-700 border-red-200");
                 statusMsg.classList.remove('hidden');
                 setTimeout(() => statusMsg.classList.add('hidden'), 5000);
+            }).catch(err => {
+                btn.innerHTML = tipe === 'Wali' ? "💾 Simpan Kehadiran" : "💾 Simpan Kehadiran (BK)"; 
+                btn.disabled = false;
+                statusMsg.innerText = "Gagal terhubung ke server.";
+                statusMsg.className = "mt-3 text-xs font-medium p-3.5 rounded-xl border bg-red-50 text-red-700 border-red-200";
+                statusMsg.classList.remove('hidden');
             });
         }
 
@@ -999,6 +1219,8 @@
                             </tr>`;
                     });
                 }
+            }).catch(err => {
+                tabelBody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-rose-500 text-xs font-bold">Gagal memuat master ekstrakurikuler.</td></tr>`;
             });
         }
 
@@ -1021,6 +1243,11 @@
                 statusMsg.className = "mt-3 text-xs font-medium p-3.5 rounded-xl border " + (data.status === 'success' ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-red-50 text-red-700 border-red-200");
                 statusMsg.classList.remove('hidden');
                 setTimeout(() => statusMsg.classList.add('hidden'), 5000);
+            }).catch(err => {
+                btn.innerHTML = "💾 Simpan Master Ekskul"; btn.disabled = false;
+                statusMsg.innerText = "Gagal terhubung ke server.";
+                statusMsg.className = "mt-3 text-xs font-medium p-3.5 rounded-xl border bg-red-50 text-red-700 border-red-200";
+                statusMsg.classList.remove('hidden');
             });
         }
 
@@ -1085,6 +1312,11 @@
                 statusMsg.className = "mt-3 text-xs font-medium p-3.5 rounded-xl border " + (data.status === 'success' ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-red-50 text-red-700 border-red-200");
                 statusMsg.classList.remove('hidden');
                 setTimeout(() => statusMsg.classList.add('hidden'), 5000);
+            }).catch(err => {
+                btn.innerHTML = "💾 Simpan Predikat"; btn.disabled = false;
+                statusMsg.innerText = "Gagal terhubung ke server.";
+                statusMsg.className = "mt-3 text-xs font-medium p-3.5 rounded-xl border bg-red-50 text-red-700 border-red-200";
+                statusMsg.classList.remove('hidden');
             });
         }
 
