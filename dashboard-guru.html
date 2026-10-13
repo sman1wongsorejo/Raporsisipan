@@ -487,21 +487,19 @@
         const btnPembina = document.getElementById('btnTabPembina');
         const badge = document.getElementById('statusWaliBadge');
 
-        // Pengaturan Tampil/Sembunyi Menu Pembina Ekskul
+        // Inisialisasi Tampil/Sembunyi Menu Berdasarkan Hak Akses Sejak Awal Load
         if (isPembina) {
             btnPembina.classList.remove('hidden');
         } else {
             btnPembina.classList.add('hidden');
         }
 
-        // Pengaturan Tampil/Sembunyi Menu Guru BK
         if (isBK) {
             btnBK.classList.remove('hidden');
         } else {
             btnBK.classList.add('hidden');
         }
         
-        // Pengaturan Menu & Badge Wali Kelas
         if (isWali) {
             badge.innerText = kelasWali;
             badge.className = "text-xs font-black mt-0.5 text-emerald-600";
@@ -608,9 +606,15 @@
                 activeBtn.className = "w-full text-left transition-all text-xs font-semibold py-3 px-3.5 rounded-xl bg-slate-900 text-white shadow-md flex items-center gap-3 group";
             }
             
+            // PERBAIKAN: Selalu validasi ulang hak akses setiap kali fungsi tab dipanggil
             if (isPembina) document.getElementById('btnTabPembina').classList.remove('hidden');
+            else document.getElementById('btnTabPembina').classList.add('hidden');
+
             if (isBK) document.getElementById('btnTabBK').classList.remove('hidden');
+            else document.getElementById('btnTabBK').classList.add('hidden');
+
             if (isWali) document.getElementById('btnTabWali').classList.remove('hidden');
+            else document.getElementById('btnTabWali').classList.add('hidden');
 
             if(tabId === 'tabProgress') {
                 loadProgressGuruData();
