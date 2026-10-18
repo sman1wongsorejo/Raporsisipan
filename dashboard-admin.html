@@ -574,6 +574,42 @@
             if(!data.nilai || data.nilai.length === 0) {
                 tbody = '<tr><td colspan="11" class="text-center p-2">Belum ada data nilai</td></tr>';
             } else {
+                // PENGURUTAN MAPEL SESUAI STANDAR E-RAPOR TERBARU (TERMASUK RUMPUN IPA & IPS)
+                const standardOrder = [
+                    "pendidikan agama", 
+                    "pendidikan pancasila", 
+                    "bahasa indonesia", 
+                    "matematika", 
+                    "ilmu pengetahuan alam", 
+                    "ipa", 
+                    "fisika", 
+                    "kimia", 
+                    "biologi", 
+                    "ilmu pengetahuan sosial", 
+                    "ips", 
+                    "sosiologi", 
+                    "ekonomi", 
+                    "sejarah", 
+                    "geografi", 
+                    "bahasa inggris", 
+                    "pendidikan jasmani", 
+                    "pjok", 
+                    "pok", 
+                    "informatika", 
+                    "prakarya"
+                ];
+
+                data.nilai.sort((a, b) => {
+                    const getPriority = (name) => {
+                        const lower = name.toLowerCase();
+                        for (let i = 0; i < standardOrder.length; i++) {
+                            if (lower.includes(standardOrder[i])) return i;
+                        }
+                        return 999; // Muatan lokal atau mapel tambahan lainnya di urutan akhir
+                    };
+                    return getPriority(a.nama_mapel) - getPriority(b.nama_mapel);
+                });
+
                 data.nilai.forEach((n, index) => {
                     let nilaiAkhir = parseInt(n.sts) || 0; 
                     let rataKls = Math.floor((Math.random() * 10) + 75); // Mockup
@@ -622,7 +658,7 @@
 
             const tanggalCetak = getFormattedDate();
 
-            // HALAMAN 1 (Rapot Utama - Catatan Wali & Tanggapan Simetris Menggunakan Flexbox & Grid)
+            // HALAMAN 1 (Rapot Utama)
             let page1 = `
                 <div class="a4-page bg-white">
                     <img src="https://i.ibb.co.com/LD8rLMkz/Untitled-design-20260620-130306-0000.png" crossorigin="anonymous" class="watermark-logo">
@@ -686,7 +722,6 @@
                                         <tr><td class="text-left pl-2">Tanpa Keterangan</td><td class="text-center">:</td><td class="text-center">${data.kehadiran ? (data.kehadiran.alpa || '0') : '0'} hari</td></tr>
                                     </table>
                                     
-                                    <!-- Flex-Grow akan memaksa kotak ini memenuhi seluruh sisa tinggi kolom -->
                                     <div style="border: 1px solid #1e293b;" class="flex-grow flex flex-col">
                                         <div style="${thBg} border-bottom: 1px solid #1e293b; padding: 2.5px 4px;" class="text-center font-bold text-[9.5px]">Catatan Wali Kelas</div>
                                         <div style="padding: 2.5px 4px; min-height: 38px;" class="italic align-top text-[10px] flex-grow">${data.kehadiran ? (data.kehadiran.catatan || '-') : '-'}</div>
@@ -700,7 +735,6 @@
                                         ${htmlEkskul}
                                     </table>
                                     
-                                    <!-- Flex-Grow akan memaksa kotak ini sejajar sempurna dengan kotak sebelah kiri -->
                                     <div style="border: 1px solid #1e293b;" class="flex-grow flex flex-col">
                                         <div style="${thBg} border-bottom: 1px solid #1e293b; padding: 2.5px 4px;" class="text-center font-bold text-[9.5px]">Tanggapan Orang Tua / Wali Murid</div>
                                         <div style="padding: 2.5px 4px; min-height: 38px;" class="align-top flex-grow"></div>
@@ -836,7 +870,6 @@
             });
         }
 
-        // Modifikasi fungsi executePrint untuk menerima parameter judul / nama PDF
         function executePrint(htmlContent, documentTitle = 'Cetak Rapot Sisipan & Grafik') {
             const printWindow = window.open('', '_blank', 'width=950,height=800');
             if (!printWindow) {
@@ -926,7 +959,6 @@
             if (!container || !container.innerHTML.includes('a4-page')) {
                 alert("Pratinjau rapot belum dimuat."); return;
             }
-            // Kirim judul yang sudah tersimpan di window.currentPrintTitle
             executePrint(container.innerHTML, window.currentPrintTitle);
         }
 
@@ -937,7 +969,6 @@
 
             btn.innerText = "Menyiapkan Cetak Masal (Termasuk Grafik)..."; btn.disabled = true;
 
-            // Set Judul PDF khusus saat cetak Masal 1 Kelas
             const judulCetakMasal = `Kelas ${kelas} Cetak Rapot Sisipan & Grafik`;
 
             window.currentChartData = [];
@@ -956,7 +987,7 @@
                 });
 
                 btn.innerText = "🖨️ Cetak Masal 1 Kelas (Printer)"; btn.disabled = false;
-                executePrint(allHtml, judulCetakMasal); // Kirim parameter judul cetak masal
+                executePrint(allHtml, judulCetakMasal);
             }).catch(() => {
                 btn.innerText = "🖨️ Cetak Masal 1 Kelas (Printer)"; btn.disabled = false;
                 alert("Gagal mengambil data kelas.");
@@ -967,4 +998,3 @@
     </script>
 </body>
 </html>
-```<FollowUp>
