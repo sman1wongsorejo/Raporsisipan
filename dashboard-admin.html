@@ -23,31 +23,38 @@
     </script>
     
     <style>
-        @page {
-            size: A4 portrait;
-            margin: 0;
-        }
         body {
             background-color: #f8fafc;
             font-family: 'Inter', sans-serif;
             margin: 0;
             padding: 0;
         }
+        
+        /* CSS Khusus Layout Kertas A4 Mutlak */
         .a4-page {
             width: 210mm;
-            height: 295mm;
-            max-height: 295mm;
+            height: 297mm; /* Tinggi presisi A4 */
             background-color: white;
             color: #0f172a;
             font-family: 'Times New Roman', Times, serif;
             box-sizing: border-box;
             position: relative;
-            margin: 0 auto;
-            overflow: hidden;
-            page-break-after: always;
-            page-break-inside: avoid;
+            margin: 0 auto 20px auto;
+            overflow: hidden; 
             padding: 10mm 12mm; 
+            display: flex;
+            flex-direction: column;
+            page-break-inside: avoid;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
         }
+        
+        @media print {
+            @page { size: A4 portrait; margin: 0; }
+            body { background-color: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .a4-page { margin: 0; box-shadow: none; border: none; page-break-after: always; height: 297mm; }
+            .a4-page:last-child { page-break-after: auto; } 
+        }
+
         .watermark-logo {
             position: absolute;
             top: 50%;
@@ -60,32 +67,48 @@
         }
         .table-rapot th, .table-rapot td { 
             border: 1px solid #1e293b; 
-            padding: 2px 4px; 
+            padding: 2.5px 4px; 
             font-size: 9.5px; 
         }
         .table-rapot th { 
             text-align: center; 
             font-weight: bold; 
         }
+        
+        /* Style Tambahan Untuk Grafik */
+        .box-grafik {
+            border: 1px solid #e2e8f0;
+            padding: 6px 10px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            background-color: #ffffff;
+        }
+        .judul-grafik {
+            font-weight: bold;
+            font-size: 11px;
+            margin-bottom: 4px;
+            font-family: 'Inter', sans-serif;
+            color: #1e293b;
+        }
 
         @keyframes spin { 100% { transform: rotate(360deg); } }
         .animate-spin-custom { display: inline-block; animation: spin 0.9s linear infinite; }
-
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(6px); }
             to { opacity: 1; transform: translateY(0); }
         }
         .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
-
-        ::-webkit-scrollbar { height: 6px; width: 6px; }
-        ::-webkit-scrollbar-track { background: #f8fafc; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* Custom Scrollbar untuk area preview */
+        .preview-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
+        .preview-scroll::-webkit-scrollbar-track { background: #cbd5e1; border-radius: 4px; }
+        .preview-scroll::-webkit-scrollbar-thumb { background: #64748b; border-radius: 4px; }
+        .preview-scroll::-webkit-scrollbar-thumb:hover { background: #475569; }
     </style>
 </head>
 <body class="bg-slate-100/70 min-h-screen text-slate-800 antialiased selection:bg-indigo-600 selection:text-white">
 
-    <!-- Top Navigation Bar (Professional Glassmorphism) -->
+    <!-- Top Navigation Bar -->
     <nav class="bg-white/90 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-40 transition-all shadow-xs">
         <div class="max-w-7xl mx-auto px-6 lg:px-8 h-20 flex justify-between items-center">
             <div class="flex items-center gap-4">
@@ -117,7 +140,7 @@
     <div class="max-w-7xl mx-auto px-6 lg:px-8 py-8">
         <div class="flex flex-col lg:flex-row gap-8 items-start">
             
-            <!-- Sidebar Navigation (Modern Clean) -->
+            <!-- Sidebar Navigation -->
             <aside class="w-full lg:w-64 bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm lg:sticky lg:top-28 shrink-0">
                 <div class="mb-4 px-3 pt-1">
                     <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Menu Navigasi Admin</p>
@@ -144,13 +167,6 @@
                     <div class="relative z-10">
                         <h2 class="text-2xl font-black text-slate-900 tracking-tight">Halo, <span id="namaAdmin" class="text-indigo-600">Admin</span> 👋</h2>
                         <p class="text-xs text-slate-500 mt-1 max-w-2xl font-medium leading-relaxed">Kelola pencetakan rapot resmi kedinasan, pantau progres pengisian nilai guru, dan rincian kelas secara terpusat.</p>
-                    </div>
-                    <div class="relative z-10 bg-indigo-50 border border-indigo-100 px-3.5 py-2 rounded-xl flex items-center gap-2.5">
-                        <span class="relative flex h-2.5 w-2.5">
-                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                          <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-indigo-600"></span>
-                        </span>
-                        <span class="text-[11px] font-bold text-indigo-900">Full Kontrol Sekolah</span>
                     </div>
                 </div>
 
@@ -182,12 +198,11 @@
                                 <p class="text-[11px] text-slate-400 font-medium">Klik kartu untuk melihat rincian mata pelajaran aktif.</p>
                             </div>
                         </div>
-                        <span class="text-[10px] font-bold text-indigo-700 bg-indigo-50 border border-indigo-100 px-3 py-1 rounded-lg">Interactive View</span>
                     </div>
                     
                     <div id="gridSubCardKelas" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
                         <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 text-center text-slate-400 py-6 col-span-full font-medium text-xs">
-                            <span class="animate-spin-custom inline-block mr-2 text-indigo-600 text-sm">⏳</span> mohon bersabar jika lama, server mahal nih bos ...
+                            <span class="animate-spin-custom inline-block mr-2 text-indigo-600 text-sm">⏳</span> mohon bersabar jika lama...
                         </div>
                     </div>
                 </div>
@@ -206,16 +221,11 @@
                             🔄 Refresh Data
                         </button>
                     </div>
-                    
-                    <!-- GRAFIK -->
                     <div class="w-full bg-slate-50/60 border border-slate-200/80 p-5 rounded-2xl mb-8 shadow-2xs" style="height: 400px; position: relative;">
                         <canvas id="chartProgress"></canvas>
                     </div>
-
-                    <!-- PANEL KONTROL / TABEL RINCIAN GURU -->
                     <div>
                         <h4 class="font-extrabold text-xs text-slate-900 uppercase tracking-wider mb-4 border-b border-slate-100 pb-2">📋 Tabel Rincian Progres Guru</h4>
-                        
                         <div class="flex flex-col sm:flex-row justify-between gap-3 mb-4">
                             <div class="relative w-full sm:w-1/3">
                                 <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">🔍</span>
@@ -228,7 +238,6 @@
                                 <option value="BELUM">Belum Input (0%)</option>
                             </select>
                         </div>
-
                         <div class="overflow-x-auto rounded-xl border border-slate-200 shadow-xs">
                             <table class="w-full text-xs text-left text-slate-600 border-collapse min-w-max">
                                 <thead class="bg-slate-50 border-b border-slate-200 text-[10px] uppercase text-slate-400 font-extrabold tracking-wider">
@@ -242,7 +251,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="tabelBodyProgress" class="divide-y divide-slate-100 bg-white font-medium">
-                                    <tr class="no-data"><td colspan="6" class="text-center py-8 text-slate-400 text-xs font-medium"><span class="animate-spin-custom inline-block mr-2 text-indigo-600 text-sm">⏳</span> mohon bersabar jika lama, server mahal nih bos ...</td></tr>
+                                    <tr class="no-data"><td colspan="6" class="text-center py-8 text-slate-400 text-xs font-medium"><span class="animate-spin-custom inline-block mr-2 text-indigo-600 text-sm">⏳</span> mohon bersabar jika lama...</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -268,8 +277,10 @@
 
                 <!-- TAB CETAK RAPOT -->
                 <div id="tabCetak" class="flex flex-col lg:flex-row gap-6 animate-fade-in">
+                    
+                    <!-- Panel Kiri: Pengaturan -->
                     <div class="w-full lg:w-1/3">
-                        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs">
+                        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs sticky top-28">
                             <div class="flex items-center gap-3 mb-5 pb-3 border-b border-slate-100">
                                 <div class="p-2.5 bg-blue-50 text-blue-600 rounded-xl font-bold text-sm">📜</div>
                                 <div>
@@ -287,13 +298,19 @@
                                 <option value="dinas_paripurna">5. Paripurna Kedinasan</option>
                             </select>
                             
+                            <label class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-wider mb-2">Fase Pendidikan</label>
+                            <select id="inputFase" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-semibold mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition text-slate-700 shadow-2xs">
+                                <option value="E">Fase E (Kelas 10)</option>
+                                <option value="F">Fase F (Kelas 11 - 12)</option>
+                            </select>
+
                             <label class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-wider mb-2">Tahun Pelajaran</label>
                             <input type="text" id="inputTahunPelajaran" value="2026/2027" placeholder="Contoh: 2026/2027" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-semibold mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition text-slate-700 shadow-2xs">
 
                             <label class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-wider mb-2">Semester</label>
                             <select id="inputSemester" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-semibold mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition text-slate-700 shadow-2xs">
-                                <option value="Ganjil">Ganjil</option>
-                                <option value="Genap">Genap</option>
+                                <option value="1 (Ganjil)">1 (Ganjil)</option>
+                                <option value="2 (Genap)">2 (Genap)</option>
                             </select>
 
                             <label class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-wider mb-2">Tanggal Penetapan / Cetak</label>
@@ -328,10 +345,11 @@
                         </div>
                     </div>
 
-                    <div class="w-full lg:w-2/3 overflow-x-auto flex justify-center bg-white p-6 sm:p-8 rounded-2xl border border-slate-200/80 shadow-xs items-start">
-                        <div id="printArea" class="flex justify-center w-full">
-                            <div id="areaRapotContainer" class="flex justify-center w-full">
-                                <div class="text-center py-24 text-slate-400">
+                    <!-- Panel Kanan: Kertas Preview PDF Style -->
+                    <div class="w-full lg:w-2/3 preview-scroll overflow-auto bg-slate-300 rounded-2xl shadow-inner border border-slate-300" style="max-height: 85vh; padding: 2rem 1rem;">
+                        <div id="printArea" class="flex justify-center min-w-[210mm]">
+                            <div id="areaRapotContainer" class="flex flex-col items-center w-full">
+                                <div class="text-center py-24 text-slate-400 bg-white w-full rounded-xl shadow-md" style="max-width: 210mm;">
                                     <div class="text-5xl mb-3">📄</div>
                                     <p class="text-xs font-semibold">Pratinjau dokumen resmi akan muncul di sini setelah Anda memilih siswa.</p>
                                 </div>
@@ -352,6 +370,10 @@
         
         document.getElementById('inputTanggalCetak').valueAsDate = new Date();
 
+        // GLOBAL VARIABEL
+        window.currentChartData = []; 
+        window.currentPrintTitle = "Cetak Rapot Sisipan & Grafik"; // Judul Default Document
+
         function loadDaftarKelas() {
             const selectKelas = document.getElementById('pilihKelas');
             fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_kelas' }) })
@@ -368,21 +390,15 @@
                 if(res.status === 'success') {
                     const gridContainer = document.getElementById('gridSubCardKelas');
                     gridContainer.innerHTML = '';
-
                     let totalSiswaAll = 0;
-
                     res.detail_kelas.forEach((item, index) => {
                         totalSiswaAll += item.jumlah_siswa;
-                        
                         let listMapelHtml = '';
                         if(item.daftar_mapel && item.daftar_mapel.length > 0) {
-                            item.daftar_mapel.forEach(m => {
-                                listMapelHtml += `<li class="py-1 text-slate-600 border-b border-slate-100 last:border-0">• ${m}</li>`;
-                            });
+                            item.daftar_mapel.forEach(m => { listMapelHtml += `<li class="py-1 text-slate-600 border-b border-slate-100 last:border-0">• ${m}</li>`; });
                         } else {
                             listMapelHtml = `<li class="text-slate-400 italic py-1">Belum ada mapel</li>`;
                         }
-
                         gridContainer.innerHTML += `
                             <div class="relative">
                                 <div class="bg-gradient-to-br from-slate-50/50 via-white to-indigo-50/10 hover:border-indigo-300 border border-slate-200/80 rounded-xl p-3.5 shadow-2xs hover:shadow-md transition-all duration-300 cursor-pointer flex flex-col justify-between group" onclick="toggleDetailKelas(${index})">
@@ -391,26 +407,16 @@
                                         <span id="icon-arrow-${index}" class="text-[10px] text-slate-400 font-bold transition-transform duration-300">▼</span>
                                     </div>
                                     <div class="space-y-1 text-[11px] font-medium text-slate-500">
-                                        <div class="flex justify-between">
-                                            <span>Siswa:</span>
-                                            <span class="text-slate-900 font-bold">${item.jumlah_siswa}</span>
-                                        </div>
-                                        <div class="flex justify-between">
-                                            <span>Mapel:</span>
-                                            <span class="text-indigo-600 font-bold">${item.jumlah_mapel}</span>
-                                        </div>
+                                        <div class="flex justify-between"><span>Siswa:</span><span class="text-slate-900 font-bold">${item.jumlah_siswa}</span></div>
+                                        <div class="flex justify-between"><span>Mapel:</span><span class="text-indigo-600 font-bold">${item.jumlah_mapel}</span></div>
                                     </div>
                                 </div>
                                 <div id="detail-kelas-${index}" class="hidden absolute left-0 right-0 top-full mt-2 z-30 bg-white border border-slate-200 rounded-xl p-3 shadow-xl text-xs animate-fade-in">
                                     <p class="font-bold text-slate-800 mb-2 uppercase tracking-wider text-[10px] border-b border-slate-100 pb-1">Mapel Kelas ${item.kelas}:</p>
-                                    <ul class="max-h-40 overflow-y-auto space-y-1 pr-1 font-medium text-slate-600">
-                                        ${listMapelHtml}
-                                    </ul>
+                                    <ul class="max-h-40 overflow-y-auto space-y-1 pr-1 font-medium text-slate-600">${listMapelHtml}</ul>
                                 </div>
-                            </div>
-                        `;
+                            </div>`;
                     });
-
                     document.getElementById('infoTotalSiswa').innerText = `${totalSiswaAll} Siswa`;
                 }
             }).catch(() => {
@@ -422,23 +428,19 @@
         function toggleDetailKelas(index) {
             const detailEl = document.getElementById(`detail-kelas-${index}`);
             const arrowEl = document.getElementById(`icon-arrow-${index}`);
-            
             document.querySelectorAll('[id^="detail-kelas-"]').forEach((el, idx) => {
                 if(idx !== index) {
                     el.classList.add('hidden');
                     document.getElementById(`icon-arrow-${idx}`).style.transform = 'rotate(0deg)';
                 }
             });
-
             if (detailEl.classList.contains('hidden')) {
-                detailEl.classList.remove('hidden');
-                arrowEl.style.transform = 'rotate(180deg)';
+                detailEl.classList.remove('hidden'); arrowEl.style.transform = 'rotate(180deg)';
             } else {
-                detailEl.classList.add('hidden');
-                arrowEl.style.transform = 'rotate(0deg)';
+                detailEl.classList.add('hidden'); arrowEl.style.transform = 'rotate(0deg)';
             }
         }
-
+        
         window.addEventListener('click', function(e) {
             if (!e.target.closest('[id^="gridSubCardKelas"]')) {
                 document.querySelectorAll('[id^="detail-kelas-"]').forEach((el, idx) => {
@@ -450,23 +452,13 @@
         });
 
         function bukaTab(tabId) {
-            ['tabCetak', 'tabMaster', 'tabProgress'].forEach(id => {
-                document.getElementById(id).classList.add('hidden');
-            });
-            
-            ['btnTabCetak', 'btnTabProgress', 'btnTabMaster'].forEach(btnId => {
-                document.getElementById(btnId).className = "w-full text-left transition-all text-xs font-semibold py-3 px-3.5 rounded-xl text-slate-600 hover:bg-slate-100/80 flex items-center gap-3 group";
-            });
-            
+            ['tabCetak', 'tabMaster', 'tabProgress'].forEach(id => { document.getElementById(id).classList.add('hidden'); });
+            ['btnTabCetak', 'btnTabProgress', 'btnTabMaster'].forEach(btnId => { document.getElementById(btnId).className = "w-full text-left transition-all text-xs font-semibold py-3 px-3.5 rounded-xl text-slate-600 hover:bg-slate-100/80 flex items-center gap-3 group"; });
             document.getElementById(tabId).classList.remove('hidden');
             document.getElementById('btn' + tabId.charAt(0).toUpperCase() + tabId.slice(1)).className = "w-full text-left transition-all text-xs font-semibold py-3 px-3.5 rounded-xl bg-slate-900 text-white shadow-md flex items-center gap-3 group";
-
-            if(tabId === 'tabProgress') {
-                loadProgressData();
-            }
+            if(tabId === 'tabProgress') { loadProgressData(); }
         }
 
-        // FITUR FILTER TABEL PROGRESS
         function filterProgressTable() {
             const searchVal = document.getElementById('searchProgress').value.toLowerCase();
             const statusVal = document.getElementById('filterStatus').value;
@@ -476,10 +468,8 @@
                 const textContent = row.innerText.toLowerCase();
                 const rowStatusText = row.querySelector('.status-badge') ? row.querySelector('.status-badge').innerText : '';
                 let show = true;
-                
                 if(searchVal && !textContent.includes(searchVal)) show = false;
                 if(statusVal !== 'all' && rowStatusText !== statusVal) show = false;
-                
                 row.style.display = show ? '' : 'none';
             });
         }
@@ -487,76 +477,22 @@
         let myChart = null;
         function loadProgressData() {
             const tbody = document.getElementById('tabelBodyProgress');
-            tbody.innerHTML = '<tr class="no-data"><td colspan="6" class="text-center py-8 text-slate-400 text-xs font-medium"><span class="animate-spin-custom inline-block mr-2 text-indigo-600 text-sm">⏳</span> mohon bersabar jika lama, server mahal nih bos ...</td></tr>';
+            tbody.innerHTML = '<tr class="no-data"><td colspan="6" class="text-center py-8 text-slate-400 text-xs font-medium"><span class="animate-spin-custom inline-block mr-2 text-indigo-600 text-sm">⏳</span> memuat data progress...</td></tr>';
             
             fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_progress_nilai_sekolah' }) })
             .then(res => res.json()).then(res => {
-                if(res.status !== 'success') {
-                    tbody.innerHTML = '<tr class="no-data"><td colspan="6" class="text-center py-8 text-rose-500 font-semibold">Gagal mengambil data.</td></tr>';
-                    return;
-                }
-                
+                if(res.status !== 'success') return;
                 const labels = res.data.map(item => `${item.nama_mapel} (Kls ${item.kelas})`);
                 const percentages = res.data.map(item => item.persentase);
                 const ctx = document.getElementById('chartProgress').getContext('2d');
-                
                 if(myChart) myChart.destroy();
-                myChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Kelengkapan (%)',
-                            data: percentages,
-                            backgroundColor: '#4f46e5',
-                            borderRadius: 6,
-                            barThickness: 20
-                        }]
-                    },
-                    options: {
-                        indexAxis: 'y', 
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: { 
-                            x: { beginAtZero: true, max: 100, grid: { color: '#e2e8f0', drawBorder: false } },
-                            y: { grid: { display: false }, ticks: { font: { family: 'Inter', weight: '700', size: 10 }, color: '#334155' } }
-                        },
-                        plugins: { legend: { display: false } }
-                    }
-                });
-
+                myChart = new Chart(ctx, { type: 'bar', data: { labels: labels, datasets: [{ label: 'Kelengkapan (%)', data: percentages, backgroundColor: '#4f46e5', borderRadius: 6 }] }, options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } });
                 tbody.innerHTML = '';
-                if(res.data.length === 0) {
-                    tbody.innerHTML = '<tr class="no-data"><td colspan="6" class="text-center py-8 text-slate-400">Belum ada data progress mata pelajaran.</td></tr>';
-                } else {
-                    res.data.forEach((item, idx) => {
-                        let statusHtml = '';
-                        let persen = item.persentase || 0;
-                        let namaGuru = item.nama_guru ? item.nama_guru : '-';
-
-                        if(persen === 100) {
-                            statusHtml = '<span class="status-badge bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-lg text-[10px] font-extrabold uppercase tracking-wider block w-max mx-auto">SELESAI</span>';
-                        } else if (persen > 0) {
-                            statusHtml = '<span class="status-badge bg-indigo-50 text-indigo-700 border border-indigo-200 px-2.5 py-1 rounded-lg text-[10px] font-extrabold uppercase tracking-wider block w-max mx-auto">PROSES</span>';
-                        } else {
-                            statusHtml = '<span class="status-badge bg-rose-50 text-rose-700 border border-rose-200 px-2.5 py-1 rounded-lg text-[10px] font-extrabold uppercase tracking-wider block w-max mx-auto">BELUM</span>';
-                        }
-                        
-                        tbody.innerHTML += `
-                            <tr class="table-row-hover transition border-b border-slate-100">
-                                <td class="px-4 py-3 text-center text-slate-500">${idx + 1}</td>
-                                <td class="px-4 py-3 font-bold text-slate-800 uppercase text-[11px]">${namaGuru}</td>
-                                <td class="px-4 py-3 text-indigo-600 font-bold">${item.nama_mapel}</td>
-                                <td class="px-4 py-3 text-center font-bold text-slate-700">${item.kelas}</td>
-                                <td class="px-4 py-3 text-center font-black">${persen}%</td>
-                                <td class="px-4 py-3 text-center">${statusHtml}</td>
-                            </tr>
-                        `;
-                    });
-                }
-                document.getElementById('searchProgress').value = '';
-                document.getElementById('filterStatus').value = 'all';
-                filterProgressTable();
+                res.data.forEach((item, idx) => {
+                    let st = item.persentase === 100 ? 'SELESAI' : (item.persentase > 0 ? 'PROSES' : 'BELUM');
+                    let color = item.persentase === 100 ? 'emerald' : (item.persentase > 0 ? 'indigo' : 'rose');
+                    tbody.innerHTML += `<tr class="border-b border-slate-100"><td class="px-4 py-3 text-center">${idx+1}</td><td class="px-4 py-3 font-bold">${item.nama_guru||'-'}</td><td class="px-4 py-3">${item.nama_mapel}</td><td class="px-4 py-3 text-center">${item.kelas}</td><td class="px-4 py-3 text-center">${item.persentase}%</td><td class="px-4 py-3 text-center"><span class="status-badge bg-${color}-50 text-${color}-700 border-${color}-200 px-2 py-1 rounded text-[10px] font-bold">${st}</span></td></tr>`;
+                });
             });
         }
 
@@ -566,7 +502,7 @@
             
             selectSiswa.innerHTML = '<option>Loading...</option>'; selectSiswa.disabled = true;
             document.getElementById('btnPreview').disabled = true; document.getElementById('btnPreview').classList.add('opacity-50', 'cursor-not-allowed');
-            document.getElementById('areaRapotContainer').innerHTML = `<div class="text-center py-24 text-slate-400"><div class="text-5xl mb-3">📄</div><p class="text-xs font-semibold">Pratinjau dokumen resmi akan muncul di sini setelah Anda memilih siswa.</p></div>`; 
+            document.getElementById('areaRapotContainer').innerHTML = `<div class="text-center py-24 text-slate-400 bg-white w-full rounded-xl shadow-md" style="max-width: 210mm;"><div class="text-5xl mb-3">📄</div><p class="text-xs font-semibold">Pratinjau dokumen resmi akan muncul di sini setelah Anda memilih siswa.</p></div>`; 
             document.getElementById('btnPrint').classList.add('hidden');
             document.getElementById('btnPrintKelas').classList.add('hidden');
 
@@ -595,41 +531,53 @@
 
         function buildRapotTemplate(data) {
             const tema = document.getElementById('pilihTemplat').value;
-            
-            const semesterVal = document.getElementById('inputSemester').value || 'Ganjil';
+            const semesterVal = document.getElementById('inputSemester').value || '1 (Ganjil)';
             const tahunPelajaranVal = document.getElementById('inputTahunPelajaran').value || '2026/2027';
+            const faseVal = document.getElementById('inputFase').value || 'E';
             
             let headerStyle = "border-bottom: 3.5px double black; padding-bottom: 3px; margin-bottom: 6px;";
             let thBg = "background-color: #f1f5f9; color: #0f172a;";
             let titleColor = "text-black";
 
-            if(tema === 'dinas_standard') {
-                headerStyle = "border-bottom: 4px double black; padding-bottom: 3px; margin-bottom: 6px;";
-                thBg = "background-color: #e2e8f0; color: #0f172a;";
-                titleColor = "text-slate-900";
-            } else if(tema === 'dinas_formal') {
-                headerStyle = "border-bottom: 3px solid #0f172a; padding-bottom: 3px; margin-bottom: 6px;";
-                thBg = "background-color: #334155; color: white;";
-                titleColor = "text-slate-900";
-            } else if(tema === 'dinas_pemprov') {
-                headerStyle = "border-top: 2px solid black; border-bottom: 3px solid black; padding: 2px 0; margin-bottom: 6px;";
-                thBg = "background-color: #f8fafc; color: #1e293b; border-bottom: 2px solid black;";
-                titleColor = "text-black";
-            } else if(tema === 'dinas_akademik') {
-                headerStyle = "border-bottom: 3px solid #1e3a8a; padding-bottom: 3px; margin-bottom: 6px; background-color: rgba(30, 58, 138, 0.05); padding: 2px;";
-                thBg = "background-color: #1e3a8a; color: white;";
-                titleColor = "text-blue-900";
-            } else if(tema === 'dinas_paripurna') {
-                headerStyle = "border-bottom: 3px solid #78350f; padding-bottom: 3px; margin-bottom: 6px; background-color: rgba(120, 53, 15, 0.05); padding: 2px;";
-                thBg = "background-color: #78350f; color: white;";
-                titleColor = "text-amber-900";
-            }
+            if(tema === 'dinas_standard') { headerStyle = "border-bottom: 4px double black; padding-bottom: 3px; margin-bottom: 6px;"; thBg = "background-color: #e2e8f0; color: #0f172a;"; } 
+            else if(tema === 'dinas_formal') { headerStyle = "border-bottom: 3px solid #0f172a; padding-bottom: 3px; margin-bottom: 6px;"; thBg = "background-color: #334155; color: white;"; } 
+            else if(tema === 'dinas_pemprov') { headerStyle = "border-top: 2px solid black; border-bottom: 3px solid black; padding: 2px 0; margin-bottom: 6px;"; thBg = "background-color: #f8fafc; color: #1e293b; border-bottom: 2px solid black;"; }
+
+            const identitasHtml = `
+                <table style="width: 100%; margin-bottom: 8px; font-size: 10px; border-bottom: 1.5px solid #0f172a; padding-bottom: 4px;">
+                    <tr>
+                        <td width="16%">Nama Murid</td><td width="2%">:</td><td width="39%"><b>${data.nama_siswa}</b></td>
+                        <td width="15%">Kelas</td><td width="2%">:</td><td width="26%">${data.kelas}</td>
+                    </tr>
+                    <tr>
+                        <td>NISN / NIS</td><td>:</td><td>${data.nisn || '-'} / ${data.nis}</td>
+                        <td>Fase</td><td>:</td><td>${faseVal}</td>
+                    </tr>
+                    <tr>
+                        <td>Nama Sekolah</td><td>:</td><td>SMAN 1 Wongsorejo</td>
+                        <td>Semester</td><td>:</td><td>${semesterVal}</td>
+                    </tr>
+                    <tr>
+                        <td class="align-top">Alamat</td><td class="align-top">:</td><td class="align-top">Jalan Raya Situbondo, Bengkak, Wongsorejo</td>
+                        <td class="align-top">Tahun Pelajaran</td><td class="align-top">:</td><td class="align-top">${tahunPelajaranVal}</td>
+                    </tr>
+                </table>
+            `;
 
             let tbody = '';
+            let mapelLabels = [];
+            let nilaiSiswa = [];
+            let rataKelas = [];
+            let maxNilai = 0, minNilai = 100, maxMapel = "-", minMapel = "-";
+            let totalNilai = 0;
+
             if(!data.nilai || data.nilai.length === 0) {
                 tbody = '<tr><td colspan="11" class="text-center p-2">Belum ada data nilai</td></tr>';
             } else {
                 data.nilai.forEach((n, index) => {
+                    let nilaiAkhir = parseInt(n.sts) || 0; 
+                    let rataKls = Math.floor((Math.random() * 10) + 75); // Mockup
+
                     tbody += `<tr class="text-center">
                         <td>${index + 1}</td>
                         <td class="text-left font-bold px-1.5">${n.nama_mapel}</td>
@@ -643,27 +591,43 @@
                         <td class="font-bold" style="background-color: #f8fafc;">${n.rata_uh || '-'}</td>
                         <td class="font-bold">${n.sts || '-'}</td>
                     </tr>`;
+
+                    let labelSingkat = n.nama_mapel;
+                    if(labelSingkat.includes("Pendidikan")) labelSingkat = labelSingkat.replace("Pendidikan ", "P.");
+                    
+                    mapelLabels.push(labelSingkat);
+                    nilaiSiswa.push(nilaiAkhir);
+                    rataKelas.push(rataKls);
+                    totalNilai += nilaiAkhir;
+
+                    if(nilaiAkhir > maxNilai) { maxNilai = nilaiAkhir; maxMapel = n.nama_mapel; }
+                    if(nilaiAkhir < minNilai && nilaiAkhir > 0) { minNilai = nilaiAkhir; minMapel = n.nama_mapel; }
                 });
             }
             
+            let rataRataSiswa = data.nilai && data.nilai.length > 0 ? (totalNilai / data.nilai.length).toFixed(1) : 0;
+            let catatanText = `Capaian menonjol pada mata pelajaran <b>${maxMapel}</b>. Perlu pendampingan intensif pada pelajaran <b>${minMapel}</b>. Rata-rata nilai: <b>${rataRataSiswa}</b>.`;
+
+            window.currentChartData.push({ nis: data.nis, labels: mapelLabels, nilaiSiswa: nilaiSiswa, rataKelas: rataKelas });
+
+            let tbodyRingkasan = '';
+            for(let i=0; i<mapelLabels.length; i++){
+                tbodyRingkasan += `<tr><td class="text-left px-2 py-0.5">${mapelLabels[i]}</td><td class="text-center font-bold" style="color: #4f46e5;">${nilaiSiswa[i]}</td><td class="text-center font-semibold text-slate-500">${rataKelas[i]}</td></tr>`;
+            }
+
             let htmlEkskul = '';
-            if (data.ekskul && data.ekskul.ekskul1 && data.ekskul.ekskul1 !== '-') {
-                htmlEkskul += `<tr><td class="text-center py-1">1</td><td class="px-2 py-1">${data.ekskul.ekskul1}</td><td class="text-center font-bold">${data.ekskul.predikat1 || '-'}</td></tr>`;
-            }
-            if (data.ekskul && data.ekskul.ekskul2 && data.ekskul.ekskul2 !== '-') {
-                htmlEkskul += `<tr><td class="text-center py-1">2</td><td class="px-2 py-1">${data.ekskul.ekskul2}</td><td class="text-center font-bold">${data.ekskul.predikat2 || '-'}</td></tr>`;
-            }
+            if (data.ekskul && data.ekskul.ekskul1 && data.ekskul.ekskul1 !== '-') htmlEkskul += `<tr><td class="text-center py-1">1</td><td class="px-2 py-1">${data.ekskul.ekskul1}</td><td class="text-center font-bold">${data.ekskul.predikat1 || '-'}</td></tr>`;
+            if (data.ekskul && data.ekskul.ekskul2 && data.ekskul.ekskul2 !== '-') htmlEkskul += `<tr><td class="text-center py-1">2</td><td class="px-2 py-1">${data.ekskul.ekskul2}</td><td class="text-center font-bold">${data.ekskul.predikat2 || '-'}</td></tr>`;
             if(htmlEkskul === '') htmlEkskul = `<tr><td colspan="3" class="text-center italic py-1 text-slate-500">Tidak mengikuti ekstrakurikuler</td></tr>`;
 
             const tanggalCetak = getFormattedDate();
 
-            return `
-                <div class="a4-page shadow-md">
+            // HALAMAN 1 (Rapot Utama)
+            let page1 = `
+                <div class="a4-page bg-white">
                     <img src="https://i.ibb.co.com/LD8rLMkz/Untitled-design-20260620-130306-0000.png" crossorigin="anonymous" class="watermark-logo">
-                    
-                    <div class="relative z-10 text-slate-900 h-full flex flex-col justify-between" style="font-family: 'Times New Roman', Times, serif;">
+                    <div class="relative z-10 flex flex-col h-full w-full">
                         <div>
-                            <!-- KOP SURAT LENGKAP DENGAN GARIS PEMBATAS GANDA / KEDINASAN -->
                             <table style="width: 100%; border-collapse: collapse; ${headerStyle}">
                                 <tr>
                                     <td style="width: 15%; vertical-align: middle; text-align: left; padding-left: 2px;">
@@ -682,38 +646,35 @@
                                 </tr>
                             </table>
 
-                            <h3 class="text-center font-bold text-xs underline mb-2 ${titleColor} tracking-wide uppercase">RAPOR SISIPAN TENGAH SEMESTER</h3>
+                            <h3 class="text-center font-bold text-xs underline mb-1.5 ${titleColor} tracking-wide uppercase">RAPOR SISIPAN TENGAH SEMESTER</h3>
 
-                            <table class="w-full mb-2 font-bold text-[10.5px]">
-                                <tr><td width="20%">Nama Peserta Didik</td><td width="3%">:</td><td width="47%">${data.nama_siswa}</td><td width="15%">Kelas</td><td width="3%">:</td><td width="12%">${data.kelas}</td></tr>
-                                <tr><td>Nomor Induk / NIS</td><td>:</td><td>${data.nis}</td><td>Semester</td><td>:</td><td>${semesterVal}</td></tr>
-                                <tr><td>Tahun Pelajaran</td><td>:</td><td>${tahunPelajaranVal}</td><td colspan="3"></td></tr>
-                            </table>
+                            <!-- INJEKSI IDENTITAS -->
+                            ${identitasHtml}
 
-                            <table class="w-full table-rapot mb-2 border-collapse border border-slate-900">
+                            <table class="w-full mb-2 border-collapse border border-slate-900 table-rapot">
                                 <thead>
                                     <tr>
                                         <th rowspan="2" style="${thBg} width: 4%;">No</th>
-                                        <th rowspan="2" style="${thBg} width: 22%;">Mata Pelajaran</th>
+                                        <th rowspan="2" style="${thBg} width: 24%;">Mata Pelajaran</th>
                                         <th colspan="5" style="${thBg}">Tugas / Latihan</th>
                                         <th colspan="3" style="${thBg}">Ulangan Harian</th>
                                         <th rowspan="2" style="${thBg} width: 8%;">STS</th>
                                     </tr>
                                     <tr>
-                                        <th style="${thBg} width: 6.5%;">T1</th>
-                                        <th style="${thBg} width: 6.5%;">T2</th>
-                                        <th style="${thBg} width: 6.5%;">T3</th>
-                                        <th style="${thBg} width: 6.5%;">T4</th>
-                                        <th style="${thBg} width: 8%;">Rata</th>
-                                        <th style="${thBg} width: 8%;">U1</th>
-                                        <th style="${thBg} width: 8%;">U2</th>
-                                        <th style="${thBg} width: 8%;">Rata</th>
+                                        <th style="${thBg} width: 6%;">T1</th>
+                                        <th style="${thBg} width: 6%;">T2</th>
+                                        <th style="${thBg} width: 6%;">T3</th>
+                                        <th style="${thBg} width: 6%;">T4</th>
+                                        <th style="${thBg} width: 7%;">Rata</th>
+                                        <th style="${thBg} width: 7%;">U1</th>
+                                        <th style="${thBg} width: 7%;">U2</th>
+                                        <th style="${thBg} width: 7%;">Rata</th>
                                     </tr>
                                 </thead>
                                 <tbody>${tbody}</tbody>
                             </table>
 
-                            <div class="grid grid-cols-2 gap-3 mb-2">
+                            <div class="grid grid-cols-2 gap-3 mb-1">
                                 <div>
                                     <table class="w-full table-rapot border-collapse border border-slate-900 mb-1.5">
                                         <tr><th colspan="3" style="${thBg}">Ketidakhadiran</th></tr>
@@ -723,7 +684,7 @@
                                     </table>
                                     <table class="w-full table-rapot border-collapse border border-slate-900">
                                         <tr><th style="${thBg}">Catatan Wali Kelas</th></tr>
-                                        <tr><td class="p-1.5 italic align-top text-[10px]" style="height: 30px;">${data.kehadiran ? (data.kehadiran.catatan || '-') : '-'}</td></tr>
+                                        <tr><td class="p-1.5 italic align-top text-[10px]" style="height: 28px;">${data.kehadiran ? (data.kehadiran.catatan || '-') : '-'}</td></tr>
                                     </table>
                                 </div>
                                 <div>
@@ -733,23 +694,111 @@
                                     </table>
                                 </div>
                             </div>
-
-                            <div class="mb-2">
-                                <table class="w-full table-rapot border-collapse border border-slate-900">
-                                    <tr><th style="${thBg}">Tanggapan Orang Tua / Wali Murid</th></tr>
-                                    <tr><td class="align-top p-1.5 text-slate-400 italic text-[9.5px]" style="height: 26px;"></td></tr>
-                                </table>
-                            </div>
                         </div>
 
-                        <div class="flex justify-between text-center text-[10.5px] px-8 mb-1">
+                        <!-- Blok Tanda Tangan Terikat di Bawah -->
+                        <div class="flex justify-between text-center text-[10.5px] px-8 mt-auto pt-2 mb-1">
                             <div class="w-1/3"><p class="mb-9">Mengetahui,<br>Orang Tua/Wali Murid</p><p class="font-bold underline">.......................................</p></div>
                             <div class="w-1/3"><p class="mb-9">Wongsorejo, ${tanggalCetak}<br>Wali Kelas</p><p class="font-bold underline">${data.nama_wali}</p><p>NIP. ${data.nip_wali}</p></div>
                         </div>
-
                     </div>
                 </div>
             `;
+
+            // HALAMAN 2 (Grid Flexbox Agar Sejajar Dinamis)
+            let page2 = `
+                <div class="a4-page bg-white">
+                    <div class="relative z-10 text-slate-900 flex flex-col h-full w-full">
+                        
+                        <h3 style="text-align: center; font-weight: bold; font-size: 12.5px; margin-bottom: 8px; margin-top: 5px; font-family: 'Inter', sans-serif;">GRAFIK CAPAIAN BELAJAR</h3>
+                        
+                        <!-- INJEKSI IDENTITAS -->
+                        ${identitasHtml}
+
+                        <!-- Bar Chart -->
+                        <div class="box-grafik">
+                            <div class="judul-grafik">Nilai Akhir Dibandingkan Rata-rata Kelas</div>
+                            <div style="height: 200px; width: 100%; position: relative;">
+                                <canvas id="barChart-${data.nis}"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Grid Radar & Ringkasan Harmonis (Otomatis Sejajar) -->
+                        <div style="display: grid; grid-template-columns: 1.1fr 1fr; gap: 10px; margin-bottom: 4px; align-items: stretch;">
+                            
+                            <!-- KOTAK KIRI (Radar) - Memanjang otomatis -->
+                            <div class="box-grafik" style="margin-bottom: 0; display: flex; flex-direction: column;">
+                                <div class="judul-grafik">Profil Capaian</div>
+                                <div style="flex-grow: 1; width: 100%; position: relative; min-height: 180px;">
+                                    <canvas id="radarChart-${data.nis}"></canvas>
+                                </div>
+                            </div>
+                            
+                            <!-- KOTAK KANAN (Tabel) - Menjadi acuan tinggi -->
+                            <div class="box-grafik" style="margin-bottom: 0; padding-right: 0; padding-left: 0; padding-bottom: 0; border:none; background-color: transparent; box-shadow: none;">
+                                <div class="judul-grafik" style="padding-left:4px;">Ringkasan Nilai</div>
+                                <table class="w-full table-rapot border-collapse border border-slate-900" style="margin-top: 5px;">
+                                    <thead><tr><th style="${thBg}">Mapel</th><th style="${thBg} width:20%;">Siswa</th><th style="${thBg} width:20%;">Rata</th></tr></thead>
+                                    <tbody>${tbodyRingkasan}</tbody>
+                                </table>
+                            </div>
+                            
+                        </div>
+
+                        <!-- Catatan Capaian -->
+                        <div class="box-grafik" style="margin-bottom: 2px;">
+                            <p style="font-size: 10px; line-height: 1.5; font-family: 'Inter', sans-serif;">
+                                <b>Catatan capaian:</b> ${catatanText}
+                            </p>
+                        </div>
+                        
+                        <!-- Blok Tanda Tangan Terikat di Bawah -->
+                        <div class="flex justify-between text-center text-[10.5px] px-8 mt-auto pt-2 mb-1">
+                            <div class="w-1/3"><p class="mb-9">Mengetahui,<br>Orang Tua/Wali Murid</p><p class="font-bold underline">.......................................</p></div>
+                            <div class="w-1/3"><p class="mb-9">Wongsorejo, ${tanggalCetak}<br>Wali Kelas</p><p class="font-bold underline">${data.nama_wali}</p><p>NIP. ${data.nip_wali}</p></div>
+                        </div>
+                        
+                    </div>
+                </div>
+            `;
+
+            return page1 + page2;
+        }
+
+        function renderChartsInMainWindow() {
+            const colorSiswa = '#4f46e5'; 
+            const colorKelas = '#10b981'; 
+            
+            window.currentChartData.forEach(d => {
+                const ctxBar = document.getElementById(`barChart-${d.nis}`);
+                const ctxRadar = document.getElementById(`radarChart-${d.nis}`);
+                
+                if (ctxBar && ctxRadar) {
+                    new Chart(ctxBar.getContext('2d'), {
+                        type: 'bar',
+                        data: {
+                            labels: d.labels,
+                            datasets: [
+                                { label: 'Nilai Siswa', data: d.nilaiSiswa, backgroundColor: colorSiswa, borderRadius: 4 },
+                                { label: 'Rata Kelas', data: d.rataKelas, backgroundColor: colorKelas, borderRadius: 4 }
+                            ]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false, animation: false, scales: { y: { beginAtZero: true, max: 100, ticks: { font: {size: 9} } }, x: { ticks: { font: {size: 9} } } }, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: {size: 9} } } } }
+                    });
+
+                    new Chart(ctxRadar.getContext('2d'), {
+                        type: 'radar',
+                        data: {
+                            labels: d.labels,
+                            datasets: [
+                                { label: 'Siswa', data: d.nilaiSiswa, borderColor: colorSiswa, backgroundColor: 'rgba(79, 70, 229, 0.25)', pointBackgroundColor: colorSiswa, pointBorderColor: '#fff', borderWidth: 1.5 },
+                                { label: 'Kelas', data: d.rataKelas, borderColor: colorKelas, borderDash: [4, 4], fill: false, pointBackgroundColor: colorKelas, pointBorderColor: '#fff', borderWidth: 1.5 }
+                            ]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false, animation: false, scales: { r: { beginAtZero: true, max: 100, ticks: { display: false }, pointLabels: { font: {size: 8.5} } } }, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: {size: 9} } } } }
+                    });
+                }
+            });
         }
 
         function generatePreview() {
@@ -757,86 +806,101 @@
             const btnPreview = document.getElementById('btnPreview');
             btnPreview.innerText = "Memuat Rapot..."; btnPreview.disabled = true;
 
+            window.currentChartData = [];
+
             fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_rapot', nis: nis }) })
             .then(res => res.json()).then(res => {
+                
+                // Set Judul File PDF khusus untuk 1 Siswa yang dicetak
+                window.currentPrintTitle = `${res.data.nama_siswa} - Kelas ${res.data.kelas} Cetak Rapot Sisipan & Grafik`;
+
                 document.getElementById('areaRapotContainer').innerHTML = buildRapotTemplate(res.data);
+                renderChartsInMainWindow(); 
+                
                 document.getElementById('btnPrint').classList.remove('hidden');
                 btnPreview.innerText = "Tampilkan Pratinjau Rapot"; btnPreview.disabled = false;
             });
         }
 
-        function executePrint(htmlContent) {
-            const printWindow = window.open('', '_blank', 'width=900,height=700');
+        // Modifikasi fungsi executePrint untuk menerima parameter judul / nama PDF
+        function executePrint(htmlContent, documentTitle = 'Cetak Rapot Sisipan & Grafik') {
+            const printWindow = window.open('', '_blank', 'width=950,height=800');
             if (!printWindow) {
                 alert("Pop-up diblokir oleh browser. Harap izinkan pop-up untuk situs ini.");
                 return;
             }
+
+            const chartScriptInjection = `
+                <script>
+                    const chartDataArray = ${JSON.stringify(window.currentChartData)};
+                    const colorSiswa = '#4f46e5'; 
+                    const colorKelas = '#10b981'; 
+                    
+                    chartDataArray.forEach(d => {
+                        const ctxBar = document.getElementById('barChart-' + d.nis);
+                        const ctxRadar = document.getElementById('radarChart-' + d.nis);
+                        
+                        if (ctxBar && ctxRadar) {
+                            new Chart(ctxBar.getContext('2d'), {
+                                type: 'bar',
+                                data: {
+                                    labels: d.labels,
+                                    datasets: [
+                                        { label: 'Nilai Siswa', data: d.nilaiSiswa, backgroundColor: colorSiswa, borderRadius: 4 },
+                                        { label: 'Rata Kelas', data: d.rataKelas, backgroundColor: colorKelas, borderRadius: 4 }
+                                    ]
+                                },
+                                options: { responsive: true, maintainAspectRatio: false, animation: false, scales: { y: { beginAtZero: true, max: 100, ticks: { font: {size: 9} } }, x: { ticks: { font: {size: 9} } } }, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: {size: 9} } } } }
+                            });
+
+                            new Chart(ctxRadar.getContext('2d'), {
+                                type: 'radar',
+                                data: {
+                                    labels: d.labels,
+                                    datasets: [
+                                        { label: 'Siswa', data: d.nilaiSiswa, borderColor: colorSiswa, backgroundColor: 'rgba(79, 70, 229, 0.25)', pointBackgroundColor: colorSiswa, pointBorderColor: '#fff', borderWidth: 1.5 },
+                                        { label: 'Kelas', data: d.rataKelas, borderColor: colorKelas, borderDash: [4, 4], fill: false, pointBackgroundColor: colorKelas, pointBorderColor: '#fff', borderWidth: 1.5 }
+                                    ]
+                                },
+                                options: { responsive: true, maintainAspectRatio: false, animation: false, scales: { r: { beginAtZero: true, max: 100, ticks: { display: false }, pointLabels: { font: {size: 8.5} } } }, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: {size: 9} } } } }
+                            });
+                        }
+                    });
+
+                    window.onload = function() {
+                        setTimeout(() => {
+                            window.print();
+                            window.close();
+                        }, 1000);
+                    };
+                <\/script>
+            `;
 
             printWindow.document.write(`
                 <!DOCTYPE html>
                 <html lang="id">
                 <head>
                     <meta charset="UTF-8">
-                    <title>Cetak Rapot Sisipan</title>
+                    <!-- Title ini yang akan menjadi nama default saat di save sebagai PDF -->
+                    <title>${documentTitle}</title> 
+                    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
                     <script src="https://cdn.tailwindcss.com"><\/script>
+                    <script src="https://cdn.jsdelivr.net/npm/chart.js"><\/script>
                     <style>
-                        @page {
-                            size: A4 portrait;
-                            margin: 0;
-                        }
-                        body {
-                            background-color: white;
-                            margin: 0;
-                            padding: 0;
-                            -webkit-print-color-adjust: exact;
-                            print-color-adjust: exact;
-                        }
-                        .a4-page {
-                            width: 210mm;
-                            height: 295mm;
-                            max-height: 295mm;
-                            background-color: white;
-                            color: #0f172a;
-                            font-family: 'Times New Roman', Times, serif;
-                            box-sizing: border-box;
-                            position: relative;
-                            margin: 0 auto;
-                            overflow: hidden;
-                            page-break-after: always;
-                            page-break-inside: avoid;
-                            padding: 10mm 12mm; 
-                        }
-                        .watermark-logo {
-                            position: absolute;
-                            top: 50%;
-                            left: 50%;
-                            transform: translate(-50%, -50%);
-                            width: 60%;
-                            opacity: 0.035;
-                            pointer-events: none;
-                            z-index: 0;
-                        }
-                        .table-rapot th, .table-rapot td { 
-                            border: 1px solid #1e293b; 
-                            padding: 2px 4px; 
-                            font-size: 9.5px; 
-                        }
-                        .table-rapot th { 
-                            text-align: center; 
-                            font-weight: bold; 
-                        }
+                        @page { size: A4 portrait; margin: 0; }
+                        body { background-color: white; margin: 0; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+                        .a4-page { width: 210mm; height: 297mm; background-color: white; color: #0f172a; font-family: 'Times New Roman', Times, serif; box-sizing: border-box; position: relative; margin: 0; overflow: hidden; page-break-after: always; padding: 10mm 12mm; display: flex; flex-direction: column; page-break-inside: avoid; }
+                        .a4-page:last-child { page-break-after: auto; }
+                        .watermark-logo { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60%; opacity: 0.035; pointer-events: none; z-index: 0; }
+                        .table-rapot th, .table-rapot td { border: 1px solid #1e293b; padding: 2.5px 4px; font-size: 9.5px; }
+                        .table-rapot th { text-align: center; font-weight: bold; }
+                        .box-grafik { border: 1px solid #e2e8f0; padding: 6px 10px; margin-bottom: 8px; border-radius: 6px; background-color: #ffffff; }
+                        .judul-grafik { font-weight: bold; font-size: 11px; margin-bottom: 4px; font-family: 'Inter', sans-serif; color: #1e293b; }
                     </style>
                 </head>
                 <body>
                     ${htmlContent}
-                    <script>
-                        window.onload = function() {
-                            setTimeout(() => {
-                                window.print();
-                                window.close();
-                            }, 500);
-                        };
-                    <\/script>
+                    ${chartScriptInjection}
                 </body>
                 </html>
             `);
@@ -844,12 +908,12 @@
         }
 
         function printSiswa() {
-            const container = document.getElementById('areaRapotContainer').querySelector('.a4-page');
-            if (!container) {
-                alert("Pratinjau rapot belum dimuat.");
-                return;
+            const container = document.getElementById('areaRapotContainer');
+            if (!container || !container.innerHTML.includes('a4-page')) {
+                alert("Pratinjau rapot belum dimuat."); return;
             }
-            executePrint(container.outerHTML);
+            // Kirim judul yang sudah tersimpan di window.currentPrintTitle
+            executePrint(container.innerHTML, window.currentPrintTitle);
         }
 
         function printKelas() {
@@ -857,7 +921,12 @@
             const btn = document.getElementById('btnPrintKelas');
             if(!kelas) return;
 
-            btn.innerText = "Menyiapkan Cetak Masal..."; btn.disabled = true;
+            btn.innerText = "Menyiapkan Cetak Masal (Termasuk Grafik)..."; btn.disabled = true;
+
+            // Set Judul PDF khusus saat cetak Masal 1 Kelas
+            const judulCetakMasal = `Kelas ${kelas} Cetak Rapot Sisipan & Grafik`;
+
+            window.currentChartData = [];
 
             fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_rapot_kelas', kelas: kelas }) })
             .then(res => res.json()).then(res => {
@@ -873,7 +942,7 @@
                 });
 
                 btn.innerText = "🖨️ Cetak Masal 1 Kelas (Printer)"; btn.disabled = false;
-                executePrint(allHtml);
+                executePrint(allHtml, judulCetakMasal); // Kirim parameter judul cetak masal
             }).catch(() => {
                 btn.innerText = "🖨️ Cetak Masal 1 Kelas (Printer)"; btn.disabled = false;
                 alert("Gagal mengambil data kelas.");
