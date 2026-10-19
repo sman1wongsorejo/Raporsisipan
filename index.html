@@ -44,14 +44,14 @@
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
     </style>
 </head>
-<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 flex flex-col items-center justify-center min-h-screen relative overflow-hidden font-sans selection:bg-sky-500 selection:text-white p-4">
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 min-h-screen flex flex-col items-center justify-center relative overflow-x-hidden font-sans selection:bg-sky-500 selection:text-white py-10 px-4">
 
     <!-- Ambient Light Background Effects (Mewah & Estetik) -->
     <div class="absolute -top-40 -left-40 w-[500px] h-[500px] bg-sky-500/15 rounded-full blur-[120px] ambient-blob-1 pointer-events-none"></div>
     <div class="absolute -bottom-40 -right-40 w-[500px] h-[500px] bg-indigo-500/15 rounded-full blur-[120px] ambient-blob-2 pointer-events-none"></div>
 
-    <!-- Main Container Card dengan Efek Glassmorphism Profesional & Watermark -->
-    <div class="relative z-10 bg-white/95 backdrop-blur-2xl p-8 md:p-10 rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.3)] w-full max-w-md border border-white/20 transform transition-all duration-500 overflow-hidden">
+    <!-- Main Container Card dengan Efek Glassmorphism Profesional & Watermark Terkunci -->
+    <div class="relative z-10 bg-white/95 backdrop-blur-2xl p-8 md:p-10 rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.3)] w-full max-w-md border border-white/20 overflow-hidden my-auto">
         
         <!-- Watermark Image di dalam Card (Opacity 60%) -->
         <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-0 overflow-hidden">
@@ -60,7 +60,7 @@
 
         <!-- Konten Card agar berada di atas Watermark -->
         <div class="relative z-10">
-            <!-- Header dengan Logo & Judul (Judul dan deskripsi diturunkan agar wajah watermark terlihat jelas) -->
+            <!-- Header dengan Logo & Judul -->
             <div class="flex flex-col items-center mb-8">
                 <div class="mb-4 p-3.5 bg-slate-50 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center transition-transform duration-300 hover:scale-105">
                     <img src="https://i.ibb.co.com/zTHpGJ3W/20260513-105333-0000.png" alt="Logo Sekolah" style="width: 190px;" class="h-auto object-contain drop-shadow-sm">
@@ -102,7 +102,7 @@
                 </div>
                 
                 <div class="pt-3">
-                    <button id="loginBtn" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 px-4 rounded-2xl shadow-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2 flex justify-center items-center transition-all duration-300 active:scale-[0.98] text-xs tracking-wide" type="submit">
+                    <button id="loginBtn" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 px-4 rounded-2xl shadow-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2 flex justify-center items-center transition-all duration-300 active:scale-[0.98] text-xs tracking-wide cursor-pointer" type="submit">
                         <span id="btnText">Masuk ke Portal</span>
                         <div id="loading" class="hidden flex items-center gap-2">
                             <span class="animate-spin-custom text-base">⏳</span>
@@ -115,7 +115,7 @@
     </div>
 
     <!-- Copyright Footer -->
-    <footer class="relative z-10 mt-8 text-center text-slate-400 text-[11px] tracking-wider font-medium">
+    <footer class="relative z-10 mt-6 text-center text-slate-400 text-[11px] tracking-wider font-medium shrink-0">
         Copyright &copy; 2026 Very_Andika All Rights Reserved
     </footer>
 
