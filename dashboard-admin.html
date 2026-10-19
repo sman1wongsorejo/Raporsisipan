@@ -206,8 +206,8 @@
                             </div>
                         </div>
                         <div class="flex flex-wrap items-center gap-2.5 w-full lg:w-auto justify-start lg:justify-end shrink-0">
-                            <button id="btnDownloadExcel" onclick="downloadRekapExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition shadow-xs flex items-center gap-2 active:scale-95">
-                                📥 Download Rekap (Excel)
+                            <button id="btnDownloadExcel" onclick="downloadRekapPdf()" class="bg-rose-600 hover:bg-rose-700 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition shadow-xs flex items-center gap-2 active:scale-95">
+                                📥 Download Rekap (PDF)
                             </button>
                             <button onclick="loadDaftarKelas()" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-100 font-semibold py-2.5 px-3.5 rounded-xl text-xs transition shadow-2xs flex items-center gap-1.5 active:scale-95">
                                 🔄 Perbarui
@@ -548,10 +548,10 @@
         }
         loadDaftarKelas();
 
-        function downloadRekapExcel() {
+        function downloadRekapPdf() {
             const btnDownload = document.getElementById('btnDownloadExcel');
             const originalText = btnDownload.innerHTML;
-            btnDownload.innerHTML = '⏳ Menyiapkan...';
+            btnDownload.innerHTML = '⏳ Menyiapkan PDF...';
             btnDownload.disabled = true;
 
             fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_progress_nilai_sekolah' }) })
@@ -564,7 +564,6 @@
                     return;
                 }
 
-                // Filter hanya mata pelajaran utama (mengabaikan ekskul, kehadiran/bk, catatan wali kelas)
                 const filteredData = res.data.filter(item => {
                     const mapel = (item.nama_mapel || '').toLowerCase();
                     if (
@@ -593,7 +592,6 @@
                     }
                 });
 
-                // Ubah ke array & sort dari persentase terendah ke tertinggi (asc)
                 let guruArray = Object.keys(guruRekapMap).map(guru => {
                     const dataGuru = guruRekapMap[guru];
                     const pct = Math.round((dataGuru.selesai / dataGuru.totalWajib) * 100);
@@ -601,40 +599,110 @@
                 });
                 guruArray.sort((a, b) => a.pct - b.pct);
 
-                let csvRows = [];
-                csvRows.push(`"REKAPITULASI PROGRES PENGISIAN RAPOT SISIPAN SMAN 1 WONGSOREJO"`);
-                csvRows.push("");
-                csvRows.push(`"GRAFIK / TABEL BANDING PENCAPAIAN GURU VS TOTAL TUGAS WAJIB INPUT"`);
-                csvRows.push(`"Nama Guru / Petugas";"Tugas Selesai (100%)";"Total Tugas Wajib Diinput"`);
+                let rowsHtml = '';
+                guruArray.forEach((item, idx) => {
+                    let barColor = '#10b981';
+                    if (item.pct === 0) barColor = '#cbd5e1';
+                    else if (item.pct < 50) barColor = '#f97316';
+                    else if (item.pct < 100) barColor = '#eab308';
 
-                guruArray.forEach(item => {
-                    csvRows.push(`"${item.guru}";"${item.selesai} Selesai";"${item.totalWajib} Tugas (${item.pct}%)"`);
+                    rowsHtml += `
+                        <tr>
+                            <td style="text-align: center; padding: 5px 8px; border-bottom: 1px solid #e2e8f0; font-size: 11px;">${idx + 1}</td>
+                            <td style="padding: 5px 8px; border-bottom: 1px solid #e2e8f0; font-weight: bold; font-size: 11px;">${item.guru}</td>
+                            <td style="padding: 5px 8px; border-bottom: 1px solid #e2e8f0; font-size: 11px;">${item.selesai} Selesai</td>
+                            <td style="padding: 5px 8px; border-bottom: 1px solid #e2e8f0; font-size: 11px;">${item.totalWajib} Tugas (${item.pct}%)</td>
+                            <td style="padding: 5px 8px; border-bottom: 1px solid #e2e8f0; width: 140px; vertical-align: middle;">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div style="flex-grow: 1; background-color: #f1f5f9; border-radius: 9999px; height: 10px; overflow: hidden;">
+                                        <div style="background-color: ${barColor}; width: ${item.pct}%; height: 100%; border-radius: 9999px;"></div>
+                                    </div>
+                                    <span style="font-size: 10px; font-weight: bold; width: 32px; text-align: right;">${item.pct}%</span>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
                 });
 
-                csvRows.push("");
-                csvRows.push("");
-                csvRows.push(`"RINCIAN DETAIL PROGRES PER KELAS & KATEGORI"`);
-                csvRows.push(`"No";"Kelas";"Kategori / Mata Pelajaran";"Petugas / Guru";"Persentase (%)";"Status Keterangan"`);
+                const pdfWindow = window.open('', '_blank', 'width=950,height=800');
+                if (!pdfWindow) {
+                    alert("Pop-up diblokir oleh browser. Harap izinkan pop-up untuk situs ini.");
+                    return;
+                }
 
-                filteredData.forEach((item, idx) => {
-                    let statusInput = item.persentase === 100 ? 'SELESAI (100%)' : (item.persentase > 0 ? 'PROSES INPUT (' + item.persentase + '%)' : 'BELUM INPUT (0%)');
-                    csvRows.push(`"${idx + 1}";"Kelas ${item.kelas}";"${item.nama_mapel}";"${item.nama_guru || '-'}";"${item.persentase}%";"${statusInput}"`);
-                });
-
-                const csvContent = "\uFEFF" + csvRows.join("\n");
-                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `Rekap_Progres_Kelengkapan_SMANJO_${new Date().toISOString().slice(0,10)}.csv`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
+                pdfWindow.document.write(`
+                    <!DOCTYPE html>
+                    <html lang="id">
+                    <head>
+                        <meta charset="UTF-8">
+                        <title>Laporan Perkembangan Input Rapor STS - SMAN 1 Wongsorejo</title>
+                        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+                        <style>
+                            @page { size: A4 portrait; margin: 10mm; }
+                            body { font-family: 'Inter', sans-serif; color: #0f172a; margin: 0; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; background: #ffffff; }
+                            .container { width: 100%; max-width: 210mm; margin: 0 auto; box-sizing: border-box; }
+                            .header { background: linear-gradient(135deg, #1e3a8a, #2563eb); color: white; padding: 24px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+                            .header h1 { font-size: 14px; text-transform: uppercase; font-weight: 700; margin: 0 0 4px 0; letter-spacing: 0.5px; opacity: 0.9; }
+                            .header h2 { font-size: 22px; text-transform: uppercase; font-weight: 800; margin: 0 0 4px 0; letter-spacing: -0.5px; }
+                            .header p { font-size: 12px; margin: 0; opacity: 0.95; font-style: italic; }
+                            table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+                            th { background-color: #1e3a8a; color: white; padding: 8px; font-size: 11px; text-align: left; font-weight: 700; text-transform: uppercase; }
+                            th:first-child { text-align: center; width: 40px; border-top-left-radius: 6px; border-bottom-left-radius: 6px; }
+                            th:last-child { border-top-right-radius: 6px; border-bottom-right-radius: 6px; }
+                            .footer { background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 16px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-top: 20px; }
+                            .footer-text h4 { font-size: 13px; font-weight: 700; color: #1e3a8a; margin: 0 0 4px 0; }
+                            .footer-text p { font-size: 11px; color: #64748b; margin: 0; }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="container">
+                            <div class="header">
+                                <div>
+                                    <h1>Laporan Perkembangan</h1>
+                                    <h2>Input Rapor STS SMAN 1 Wongsorejo</h2>
+                                    <p>Bersama Maju, Berprestasi, Berkarakter</p>
+                                </div>
+                            </div>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>No.</th>
+                                        <th>Nama Guru / Petugas</th>
+                                        <th>Tugas Selesai (100%)</th>
+                                        <th>Total Tugas Wajib Diinput</th>
+                                        <th>Progres</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${rowsHtml}
+                                </tbody>
+                            </table>
+                            <div class="footer">
+                                <div class="footer-text">
+                                    <h4>Terus Tingkatkan Sinergi dan Semangat</h4>
+                                    <p>Agar seluruh input rapor STS dapat terselesaikan sesuai target.</p>
+                                </div>
+                                <div style="font-weight: 800; color: #2563eb; font-size: 14px;">
+                                    Bersama Kita Bisa Lebih Baik
+                                </div>
+                            </div>
+                        </div>
+                        <script>
+                            window.onload = function() {
+                                setTimeout(() => {
+                                    window.print();
+                                    window.close();
+                                }, 500);
+                            };
+                        <\/script>
+                    </body>
+                    </html>
+                `);
+                pdfWindow.document.close();
             }).catch(() => {
                 btnDownload.innerHTML = originalText;
                 btnDownload.disabled = false;
-                alert("Terjadi kesalahan saat menghasilkan file Excel rekap.");
+                alert("Terjadi kesalahan saat menghasilkan laporan PDF.");
             });
         }
 
