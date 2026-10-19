@@ -7,7 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    <!-- Font Inter untuk kesan Minimalis & Profesional -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -30,10 +29,9 @@
             padding: 0;
         }
         
-        /* CSS Khusus Layout Kertas A4 Mutlak */
         .a4-page {
             width: 210mm;
-            height: 297mm; /* Tinggi presisi A4 */
+            height: 297mm;
             background-color: white;
             color: #0f172a;
             font-family: 'Times New Roman', Times, serif;
@@ -53,8 +51,6 @@
             body { background-color: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .a4-page { margin: 0; box-shadow: none; border: none; page-break-after: always; height: 297mm; }
             .a4-page:last-child { page-break-after: auto; } 
-            
-            /* Paksa watermark tetap muncul dengan opacity 20% saat dicetak (Tanpa Grayscale) */
             .watermark-logo {
                 opacity: 0.20 !important;
                 -webkit-print-color-adjust: exact !important;
@@ -86,7 +82,6 @@
             font-weight: bold; 
         }
         
-        /* Style Tambahan Untuk Grafik */
         .box-grafik {
             border: 1px solid #e2e8f0;
             padding: 6px 10px;
@@ -110,7 +105,6 @@
         }
         .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
         
-        /* Animasi Ambient Light / Glow untuk Progress Bar */
         @keyframes ambientGlow {
             0% { box-shadow: 0 0 4px rgba(79, 70, 229, 0.4); }
             50% { box-shadow: 0 0 12px rgba(99, 102, 241, 0.8), 0 0 4px rgba(16, 185, 129, 0.5); }
@@ -120,7 +114,6 @@
             animation: ambientGlow 2.5s infinite ease-in-out;
         }
         
-        /* Custom Scrollbar untuk area preview */
         .preview-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
         .preview-scroll::-webkit-scrollbar-track { background: #cbd5e1; border-radius: 4px; }
         .preview-scroll::-webkit-scrollbar-thumb { background: #64748b; border-radius: 4px; }
@@ -129,7 +122,6 @@
 </head>
 <body class="bg-slate-100/70 min-h-screen text-slate-800 antialiased selection:bg-indigo-600 selection:text-white">
 
-    <!-- Top Navigation Bar -->
     <nav class="bg-white/90 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-40 transition-all shadow-xs">
         <div class="max-w-7xl mx-auto px-6 lg:px-8 h-20 flex justify-between items-center">
             <div class="flex items-center gap-4">
@@ -157,11 +149,9 @@
         </div>
     </nav>
 
-    <!-- Main Layout with Sidebar -->
     <div class="max-w-7xl mx-auto px-6 lg:px-8 py-8">
         <div class="flex flex-col lg:flex-row gap-8 items-start">
             
-            <!-- Sidebar Navigation -->
             <aside class="w-full lg:w-64 bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm lg:sticky lg:top-28 shrink-0">
                 <div class="mb-4 px-3 pt-1">
                     <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Menu Navigasi Admin</p>
@@ -179,10 +169,8 @@
                 </div>
             </aside>
 
-            <!-- Main Content Area -->
             <main class="flex-grow w-full overflow-hidden">
                 
-                <!-- Welcome Section -->
                 <div class="bg-white border border-slate-200/80 rounded-2xl p-6 sm:p-8 shadow-xs mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 relative overflow-hidden">
                     <div class="absolute right-0 top-0 w-64 h-64 bg-gradient-to-bl from-indigo-100/50 via-blue-50/30 to-transparent rounded-bl-full pointer-events-none"></div>
                     <div class="relative z-10">
@@ -191,7 +179,6 @@
                     </div>
                 </div>
 
-                <!-- INFO CARDS UTAMA -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
                     <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex items-center gap-4 transition hover:shadow-md">
                         <div class="p-3.5 bg-indigo-50 text-indigo-600 rounded-2xl font-bold text-base shadow-2xs">🏫</div>
@@ -209,7 +196,6 @@
                     </div>
                 </div>
 
-                <!-- CONTAINER GRID 4 KOLOM MEMANJANG (Rincian Per Kelas & Live Progress Mapel dengan Ambient Light) -->
                 <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs mb-8">
                     <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-5 pb-4 border-b border-slate-100">
                         <div class="flex items-start sm:items-center gap-3">
@@ -229,7 +215,6 @@
                         </div>
                     </div>
                     
-                    <!-- GRID 4 KOLOM -->
                     <div id="gridSubCardKelas" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                         <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 text-center text-slate-400 py-8 col-span-full font-medium text-xs">
                             <span class="animate-spin-custom inline-block mr-2 text-indigo-600 text-sm">⏳</span> mohon bersabar jika lama...
@@ -237,14 +222,13 @@
                     </div>
                 </div>
 
-                <!-- TAB PEMANTAUAN PROGRES NILAI -->
                 <div id="tabProgress" class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200/80 shadow-xs hidden transition-all animate-fade-in">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 pb-4 border-b border-slate-100">
                         <div class="flex items-center gap-3">
                             <div class="p-2.5 bg-purple-50 text-purple-600 rounded-xl font-bold text-base">📈</div>
                             <div>
                                 <h3 class="font-extrabold text-base text-slate-900">Pemantauan Progres Pengisian Nilai</h3>
-                                <p class="text-xs text-slate-400 font-medium">Pantau kelengkapan nilai dari seluruh guru secara mendetail (Grafik & Tabel).</p>
+                                <p class="text-xs text-slate-400 font-medium">Pantau kelengkapan nilai dan capaian input secara terpisah berdasarkan kategori pengisian.</p>
                             </div>
                         </div>
                         <button onclick="loadProgressData()" class="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-semibold px-4 py-2.5 rounded-xl text-xs transition shadow-2xs flex items-center gap-2">
@@ -252,31 +236,68 @@
                         </button>
                     </div>
 
-                    <!-- INFOCARD GRAFIK GURU VS MAPEL -->
-                    <div class="mb-8">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                        
                         <div class="w-full bg-slate-50/60 border border-slate-200/80 p-5 rounded-2xl shadow-2xs flex flex-col">
                             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 pb-2 border-b border-slate-200 gap-3">
-                                <h4 class="font-extrabold text-[11px] text-slate-900 uppercase tracking-wider">
-                                    📊 Capaian Guru vs Wajib Input
-                                </h4>
-                                <div class="flex items-center gap-2">
-                                    <label class="text-[10px] font-bold text-slate-500 uppercase">Urutkan:</label>
-                                    <select id="sortGuruChart" onchange="renderGuruChart()" class="bg-white border border-slate-200 rounded-lg py-1 px-2 text-[11px] font-semibold text-slate-700 shadow-2xs focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer">
-                                        <option value="persentase_asc">Persentase (Terendah)</option>
-                                        <option value="persentase_desc">Persentase (Tertinggi)</option>
-                                        <option value="abjad_az">Nama (A - Z)</option>
-                                    </select>
-                                </div>
+                                <h4 class="font-extrabold text-[11px] text-slate-900 uppercase tracking-wider">📊 Capaian Guru Mapel</h4>
+                                <select id="sortGuruChart" onchange="renderDynamicChart('guru', 'chartGuru')" class="bg-white border border-slate-200 rounded-lg py-1 px-2 text-[11px] font-semibold text-slate-700 shadow-2xs cursor-pointer">
+                                    <option value="persentase_asc">Persentase (Terendah)</option>
+                                    <option value="persentase_desc">Persentase (Tertinggi)</option>
+                                    <option value="abjad_az">Nama (A - Z)</option>
+                                </select>
                             </div>
-                            <!-- Canvas Container dibuat lebih tinggi agar label nama guru tidak terpotong jika banyak -->
-                            <div style="height: 450px; position: relative; width: 100%;">
+                            <div style="height: 300px; position: relative; width: 100%;">
                                 <canvas id="chartGuru"></canvas>
                             </div>
                         </div>
+
+                        <div class="w-full bg-slate-50/60 border border-slate-200/80 p-5 rounded-2xl shadow-2xs flex flex-col">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 pb-2 border-b border-slate-200 gap-3">
+                                <h4 class="font-extrabold text-[11px] text-slate-900 uppercase tracking-wider">🏕️ Progres Pembina Ekskul</h4>
+                                <select id="sortEkskulChart" onchange="renderDynamicChart('ekskul', 'chartEkskul')" class="bg-white border border-slate-200 rounded-lg py-1 px-2 text-[11px] font-semibold text-slate-700 shadow-2xs cursor-pointer">
+                                    <option value="persentase_asc">Persentase (Terendah)</option>
+                                    <option value="persentase_desc">Persentase (Tertinggi)</option>
+                                    <option value="abjad_az">Nama (A - Z)</option>
+                                </select>
+                            </div>
+                            <div style="height: 300px; position: relative; width: 100%;">
+                                <canvas id="chartEkskul"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="w-full bg-slate-50/60 border border-slate-200/80 p-5 rounded-2xl shadow-2xs flex flex-col">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 pb-2 border-b border-slate-200 gap-3">
+                                <h4 class="font-extrabold text-[11px] text-slate-900 uppercase tracking-wider">👥 Progres Kehadiran (BK)</h4>
+                                <select id="sortBkChart" onchange="renderDynamicChart('bk', 'chartBk')" class="bg-white border border-slate-200 rounded-lg py-1 px-2 text-[11px] font-semibold text-slate-700 shadow-2xs cursor-pointer">
+                                    <option value="persentase_asc">Persentase (Terendah)</option>
+                                    <option value="persentase_desc">Persentase (Tertinggi)</option>
+                                    <option value="abjad_az">Nama (A - Z)</option>
+                                </select>
+                            </div>
+                            <div style="height: 300px; position: relative; width: 100%;">
+                                <canvas id="chartBk"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="w-full bg-slate-50/60 border border-slate-200/80 p-5 rounded-2xl shadow-2xs flex flex-col">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 pb-2 border-b border-slate-200 gap-3">
+                                <h4 class="font-extrabold text-[11px] text-slate-900 uppercase tracking-wider">📝 Progres Catatan Wali Kelas</h4>
+                                <select id="sortWaliChart" onchange="renderDynamicChart('wali', 'chartWali')" class="bg-white border border-slate-200 rounded-lg py-1 px-2 text-[11px] font-semibold text-slate-700 shadow-2xs cursor-pointer">
+                                    <option value="persentase_asc">Persentase (Terendah)</option>
+                                    <option value="persentase_desc">Persentase (Tertinggi)</option>
+                                    <option value="abjad_az">Nama (A - Z)</option>
+                                </select>
+                            </div>
+                            <div style="height: 300px; position: relative; width: 100%;">
+                                <canvas id="chartWali"></canvas>
+                            </div>
+                        </div>
+
                     </div>
 
                     <div>
-                        <h4 class="font-extrabold text-xs text-slate-900 uppercase tracking-wider mb-4 border-b border-slate-100 pb-2">📋 Tabel Rincian Progres Guru</h4>
+                        <h4 class="font-extrabold text-xs text-slate-900 uppercase tracking-wider mb-4 border-b border-slate-100 pb-2">📋 Tabel Rincian Data Keseluruhan</h4>
                         <div class="flex flex-col sm:flex-row justify-between gap-3 mb-4">
                             <div class="relative w-full sm:w-1/3">
                                 <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">🔍</span>
@@ -294,8 +315,8 @@
                                 <thead class="bg-slate-50 border-b border-slate-200 text-[10px] uppercase text-slate-400 font-extrabold tracking-wider">
                                     <tr>
                                         <th class="px-4 py-3.5 text-center w-12">No</th>
-                                        <th class="px-4 py-3.5 min-w-[150px]">Guru Pengampu</th>
-                                        <th class="px-4 py-3.5">Mata Pelajaran</th>
+                                        <th class="px-4 py-3.5 min-w-[150px]">Nama / Petugas</th>
+                                        <th class="px-4 py-3.5">Tugas / Kategori</th>
                                         <th class="px-4 py-3.5 text-center">Kelas</th>
                                         <th class="px-4 py-3.5 text-center">Persentase</th>
                                         <th class="px-4 py-3.5 text-center">Status</th>
@@ -309,7 +330,6 @@
                     </div>
                 </div>
 
-                <!-- TAB KELOLA MASTER DATA -->
                 <div id="tabMaster" class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200/80 shadow-xs hidden transition-all animate-fade-in">
                     <div class="flex items-center gap-3 mb-4 pb-4 border-b border-slate-100">
                         <div class="p-2.5 bg-slate-100 text-slate-700 rounded-xl font-bold text-base">🗄️</div>
@@ -326,10 +346,8 @@
                     </a>
                 </div>
 
-                <!-- TAB CETAK RAPOT -->
                 <div id="tabCetak" class="flex flex-col lg:flex-row gap-6 animate-fade-in">
                     
-                    <!-- Panel Kiri: Pengaturan -->
                     <div class="w-full lg:w-1/3">
                         <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs sticky top-28">
                             <div class="flex items-center gap-3 mb-5 pb-3 border-b border-slate-100">
@@ -367,7 +385,6 @@
                             <label class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-wider mb-2">Tanggal Penetapan / Cetak</label>
                             <input type="date" id="inputTanggalCetak" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-semibold mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition text-slate-700 shadow-2xs">
 
-                            <!-- Checkbox Tampilkan/Sembunyikan Watermark -->
                             <label class="flex items-center gap-2 mb-5 cursor-pointer">
                                 <input type="checkbox" id="toggleWatermark" checked class="w-4 h-4 text-indigo-600 bg-slate-50 border-slate-300 rounded focus:ring-indigo-500 shadow-2xs transition" onchange="updateWatermarkPreview()">
                                 <span class="text-[11px] font-extrabold text-slate-700 uppercase tracking-wider">Tampilkan Watermark Logo</span>
@@ -402,7 +419,6 @@
                         </div>
                     </div>
 
-                    <!-- Panel Kanan: Kertas Preview PDF Style -->
                     <div class="w-full lg:w-2/3 preview-scroll overflow-auto bg-slate-300 rounded-2xl shadow-inner border border-slate-300" style="max-height: 85vh; padding: 2rem 1rem;">
                         <div id="printArea" class="flex justify-center min-w-[210mm]">
                             <div id="areaRapotContainer" class="flex flex-col items-center w-full">
@@ -427,14 +443,12 @@
         
         document.getElementById('inputTanggalCetak').valueAsDate = new Date();
 
-        // GLOBAL VARIABEL
         window.currentChartData = []; 
         window.currentPrintTitle = "Cetak Rapot Sisipan & Grafik"; 
         window.globalSummaryData = []; 
         
-        // VARIABEL GLOBAL UNTUK CHART GURU
-        window.guruChartDataList = [];
-        window.chartGuruObj = null;
+        window.chartDataLists = { guru: [], ekskul: [], bk: [], wali: [] };
+        window.chartObjs = { guru: null, ekskul: null, bk: null, wali: null };
 
         function loadDaftarKelas() {
             const selectKelas = document.getElementById('pilihKelas');
@@ -572,17 +586,16 @@
                     <body>
                         <table>
                             <tr>
-                                <td colspan="6" class="title">REKAPITULASI PROGRES PENGISIAN NILAI RAPOT SISIPAN SMAN 1 WONGSOREJO</td>
+                                <td colspan="6" class="title">REKAPITULASI PROGRES PENGISIAN RAPOT SISIPAN SMAN 1 WONGSOREJO</td>
                             </tr>
                             <tr><td colspan="6"></td></tr>
-                            
                             <tr>
-                                <td colspan="6" class="subtitle">GRAFIK / TABEL BANDING PENCAPAIAN GURU VS TOTAL MAPEL WAJIB INPUT</td>
+                                <td colspan="6" class="subtitle">GRAFIK / TABEL BANDING PENCAPAIAN GURU VS TOTAL TUGAS WAJIB INPUT</td>
                             </tr>
                             <tr>
-                                <th colspan="2">Nama Guru Pengampu</th>
-                                <th colspan="2">Mapel Selesai (100%)</th>
-                                <th colspan="2">Total Mapel Wajib Diinput</th>
+                                <th colspan="2">Nama Guru / Petugas</th>
+                                <th colspan="2">Tugas Selesai (100%)</th>
+                                <th colspan="2">Total Tugas Wajib Diinput</th>
                             </tr>
                 `;
 
@@ -594,8 +607,8 @@
                     htmlTable += `
                         <tr>
                             <td colspan="2"><b>${guru}</b></td>
-                            <td colspan="2" class="text-center ${badgeClass}">${dataGuru.selesai} Mapel</td>
-                            <td colspan="2" class="text-center"><b>${dataGuru.totalWajib} Mapel Wajib</b> (${pctGuru}%)</td>
+                            <td colspan="2" class="text-center ${badgeClass}">${dataGuru.selesai} Selesai</td>
+                            <td colspan="2" class="text-center"><b>${dataGuru.totalWajib} Tugas</b> (${pctGuru}%)</td>
                         </tr>
                     `;
                 }
@@ -603,15 +616,14 @@
                 htmlTable += `
                             <tr><td colspan="6"></td></tr>
                             <tr><td colspan="6"></td></tr>
-
                             <tr>
-                                <td colspan="6" class="subtitle">RINCIAN DETAIL PROGRES PER KELAS & MATA PELAJARAN</td>
+                                <td colspan="6" class="subtitle">RINCIAN DETAIL PROGRES PER KELAS & KATEGORI</td>
                             </tr>
                             <tr>
                                 <th>No</th>
                                 <th>Kelas</th>
-                                <th>Mata Pelajaran</th>
-                                <th>Guru Pengampu</th>
+                                <th>Kategori / Mata Pelajaran</th>
+                                <th>Petugas / Guru</th>
                                 <th>Persentase (%)</th>
                                 <th>Status Keterangan</th>
                             </tr>
@@ -654,7 +666,7 @@
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `Rekap_Progres_Dan_Mapel_SMANJO_${new Date().toISOString().slice(0,10)}.xls`;
+                a.download = `Rekap_Progres_Kelengkapan_SMANJO_${new Date().toISOString().slice(0,10)}.xls`;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
@@ -714,14 +726,12 @@
             });
         }
 
-        // FUNGSI UNTUK MERENDER CHART GURU BERDASARKAN URUTAN (SORTING)
-        function renderGuruChart() {
-            if (!window.guruChartDataList || window.guruChartDataList.length === 0) return;
+        function renderDynamicChart(type, canvasId) {
+            if (!window.chartDataLists[type] || window.chartDataLists[type].length === 0) return;
             
-            const sortVal = document.getElementById('sortGuruChart').value;
-            let sortedData = [...window.guruChartDataList]; // Klon array
+            const sortVal = document.getElementById('sort' + type.charAt(0).toUpperCase() + type.slice(1) + 'Chart').value;
+            let sortedData = [...window.chartDataLists[type]]; 
             
-            // Logika Pengurutan
             if (sortVal === 'persentase_asc') {
                 sortedData.sort((a, b) => a.pct - b.pct);
             } else if (sortVal === 'persentase_desc') {
@@ -730,21 +740,21 @@
                 sortedData.sort((a, b) => a.nama.localeCompare(b.nama));
             }
 
-            // Ekstrak data untuk Chart.js
-            const guruLabels = sortedData.map(g => g.nama);
-            const guruSelesai = sortedData.map(g => g.selesai);
-            const guruTotal = sortedData.map(g => g.totalWajib);
+            const chartLabels = sortedData.map(g => g.nama);
+            const chartSelesai = sortedData.map(g => g.selesai);
+            const chartTotal = sortedData.map(g => g.totalWajib);
 
-            const ctxGuru = document.getElementById('chartGuru').getContext('2d');
-            if(window.chartGuruObj) window.chartGuruObj.destroy();
+            const ctx = document.getElementById(canvasId).getContext('2d');
             
-            window.chartGuruObj = new Chart(ctxGuru, {
+            if(window.chartObjs[type]) window.chartObjs[type].destroy();
+            
+            window.chartObjs[type] = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: guruLabels,
+                    labels: chartLabels,
                     datasets: [
-                        { label: 'Mapel Selesai', data: guruSelesai, backgroundColor: '#10b981', borderRadius: 4 },
-                        { label: 'Total Mapel Wajib', data: guruTotal, backgroundColor: '#cbd5e1', borderRadius: 4 }
+                        { label: 'Selesai', data: chartSelesai, backgroundColor: '#10b981', borderRadius: 4 },
+                        { label: 'Total Wajib', data: chartTotal, backgroundColor: '#cbd5e1', borderRadius: 4 }
                     ]
                 },
                 options: {
@@ -756,7 +766,8 @@
                         y: { ticks: { font: { size: 10 } } }
                     },
                     plugins: {
-                        legend: { position: 'bottom', labels: { font: { size: 10 } } }
+                        legend: { position: 'bottom', labels: { font: { size: 10 } } },
+                        tooltip: { callbacks: { label: function(context) { return context.dataset.label + ': ' + context.raw; } } }
                     }
                 }
             });
@@ -770,33 +781,45 @@
             .then(res => res.json()).then(res => {
                 if(res.status !== 'success') return;
                 
-                // Merekap Data Pencapaian Guru vs Total Wajib Input
-                const guruRekapMap = {};
+                const maps = { guru: {}, ekskul: {}, bk: {}, wali: {} };
+
                 res.data.forEach(item => {
-                    const guru = item.nama_guru || 'Belum Ditentukan';
-                    if(!guruRekapMap[guru]) {
-                        guruRekapMap[guru] = { totalWajib: 0, selesai: 0, nama: guru };
+                    const mapel = (item.nama_mapel || '').toLowerCase();
+                    const nama = item.nama_guru || 'Belum Ditentukan';
+                    
+                    let type = 'guru'; 
+                    
+                    if (mapel.includes('ekstrakurikuler') || mapel.includes('ekskul')) {
+                        type = 'ekskul';
+                    } else if (mapel.includes('kehadiran') || mapel.includes('absensi') || mapel.includes('bk')) {
+                        type = 'bk';
+                    } else if (mapel.includes('catatan') || mapel.includes('wali')) {
+                        type = 'wali';
                     }
-                    guruRekapMap[guru].totalWajib += 1;
+
+                    if(!maps[type][nama]) {
+                        maps[type][nama] = { totalWajib: 0, selesai: 0, nama: nama };
+                    }
+                    maps[type][nama].totalWajib += 1;
                     if(item.persentase === 100) {
-                        guruRekapMap[guru].selesai += 1;
+                        maps[type][nama].selesai += 1;
                     }
                 });
 
-                // Menyimpan format list ke Variabel Global agar bisa di-Sort ulang nanti
-                window.guruChartDataList = Object.values(guruRekapMap).map(g => {
-                    return {
+                ['guru', 'ekskul', 'bk', 'wali'].forEach(t => {
+                    window.chartDataLists[t] = Object.values(maps[t]).map(g => ({
                         nama: g.nama,
                         totalWajib: g.totalWajib,
                         selesai: g.selesai,
-                        pct: (g.selesai / g.totalWajib) * 100 // Hitung persentase untuk sortir
-                    };
+                        pct: g.totalWajib > 0 ? (g.selesai / g.totalWajib) * 100 : 0
+                    }));
+
+                    const selectEl = document.getElementById('sort' + t.charAt(0).toUpperCase() + t.slice(1) + 'Chart');
+                    if(selectEl) selectEl.value = 'persentase_asc';
+                    
+                    renderDynamicChart(t, 'chart' + t.charAt(0).toUpperCase() + t.slice(1));
                 });
 
-                // Render Chart Guru (otomatis memakai urutan dropdown default)
-                renderGuruChart();
-
-                // --- RENDER TABEL BAWAH ---
                 tbody.innerHTML = '';
                 res.data.forEach((item, idx) => {
                     let st = item.persentase === 100 ? 'SELESAI' : (item.persentase > 0 ? 'PROSES' : 'BELUM');
@@ -888,27 +911,10 @@
                 tbody = '<tr><td colspan="11" class="text-center p-2">Belum ada data nilai</td></tr>';
             } else {
                 const standardOrder = [
-                    "pendidikan agama", 
-                    "pendidikan pancasila", 
-                    "bahasa indonesia", 
-                    "matematika", 
-                    "ilmu pengetahuan alam", 
-                    "ipa", 
-                    "fisika", 
-                    "kimia", 
-                    "biologi", 
-                    "ilmu pengetahuan sosial", 
-                    "ips", 
-                    "sosiologi", 
-                    "ekonomi", 
-                    "sejarah", 
-                    "geografi", 
-                    "bahasa inggris", 
-                    "pendidikan jasmani", 
-                    "pjok", 
-                    "pok", 
-                    "informatika", 
-                    "prakarya"
+                    "pendidikan agama", "pendidikan pancasila", "bahasa indonesia", "matematika", 
+                    "ilmu pengetahuan alam", "ipa", "fisika", "kimia", "biologi", 
+                    "ilmu pengetahuan sosial", "ips", "sosiologi", "ekonomi", "sejarah", "geografi", 
+                    "bahasa inggris", "pendidikan jasmani", "pjok", "pok", "informatika", "prakarya"
                 ];
 
                 data.nilai.sort((a, b) => {
