@@ -911,7 +911,7 @@
             document.getElementById('areaExcel').classList.remove('hidden');
             document.getElementById('areaStatistikKelas').classList.remove('hidden');
             document.getElementById('areaCariSiswa').classList.remove('hidden');
-            tabelBody.innerHTML = `<tr><td colspan="9" class="text-center py-10 text-slate-400 text-xs font-bold"><span class="animate-spin-custom inline-block mr-2 text-indigo-600 text-base">⏳</span> mohon bersabar jika lama, server mahal nih bos ...</td></tr>`;
+            tabelBody.innerHTML = `<tr><td colspan="9" class="text-center py-10 text-slate-400 text-xs font-bold"><span class="animate-spin-custom inline-block mr-2 text-indigo-600 text-base">⏳</span> Ngereng sabbhâr manabi parlo bekto; serverna larang, ni bos...</td></tr>`;
 
             fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_siswa', kelas: kelas, id_mapel: mapel }) })
             .then(res => res.json()).then(dataSiswa => {
@@ -1071,7 +1071,7 @@
                     sts: row.querySelector('.input-sts').value
                 });
             });
-            btn.innerHTML = `<span class="animate-spin-custom inline-block mr-1.5">⏳</span> mohon bersabar jika lama, server mahal nih bos ...`; 
+            btn.innerHTML = `<span class="animate-spin-custom inline-block mr-1.5">⏳</span> Ngereng sabbhâr manabi parlo bekto; serverna larang, ni bos...`; 
             btn.disabled = true; statusMsg.classList.add('hidden');
             fetch(SCRIPT_URL, {
                 method: 'POST',
@@ -1109,7 +1109,7 @@
             area.classList.remove('hidden');
             if(areaExcel) areaExcel.classList.remove('hidden');
 
-            tabelBody.innerHTML = `<tr><td colspan="6" class="text-center py-10 text-slate-400 text-xs font-bold"><span class="animate-spin-custom inline-block mr-2 text-indigo-600 text-base">⏳</span> mohon bersabar jika lama, server mahal nih bos ...</td></tr>`;
+            tabelBody.innerHTML = `<tr><td colspan="6" class="text-center py-10 text-slate-400 text-xs font-bold"><span class="animate-spin-custom inline-block mr-2 text-indigo-600 text-base">⏳</span> Ngereng sabbhâr manabi parlo bekto; serverna larang, ni bos...</td></tr>`;
             
             fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_siswa', kelas: targetKelas }) })
             .then(res => res.json()).then(data => {
@@ -1157,7 +1157,7 @@
 
             if(dataHadir.length === 0) return;
 
-            btn.innerHTML = `<span class="animate-spin-custom inline-block mr-1.5">⏳</span> mohon bersabar jika lama, server mahal nih bos ...`; 
+            btn.innerHTML = `<span class="animate-spin-custom inline-block mr-1.5">⏳</span> Ngereng sabbhâr manabi parlo bekto; serverna larang, ni bos...`; 
             btn.disabled = true; statusMsg.classList.add('hidden');
             
             fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'simpan_kehadiran', data_kehadiran: dataHadir }) })
@@ -1180,7 +1180,7 @@
         function loadSiswaWaliEkskul() { 
             const tabelBody = document.getElementById('tabelBodyWaliEkskul');
             document.getElementById('areaTabelWaliEkskul').classList.remove('hidden');
-            tabelBody.innerHTML = `<tr><td colspan="6" class="text-center py-10 text-slate-400 text-xs font-bold"><span class="animate-spin-custom inline-block mr-2 text-indigo-600 text-base">⏳</span> mohon bersabar jika lama, server mahal nih bos ...</td></tr>`;
+            tabelBody.innerHTML = `<tr><td colspan="6" class="text-center py-10 text-slate-400 text-xs font-bold"><span class="animate-spin-custom inline-block mr-2 text-indigo-600 text-base">⏳</span> Ngereng sabbhâr manabi parlo bekto; serverna larang, ni bos...</td></tr>`;
             fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_ekskul_tersimpan', kelas: kelasWali }) })
             .then(res => res.json()).then(data => {
                 tabelBody.innerHTML = '';
@@ -1234,7 +1234,7 @@
                     ekskul2: row.querySelector('.input-e2').value, predikat2: row.querySelector('.input-p2').value
                 });
             });
-            btn.innerHTML = `<span class="animate-spin-custom inline-block mr-1.5">⏳</span> mohon bersabar jika lama, server mahal nih bos ...`; 
+            btn.innerHTML = `<span class="animate-spin-custom inline-block mr-1.5">⏳</span> Ngereng sabbhâr manabi parlo bekto; serverna larang, ni bos...`; 
             btn.disabled = true; statusMsg.classList.add('hidden');
             fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'simpan_ekskul', data_ekskul: dataEkskul }) })
             .then(res => res.json()).then(data => {
@@ -1260,7 +1260,7 @@
             if(!kelas || !namaEkskul) return alert("Pilih kelas dan ekstrakurikuler terlebih dahulu!");
 
             areaTabel.classList.remove('hidden');
-            tabelBody.innerHTML = `<tr><td colspan="3" class="text-center py-10 text-slate-400 text-xs font-bold"><span class="animate-spin-custom inline-block mr-2 text-indigo-600 text-base">⏳</span> mohon bersabar jika lama, server mahal nih bos ...</td></tr>`;
+            tabelBody.innerHTML = `<tr><td colspan="3" class="text-center py-10 text-slate-400 text-xs font-bold"><span class="animate-spin-custom inline-block mr-2 text-indigo-600 text-base">⏳</span> Ngereng sabbhâr manabi parlo bekto; serverna larang, ni bos...</td></tr>`;
 
             fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_ekskul_pembina', kelas: kelas, nama_ekskul: namaEkskul }) })
             .then(res => res.json()).then(data => {
@@ -1302,7 +1302,7 @@
             });
 
             if (dataEkskul.length === 0) return;
-            btn.innerHTML = `<span class="animate-spin-custom inline-block mr-1.5">⏳</span> mohon bersabar jika lama, server mahal nih bos ...`; 
+            btn.innerHTML = `<span class="animate-spin-custom inline-block mr-1.5">⏳</span> Ngereng sabbhâr manabi parlo bekto; serverna larang, ni bos...`; 
             btn.disabled = true; statusMsg.classList.add('hidden');
 
             fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'simpan_ekskul_pembina', nama_ekskul: namaEkskul, data_ekskul: dataEkskul }) })
