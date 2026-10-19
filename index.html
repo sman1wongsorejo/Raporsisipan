@@ -50,60 +50,68 @@
     <div class="absolute -top-40 -left-40 w-[500px] h-[500px] bg-sky-500/15 rounded-full blur-[120px] ambient-blob-1 pointer-events-none"></div>
     <div class="absolute -bottom-40 -right-40 w-[500px] h-[500px] bg-indigo-500/15 rounded-full blur-[120px] ambient-blob-2 pointer-events-none"></div>
 
-    <!-- Main Container Card dengan Efek Glassmorphism Profesional -->
-    <div class="relative z-10 bg-white/95 backdrop-blur-2xl p-8 md:p-10 rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.3)] w-full max-w-md border border-white/20 transform transition-all duration-500">
+    <!-- Main Container Card dengan Efek Glassmorphism Profesional & Watermark -->
+    <div class="relative z-10 bg-white/95 backdrop-blur-2xl p-8 md:p-10 rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.3)] w-full max-w-md border border-white/20 transform transition-all duration-500 overflow-hidden">
         
-        <!-- Header dengan Logo & Judul -->
-        <div class="flex flex-col items-center mb-8">
-            <div class="mb-4 p-3.5 bg-slate-50 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center transition-transform duration-300 hover:scale-105">
-                <img src="https://i.ibb.co.com/zTHpGJ3W/20260513-105333-0000.png" alt="Logo Sekolah" style="width: 190px;" class="h-auto object-contain drop-shadow-sm">
-            </div>
-            <h2 class="text-2xl font-black text-slate-900 tracking-tight text-center">Portal Rapot Sisipan</h2>
-            <p class="text-xs text-slate-500 mt-1.5 font-medium tracking-wide text-center">SMAN 1 Wongsorejo • Silakan Masuk ke Akun Anda</p>
+        <!-- Watermark Image di dalam Card (Opacity 60%) -->
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-0 overflow-hidden">
+            <img src="https://i.ibb.co.com/7NrDzXdd/Red-And-White-Illustrative-Fish-Logo-20260609-231611-0000.png" alt="Watermark" class="w-80 h-80 object-contain opacity-60">
         </div>
-        
-        <!-- Notifikasi Error -->
-        <div id="error-msg" class="hidden mb-6 p-3.5 bg-rose-50 border border-rose-200 text-rose-700 text-xs rounded-2xl text-center font-semibold transition-all shadow-sm"></div>
 
-        <form id="loginForm" class="space-y-5">
-            <div>
-                <label class="block text-slate-700 text-[11px] font-bold uppercase tracking-wider mb-2" for="username">
-                    Username Akun
-                </label>
-                <div class="relative">
-                    <input class="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-4 text-slate-800 placeholder-slate-400 leading-tight focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white transition-all duration-300 text-xs font-semibold shadow-inner" 
-                           id="username" type="text" placeholder="Maso'aghi nyamana pangghuna" required>
+        <!-- Konten Card agar berada di atas Watermark -->
+        <div class="relative z-10">
+            <!-- Header dengan Logo & Judul (Judul dan deskripsi diturunkan agar wajah watermark terlihat jelas) -->
+            <div class="flex flex-col items-center mb-8">
+                <div class="mb-4 p-3.5 bg-slate-50 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center transition-transform duration-300 hover:scale-105">
+                    <img src="https://i.ibb.co.com/zTHpGJ3W/20260513-105333-0000.png" alt="Logo Sekolah" style="width: 190px;" class="h-auto object-contain drop-shadow-sm">
                 </div>
+                <h2 class="text-2xl font-black text-slate-900 tracking-tight text-center mt-2">Portal Rapot Sisipan</h2>
+                <p class="text-xs text-slate-500 mt-2 font-medium tracking-wide text-center">SMAN 1 Wongsorejo • Silakan Masuk ke Akun Anda</p>
             </div>
             
-            <div>
-                <label class="block text-slate-700 text-[11px] font-bold uppercase tracking-wider mb-2" for="password">
-                    Kata Sandi (Password)
-                </label>
-                <div class="relative flex items-center">
-                    <input class="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 pl-4 pr-16 text-slate-800 placeholder-slate-400 leading-tight focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white transition-all duration-300 text-xs font-semibold shadow-inner" 
-                           id="password" type="password" placeholder="maso'aghi kata sandi" required>
+            <!-- Notifikasi Error -->
+            <div id="error-msg" class="hidden mb-6 p-3.5 bg-rose-50 border border-rose-200 text-rose-700 text-xs rounded-2xl text-center font-semibold transition-all shadow-sm"></div>
+
+            <form id="loginForm" class="space-y-5">
+                <div>
+                    <label class="block text-slate-700 text-[11px] font-bold uppercase tracking-wider mb-2" for="username">
+                        Username Akun
+                    </label>
+                    <div class="relative">
+                        <input class="w-full bg-slate-50/90 backdrop-blur border border-slate-200 rounded-2xl py-3.5 px-4 text-slate-800 placeholder-slate-400 leading-tight focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white transition-all duration-300 text-xs font-semibold shadow-inner" 
+                               id="username" type="text" placeholder="Maso'aghi nyamana pangghuna" required>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-slate-700 text-[11px] font-bold uppercase tracking-wider mb-2" for="password">
+                        Kata Sandi (Password)
+                    </label>
+                    <div class="relative flex items-center">
+                        <input class="w-full bg-slate-50/90 backdrop-blur border border-slate-200 rounded-2xl py-3.5 pl-4 pr-16 text-slate-800 placeholder-slate-400 leading-tight focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white transition-all duration-300 text-xs font-semibold shadow-inner" 
+                               id="password" type="password" placeholder="maso'aghi kata sandi" required>
                     
-                    <!-- Toggle Mata (Show/Hide Password) -->
-                    <button type="button" id="togglePassword" class="absolute right-4 focus:outline-none text-slate-400 hover:text-sky-600 transition-colors p-1" title="Lihat/Sembunyikan Password">
-                        <svg id="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                        </svg>
+                        <!-- Toggle Mata (Show/Hide Password) -->
+                        <button type="button" id="togglePassword" class="absolute right-4 focus:outline-none text-slate-400 hover:text-sky-600 transition-colors p-1" title="Lihat/Sembunyikan Password">
+                            <svg id="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="pt-3">
+                    <button id="loginBtn" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 px-4 rounded-2xl shadow-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2 flex justify-center items-center transition-all duration-300 active:scale-[0.98] text-xs tracking-wide" type="submit">
+                        <span id="btnText">Masuk ke Portal</span>
+                        <div id="loading" class="hidden flex items-center gap-2">
+                            <span class="animate-spin-custom text-base">⏳</span>
+                            <span id="loadingText" class="text-[11px] font-medium tracking-normal normal-case">Ngereng sabbhâr manabi parlo bekto; serverna larang, bos...</span>
+                        </div>
                     </button>
                 </div>
-            </div>
-            
-            <div class="pt-3">
-                <button id="loginBtn" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 px-4 rounded-2xl shadow-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2 flex justify-center items-center transition-all duration-300 active:scale-[0.98] text-xs tracking-wide" type="submit">
-                    <span id="btnText">Masuk ke Portal</span>
-                    <div id="loading" class="hidden flex items-center gap-2">
-                        <span class="animate-spin-custom text-base">⏳</span>
-                        <span id="loadingText" class="text-[11px] font-medium tracking-normal normal-case">Ngereng sabbhâr manabi parlo bekto; serverna larang, bos...</span>
-                    </div>
-                </button>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 
     <!-- Copyright Footer -->
