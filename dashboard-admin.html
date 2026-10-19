@@ -56,7 +56,7 @@
             
             /* Paksa watermark tetap muncul dengan opacity 20% saat dicetak (Tanpa Grayscale) */
             .watermark-logo {
-                opacity: 0.10 !important;
+                opacity: 0.20 !important;
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
             }
@@ -251,9 +251,30 @@
                             🔄 Refresh Data
                         </button>
                     </div>
-                    <div class="w-full bg-slate-50/60 border border-slate-200/80 p-5 rounded-2xl mb-8 shadow-2xs" style="height: 400px; position: relative;">
-                        <canvas id="chartProgress"></canvas>
+
+                    <!-- INFOCARD GRAFIK GURU VS MAPEL -->
+                    <div class="mb-8">
+                        <div class="w-full bg-slate-50/60 border border-slate-200/80 p-5 rounded-2xl shadow-2xs flex flex-col">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 pb-2 border-b border-slate-200 gap-3">
+                                <h4 class="font-extrabold text-[11px] text-slate-900 uppercase tracking-wider">
+                                    📊 Capaian Guru vs Wajib Input
+                                </h4>
+                                <div class="flex items-center gap-2">
+                                    <label class="text-[10px] font-bold text-slate-500 uppercase">Urutkan:</label>
+                                    <select id="sortGuruChart" onchange="renderGuruChart()" class="bg-white border border-slate-200 rounded-lg py-1 px-2 text-[11px] font-semibold text-slate-700 shadow-2xs focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer">
+                                        <option value="persentase_asc">Persentase (Terendah)</option>
+                                        <option value="persentase_desc">Persentase (Tertinggi)</option>
+                                        <option value="abjad_az">Nama (A - Z)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- Canvas Container dibuat lebih tinggi agar label nama guru tidak terpotong jika banyak -->
+                            <div style="height: 450px; position: relative; width: 100%;">
+                                <canvas id="chartGuru"></canvas>
+                            </div>
+                        </div>
                     </div>
+
                     <div>
                         <h4 class="font-extrabold text-xs text-slate-900 uppercase tracking-wider mb-4 border-b border-slate-100 pb-2">📋 Tabel Rincian Progres Guru</h4>
                         <div class="flex flex-col sm:flex-row justify-between gap-3 mb-4">
@@ -408,8 +429,12 @@
 
         // GLOBAL VARIABEL
         window.currentChartData = []; 
-        window.currentPrintTitle = "Cetak Rapot Sisipan & Grafik"; // Judul Default Document
-        window.globalSummaryData = []; // Menyimpan data ringkasan untuk fungsi export rekap
+        window.currentPrintTitle = "Cetak Rapot Sisipan & Grafik"; 
+        window.globalSummaryData = []; 
+        
+        // VARIABEL GLOBAL UNTUK CHART GURU
+        window.guruChartDataList = [];
+        window.chartGuruObj = null;
 
         function loadDaftarKelas() {
             const selectKelas = document.getElementById('pilihKelas');
@@ -422,18 +447,16 @@
                 }
             });
 
-            // Ambil data detail kelas, mapel, sekaligus progress pengisian dari database
             Promise.all([
                 fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_school_summary_detail' }) }).then(r => r.json()),
                 fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_progress_nilai_sekolah' }) }).then(r => r.json()).catch(() => ({data: []}))
             ]).then(([resSummary, resProgress]) => {
                 if(resSummary.status === 'success') {
-                    window.globalSummaryData = resSummary.detail_kelas; // Simpan ke variabel global
+                    window.globalSummaryData = resSummary.detail_kelas;
                     const gridContainer = document.getElementById('gridSubCardKelas');
                     gridContainer.innerHTML = '';
                     let totalSiswaAll = 0;
 
-                    // Petakan data progress nilai berdasarkan mapel dan kelas
                     const progressMap = {};
                     if(resProgress && resProgress.data) {
                         resProgress.data.forEach(p => {
@@ -494,7 +517,6 @@
                                     </button>
                                 </div>
 
-                                <!-- Dropdown Card Interaktif -->
                                 <div id="detail-kelas-${index}" class="hidden absolute left-0 right-0 top-full mt-2 z-30 bg-white border border-slate-200 rounded-2xl p-4 shadow-2xl text-xs animate-fade-in ring-1 ring-slate-900/5">
                                     <div class="flex justify-between items-center mb-2 pb-2 border-b border-slate-100">
                                         <span class="font-extrabold text-slate-800 text-[11px] uppercase tracking-wider">Progress Mapel Kelas ${item.kelas}</span>
@@ -512,7 +534,6 @@
         }
         loadDaftarKelas();
 
-        // Fungsi Download Rekap Format Excel (.xls) dengan Tabel Grafik Banding Guru vs Total Mapel Wajib + Pewarnaan Dinamis
         function downloadRekapExcel() {
             fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_progress_nilai_sekolah' }) })
             .then(res => res.json()).then(res => {
@@ -521,7 +542,6 @@
                     return;
                 }
 
-                // Hitung rekap perbandingan per Guru (Total Mapel Wajib vs Selesai)
                 const guruRekapMap = {};
                 res.data.forEach(item => {
                     const guru = item.nama_guru || 'Belum Ditentukan';
@@ -538,20 +558,6 @@
                     <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
                     <head>
                         <meta charset="UTF-8">
-                        <!--[if gte mso 9]>
-                        <xml>
-                            <x:ExcelWorkbook>
-                                <x:ExcelWorksheets>
-                                    <x:ExcelWorksheet>
-                                        <x:Name>Rekap Progres SMANJO</x:Name>
-                                        <x:WorksheetOptions>
-                                            <x:DisplayGridlines/>
-                                        </x:WorksheetOptions>
-                                    </x:ExcelWorksheet>
-                                </x:ExcelWorksheets>
-                            </x:ExcelWorkbook>
-                        </xml>
-                        <![endif]-->
                         <style>
                             .title { font-size: 16px; font-weight: bold; text-align: center; background: #4f46e5; color: #ffffff; padding: 10px; }
                             .subtitle { font-size: 13px; font-weight: bold; background: #e0e7ff; color: #312e81; padding: 6px; }
@@ -570,7 +576,6 @@
                             </tr>
                             <tr><td colspan="6"></td></tr>
                             
-                            <!-- TABEL RINGKASAN: GRAFIK / TABEL BANDING GURU VS TOTAL MAPEL WAJIB -->
                             <tr>
                                 <td colspan="6" class="subtitle">GRAFIK / TABEL BANDING PENCAPAIAN GURU VS TOTAL MAPEL WAJIB INPUT</td>
                             </tr>
@@ -599,7 +604,6 @@
                             <tr><td colspan="6"></td></tr>
                             <tr><td colspan="6"></td></tr>
 
-                            <!-- TABEL RINCIAN DETAIL MAPEL PER KELAS -->
                             <tr>
                                 <td colspan="6" class="subtitle">RINCIAN DETAIL PROGRES PER KELAS & MATA PELAJARAN</td>
                             </tr>
@@ -710,7 +714,54 @@
             });
         }
 
-        let myChart = null;
+        // FUNGSI UNTUK MERENDER CHART GURU BERDASARKAN URUTAN (SORTING)
+        function renderGuruChart() {
+            if (!window.guruChartDataList || window.guruChartDataList.length === 0) return;
+            
+            const sortVal = document.getElementById('sortGuruChart').value;
+            let sortedData = [...window.guruChartDataList]; // Klon array
+            
+            // Logika Pengurutan
+            if (sortVal === 'persentase_asc') {
+                sortedData.sort((a, b) => a.pct - b.pct);
+            } else if (sortVal === 'persentase_desc') {
+                sortedData.sort((a, b) => b.pct - a.pct);
+            } else if (sortVal === 'abjad_az') {
+                sortedData.sort((a, b) => a.nama.localeCompare(b.nama));
+            }
+
+            // Ekstrak data untuk Chart.js
+            const guruLabels = sortedData.map(g => g.nama);
+            const guruSelesai = sortedData.map(g => g.selesai);
+            const guruTotal = sortedData.map(g => g.totalWajib);
+
+            const ctxGuru = document.getElementById('chartGuru').getContext('2d');
+            if(window.chartGuruObj) window.chartGuruObj.destroy();
+            
+            window.chartGuruObj = new Chart(ctxGuru, {
+                type: 'bar',
+                data: {
+                    labels: guruLabels,
+                    datasets: [
+                        { label: 'Mapel Selesai', data: guruSelesai, backgroundColor: '#10b981', borderRadius: 4 },
+                        { label: 'Total Mapel Wajib', data: guruTotal, backgroundColor: '#cbd5e1', borderRadius: 4 }
+                    ]
+                },
+                options: {
+                    indexAxis: 'y', 
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { beginAtZero: true, ticks: { stepSize: 1 } },
+                        y: { ticks: { font: { size: 10 } } }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom', labels: { font: { size: 10 } } }
+                    }
+                }
+            });
+        }
+
         function loadProgressData() {
             const tbody = document.getElementById('tabelBodyProgress');
             tbody.innerHTML = '<tr class="no-data"><td colspan="6" class="text-center py-8 text-slate-400 text-xs font-medium"><span class="animate-spin-custom inline-block mr-2 text-indigo-600 text-sm">⏳</span> memuat data progress...</td></tr>';
@@ -718,11 +769,34 @@
             fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_progress_nilai_sekolah' }) })
             .then(res => res.json()).then(res => {
                 if(res.status !== 'success') return;
-                const labels = res.data.map(item => `${item.nama_mapel} (Kls ${item.kelas})`);
-                const percentages = res.data.map(item => item.persentase);
-                const ctx = document.getElementById('chartProgress').getContext('2d');
-                if(myChart) myChart.destroy();
-                myChart = new Chart(ctx, { type: 'bar', data: { labels: labels, datasets: [{ label: 'Kelengkapan (%)', data: percentages, backgroundColor: '#4f46e5', borderRadius: 6 }] }, options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } });
+                
+                // Merekap Data Pencapaian Guru vs Total Wajib Input
+                const guruRekapMap = {};
+                res.data.forEach(item => {
+                    const guru = item.nama_guru || 'Belum Ditentukan';
+                    if(!guruRekapMap[guru]) {
+                        guruRekapMap[guru] = { totalWajib: 0, selesai: 0, nama: guru };
+                    }
+                    guruRekapMap[guru].totalWajib += 1;
+                    if(item.persentase === 100) {
+                        guruRekapMap[guru].selesai += 1;
+                    }
+                });
+
+                // Menyimpan format list ke Variabel Global agar bisa di-Sort ulang nanti
+                window.guruChartDataList = Object.values(guruRekapMap).map(g => {
+                    return {
+                        nama: g.nama,
+                        totalWajib: g.totalWajib,
+                        selesai: g.selesai,
+                        pct: (g.selesai / g.totalWajib) * 100 // Hitung persentase untuk sortir
+                    };
+                });
+
+                // Render Chart Guru (otomatis memakai urutan dropdown default)
+                renderGuruChart();
+
+                // --- RENDER TABEL BAWAH ---
                 tbody.innerHTML = '';
                 res.data.forEach((item, idx) => {
                     let st = item.persentase === 100 ? 'SELESAI' : (item.persentase > 0 ? 'PROSES' : 'BELUM');
@@ -771,7 +845,6 @@
             const tahunPelajaranVal = document.getElementById('inputTahunPelajaran').value || '2026/2027';
             const faseVal = document.getElementById('inputFase').value || 'E';
             
-            // Cek status checkbox dan siapkan HTML watermark
             const isWatermarkAktif = document.getElementById('toggleWatermark').checked;
             const watermarkHtml = isWatermarkAktif ? `<img src="https://i.ibb.co.com/LD8rLMkz/Untitled-design-20260620-130306-0000.png" crossorigin="anonymous" class="watermark-logo">` : '';
             
@@ -814,7 +887,6 @@
             if(!data.nilai || data.nilai.length === 0) {
                 tbody = '<tr><td colspan="11" class="text-center p-2">Belum ada data nilai</td></tr>';
             } else {
-                // PENGURUTAN MAPEL SESUAI STANDAR E-RAPOR TERBARU (TERMASUK RUMPUN IPA & IPS)
                 const standardOrder = [
                     "pendidikan agama", 
                     "pendidikan pancasila", 
@@ -845,14 +917,14 @@
                         for (let i = 0; i < standardOrder.length; i++) {
                             if (lower.includes(standardOrder[i])) return i;
                         }
-                        return 999; // Muatan lokal atau mapel tambahan lainnya di urutan akhir
+                        return 999;
                     };
                     return getPriority(a.nama_mapel) - getPriority(b.nama_mapel);
                 });
 
                 data.nilai.forEach((n, index) => {
                     let nilaiAkhir = parseInt(n.sts) || 0; 
-                    let rataKls = Math.floor((Math.random() * 10) + 75); // Mockup
+                    let rataKls = Math.floor((Math.random() * 10) + 75); 
 
                     tbody += `<tr class="text-center">
                         <td>${index + 1}</td>
@@ -898,7 +970,6 @@
 
             const tanggalCetak = getFormattedDate();
 
-            // HALAMAN 1 (Rapot Utama - Catatan Wali & Tanggapan Simetris Menggunakan Flexbox & Grid)
             let page1 = `
                 <div class="a4-page bg-white">
                     ${watermarkHtml}
@@ -924,7 +995,6 @@
 
                             <h3 class="text-center font-bold text-xs underline mb-1.5 ${titleColor} tracking-wide uppercase">RAPOR SISIPAN TENGAH SEMESTER</h3>
 
-                            <!-- INJEKSI IDENTITAS -->
                             ${identitasHtml}
 
                             <table class="w-full mb-2 border-collapse border border-slate-900 table-rapot">
@@ -950,10 +1020,8 @@
                                 <tbody>${tbody}</tbody>
                             </table>
 
-                            <!-- BLOK KETIDAKHADIRAN, EKSKUL, CATATAN WALI & TANGGAPAN (GRID SIMETRIS) -->
                             <div class="grid grid-cols-2 gap-3 mb-1 items-stretch">
                                 
-                                <!-- KOLOM KIRI (Ketidakhadiran & Catatan) -->
                                 <div class="flex flex-col">
                                     <table class="w-full table-rapot border-collapse border border-slate-900 mb-1.5">
                                         <tr><th colspan="3" style="${thBg}">Ketidakhadiran</th></tr>
@@ -962,21 +1030,18 @@
                                         <tr><td class="text-left pl-2">Tanpa Keterangan</td><td class="text-center">:</td><td class="text-center">${data.kehadiran ? (data.kehadiran.alpa || '0') : '0'} hari</td></tr>
                                     </table>
                                     
-                                    <!-- Flex-Grow akan memaksa kotak ini memenuhi seluruh sisa tinggi kolom -->
                                     <div style="border: 1px solid #1e293b;" class="flex-grow flex flex-col">
                                         <div style="${thBg} border-bottom: 1px solid #1e293b; padding: 2.5px 4px;" class="text-center font-bold text-[9.5px]">Catatan Wali Kelas</div>
                                         <div style="padding: 2.5px 4px; min-height: 38px;" class="italic align-top text-[10px] flex-grow">${data.kehadiran ? (data.kehadiran.catatan || '-') : '-'}</div>
                                     </div>
                                 </div>
                                 
-                                <!-- KOLOM KANAN (Ekstrakurikuler & Tanggapan Wali Murid) -->
                                 <div class="flex flex-col">
                                     <table class="w-full table-rapot border-collapse border border-slate-900 mb-1.5">
                                         <tr><th width="10%" style="${thBg}">No</th><th style="${thBg}">Kegiatan Ekstrakurikuler</th><th width="25%" style="${thBg}">Predikat</th></tr>
                                         ${htmlEkskul}
                                     </table>
                                     
-                                    <!-- Flex-Grow akan memaksa kotak ini sejajar sempurna dengan kotak sebelah kiri -->
                                     <div style="border: 1px solid #1e293b;" class="flex-grow flex flex-col">
                                         <div style="${thBg} border-bottom: 1px solid #1e293b; padding: 2.5px 4px;" class="text-center font-bold text-[9.5px]">Tanggapan Orang Tua / Wali Murid</div>
                                         <div style="padding: 2.5px 4px; min-height: 38px;" class="align-top flex-grow"></div>
@@ -986,7 +1051,6 @@
                             </div>
                         </div>
 
-                        <!-- Blok Tanda Tangan Terikat di Bawah -->
                         <div class="flex justify-between text-center text-[10.5px] px-8 mt-auto pt-2 mb-1">
                             <div class="w-1/3"><p class="mb-9">Mengetahui,<br>Orang Tua/Wali Murid</p><p class="font-bold underline">.......................................</p></div>
                             <div class="w-1/3"><p class="mb-9">Wongsorejo, ${tanggalCetak}<br>Wali Kelas</p><p class="font-bold underline">${data.nama_wali}</p><p>NIP. ${data.nip_wali}</p></div>
@@ -995,17 +1059,14 @@
                 </div>
             `;
 
-            // HALAMAN 2 (Grid Flexbox Agar Sejajar Dinamis)
             let page2 = `
                 <div class="a4-page bg-white">
                     <div class="relative z-10 text-slate-900 flex flex-col h-full w-full">
                         
                         <h3 style="text-align: center; font-weight: bold; font-size: 12.5px; margin-bottom: 8px; margin-top: 5px; font-family: 'Inter', sans-serif;">GRAFIK CAPAIAN BELAJAR</h3>
                         
-                        <!-- INJEKSI IDENTITAS -->
                         ${identitasHtml}
 
-                        <!-- Bar Chart -->
                         <div class="box-grafik">
                             <div class="judul-grafik">Nilai Akhir Dibandingkan Rata-rata Kelas</div>
                             <div style="height: 200px; width: 100%; position: relative;">
@@ -1013,10 +1074,8 @@
                             </div>
                         </div>
 
-                        <!-- Grid Radar & Ringkasan Harmonis (Otomatis Sejajar) -->
                         <div style="display: grid; grid-template-columns: 1.1fr 1fr; gap: 10px; margin-bottom: 4px; align-items: stretch;">
                             
-                            <!-- KOTAK KIRI (Radar) - Memanjang otomatis -->
                             <div class="box-grafik" style="margin-bottom: 0; display: flex; flex-direction: column;">
                                 <div class="judul-grafik">Profil Capaian</div>
                                 <div style="flex-grow: 1; width: 100%; position: relative; min-height: 180px;">
@@ -1024,7 +1083,6 @@
                                 </div>
                             </div>
                             
-                            <!-- KOTAK KANAN (Tabel) - Menjadi acuan tinggi -->
                             <div class="box-grafik" style="margin-bottom: 0; padding-right: 0; padding-left: 0; padding-bottom: 0; border:none; background-color: transparent; box-shadow: none;">
                                 <div class="judul-grafik" style="padding-left:4px;">Ringkasan Nilai</div>
                                 <table class="w-full table-rapot border-collapse border border-slate-900" style="margin-top: 5px;">
@@ -1035,14 +1093,12 @@
                             
                         </div>
 
-                        <!-- Catatan Capaian -->
                         <div class="box-grafik" style="margin-bottom: 2px;">
                             <p style="font-size: 10px; line-height: 1.5; font-family: 'Inter', sans-serif;">
                                 <b>Catatan capaian:</b> ${catatanText}
                             </p>
                         </div>
                         
-                        <!-- Blok Tanda Tangan Terikat di Bawah -->
                         <div class="flex justify-between text-center text-[10.5px] px-8 mt-auto pt-2 mb-1">
                             <div class="w-1/3"><p class="mb-9">Mengetahui,<br>Orang Tua/Wali Murid</p><p class="font-bold underline">.......................................</p></div>
                             <div class="w-1/3"><p class="mb-9">Wongsorejo, ${tanggalCetak}<br>Wali Kelas</p><p class="font-bold underline">${data.nama_wali}</p><p>NIP. ${data.nip_wali}</p></div>
@@ -1100,8 +1156,6 @@
 
             fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_rapot', nis: nis }) })
             .then(res => res.json()).then(res => {
-                
-                // Set Judul File PDF khusus untuk 1 Siswa yang dicetak
                 window.currentPrintTitle = `${res.data.nama_siswa} - Kelas ${res.data.kelas} Cetak Rapot Sisipan & Grafik`;
 
                 document.getElementById('areaRapotContainer').innerHTML = buildRapotTemplate(res.data);
@@ -1114,7 +1168,6 @@
         
         function updateWatermarkPreview() {
             const btnPreview = document.getElementById('btnPreview');
-            // Jika preview sudah terbuka (tombol tidak disable), maka render ulang secara instan
             if (!btnPreview.disabled) {
                 generatePreview();
             }
@@ -1178,7 +1231,6 @@
                 <html lang="id">
                 <head>
                     <meta charset="UTF-8">
-                    <!-- Title ini yang akan menjadi nama default saat di save sebagai PDF -->
                     <title>${documentTitle}</title> 
                     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
                     <script src="https://cdn.tailwindcss.com"><\/script>
@@ -1209,7 +1261,6 @@
             if (!container || !container.innerHTML.includes('a4-page')) {
                 alert("Pratinjau rapot belum dimuat."); return;
             }
-            // Kirim judul yang sudah tersimpan di window.currentPrintTitle
             executePrint(container.innerHTML, window.currentPrintTitle);
         }
 
@@ -1220,7 +1271,6 @@
 
             btn.innerText = "Menyiapkan Cetak Masal (Termasuk Grafik)..."; btn.disabled = true;
 
-            // Set Judul PDF khusus saat cetak Masal 1 Kelas
             const judulCetakMasal = `Kelas ${kelas} Cetak Rapot Sisipan & Grafik`;
 
             window.currentChartData = [];
@@ -1239,7 +1289,7 @@
                 });
 
                 btn.innerText = "🖨️ Cetak Masal 1 Kelas (Printer)"; btn.disabled = false;
-                executePrint(allHtml, judulCetakMasal); // Kirim parameter judul cetak masal
+                executePrint(allHtml, judulCetakMasal); 
             }).catch(() => {
                 btn.innerText = "🖨️ Cetak Masal 1 Kelas (Printer)"; btn.disabled = false;
                 alert("Gagal mengambil data kelas.");
