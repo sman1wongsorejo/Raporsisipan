@@ -99,6 +99,16 @@
         }
         .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
         
+        /* Animasi Ambient Light / Glow untuk Progress Bar */
+        @keyframes ambientGlow {
+            0% { box-shadow: 0 0 4px rgba(79, 70, 229, 0.4); }
+            50% { box-shadow: 0 0 12px rgba(99, 102, 241, 0.8), 0 0 4px rgba(16, 185, 129, 0.5); }
+            100% { box-shadow: 0 0 4px rgba(79, 70, 229, 0.4); }
+        }
+        .ambient-progress {
+            animation: ambientGlow 2.5s infinite ease-in-out;
+        }
+        
         /* Custom Scrollbar untuk area preview */
         .preview-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
         .preview-scroll::-webkit-scrollbar-track { background: #cbd5e1; border-radius: 4px; }
@@ -188,20 +198,29 @@
                     </div>
                 </div>
 
-                <!-- CONTAINER GRID SUB-CARD PER KELAS -->
+                <!-- CONTAINER GRID 4 KOLOM MEMANJANG (Rincian Per Kelas & Live Progress Mapel dengan Ambient Light) -->
                 <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs mb-8">
-                    <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
-                        <div class="flex items-center gap-2.5">
-                            <span class="text-sm">📊</span>
+                    <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-5 pb-4 border-b border-slate-100">
+                        <div class="flex items-start sm:items-center gap-3">
+                            <div class="p-2.5 bg-indigo-50 text-indigo-600 rounded-xl font-bold text-base shrink-0">📊</div>
                             <div>
-                                <h3 class="font-extrabold text-xs text-slate-900 uppercase tracking-wider">Rincian Per Kelas</h3>
-                                <p class="text-[11px] text-slate-400 font-medium">Klik kartu untuk melihat rincian mata pelajaran aktif.</p>
+                                <h3 class="font-extrabold text-xs sm:text-sm text-slate-900 uppercase tracking-wider">Rincian Per Kelas & Live Progress Mapel</h3>
+                                <p class="text-[11px] text-slate-400 font-medium mt-0.5">Klik pada salah satu kartu kelas untuk melihat rincian mata pelajaran dan bar progress pengisian nilai guru secara real-time.</p>
                             </div>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2.5 w-full lg:w-auto justify-start lg:justify-end shrink-0">
+                            <button onclick="downloadRekapExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition shadow-xs flex items-center gap-2 active:scale-95">
+                                📥 Download Rekap (Excel)
+                            </button>
+                            <button onclick="loadDaftarKelas()" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-100 font-semibold py-2.5 px-3.5 rounded-xl text-xs transition shadow-2xs flex items-center gap-1.5 active:scale-95">
+                                🔄 Perbarui
+                            </button>
                         </div>
                     </div>
                     
-                    <div id="gridSubCardKelas" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-                        <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 text-center text-slate-400 py-6 col-span-full font-medium text-xs">
+                    <!-- GRID 4 KOLOM -->
+                    <div id="gridSubCardKelas" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 text-center text-slate-400 py-8 col-span-full font-medium text-xs">
                             <span class="animate-spin-custom inline-block mr-2 text-indigo-600 text-sm">⏳</span> mohon bersabar jika lama...
                         </div>
                     </div>
@@ -251,7 +270,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="tabelBodyProgress" class="divide-y divide-slate-100 bg-white font-medium">
-                                    <tr class="no-data"><td colspan="6" class="text-center py-8 text-slate-400 text-xs font-medium"><span class="animate-spin-custom inline-block mr-2 text-indigo-600 text-sm">⏳</span> mohon bersabar jika lama...</td></tr>
+                                    <tr class="no-data"><td colspan="6" class="text-center py-8 text-slate-400 text-xs font-medium"><span class="animate-spin-custom inline-block mr-2 text-indigo-600 text-sm">⏳</span> memuat data progress...</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -373,6 +392,7 @@
         // GLOBAL VARIABEL
         window.currentChartData = []; 
         window.currentPrintTitle = "Cetak Rapot Sisipan & Grafik"; // Judul Default Document
+        window.globalSummaryData = []; // Menyimpan data ringkasan untuk fungsi export rekap
 
         function loadDaftarKelas() {
             const selectKelas = document.getElementById('pilihKelas');
@@ -385,45 +405,243 @@
                 }
             });
 
-            fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_school_summary_detail' }) })
-            .then(res => res.json()).then(res => {
-                if(res.status === 'success') {
+            // Ambil data detail kelas, mapel, sekaligus progress pengisian dari database
+            Promise.all([
+                fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_school_summary_detail' }) }).then(r => r.json()),
+                fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_progress_nilai_sekolah' }) }).then(r => r.json()).catch(() => ({data: []}))
+            ]).then(([resSummary, resProgress]) => {
+                if(resSummary.status === 'success') {
+                    window.globalSummaryData = resSummary.detail_kelas; // Simpan ke variabel global
                     const gridContainer = document.getElementById('gridSubCardKelas');
                     gridContainer.innerHTML = '';
                     let totalSiswaAll = 0;
-                    res.detail_kelas.forEach((item, index) => {
+
+                    // Petakan data progress nilai berdasarkan mapel dan kelas
+                    const progressMap = {};
+                    if(resProgress && resProgress.data) {
+                        resProgress.data.forEach(p => {
+                            const key = `${p.kelas}_${p.nama_mapel}`.toLowerCase();
+                            progressMap[key] = p.persentase || 0;
+                        });
+                    }
+
+                    resSummary.detail_kelas.forEach((item, index) => {
                         totalSiswaAll += item.jumlah_siswa;
                         let listMapelHtml = '';
+                        
                         if(item.daftar_mapel && item.daftar_mapel.length > 0) {
-                            item.daftar_mapel.forEach(m => { listMapelHtml += `<li class="py-1 text-slate-600 border-b border-slate-100 last:border-0">• ${m}</li>`; });
-                        } else {
-                            listMapelHtml = `<li class="text-slate-400 italic py-1">Belum ada mapel</li>`;
-                        }
-                        gridContainer.innerHTML += `
-                            <div class="relative">
-                                <div class="bg-gradient-to-br from-slate-50/50 via-white to-indigo-50/10 hover:border-indigo-300 border border-slate-200/80 rounded-xl p-3.5 shadow-2xs hover:shadow-md transition-all duration-300 cursor-pointer flex flex-col justify-between group" onclick="toggleDetailKelas(${index})">
-                                    <div class="flex justify-between items-center mb-2">
-                                        <span class="font-black text-slate-900 text-xs group-hover:text-indigo-600 transition">Kelas ${item.kelas}</span>
-                                        <span id="icon-arrow-${index}" class="text-[10px] text-slate-400 font-bold transition-transform duration-300">▼</span>
+                            item.daftar_mapel.forEach(m => {
+                                const lookupKey = `${item.kelas}_${m}`.toLowerCase();
+                                const pct = progressMap[lookupKey] !== undefined ? progressMap[lookupKey] : 0;
+                                let barColor = 'bg-indigo-600 ambient-progress';
+                                if(pct === 100) barColor = 'bg-emerald-500 ambient-progress';
+                                else if(pct === 0) barColor = 'bg-rose-500 ambient-progress';
+
+                                listMapelHtml += `
+                                    <div class="py-2 border-b border-slate-100 last:border-0">
+                                        <div class="flex justify-between items-center text-[11px] font-semibold text-slate-700 mb-1">
+                                            <span class="truncate pr-2" title="${m}">• ${m}</span>
+                                            <span class="font-extrabold px-1.5 py-0.5 rounded text-[10px] ${pct === 100 ? 'bg-emerald-50 text-emerald-700' : (pct > 0 ? 'bg-amber-50 text-amber-700' : 'bg-rose-50 text-rose-700')}">${pct}%</span>
+                                        </div>
+                                        <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden p-0.5">
+                                            <div class="${barColor} h-1 rounded-full transition-all duration-700" style="width: ${pct}%"></div>
+                                        </div>
                                     </div>
-                                    <div class="space-y-1 text-[11px] font-medium text-slate-500">
-                                        <div class="flex justify-between"><span>Siswa:</span><span class="text-slate-900 font-bold">${item.jumlah_siswa}</span></div>
-                                        <div class="flex justify-between"><span>Mapel:</span><span class="text-indigo-600 font-bold">${item.jumlah_mapel}</span></div>
+                                `;
+                            });
+                        } else {
+                            listMapelHtml = `<div class="text-slate-400 italic py-3 text-center text-xs">Belum ada mapel</div>`;
+                        }
+
+                        gridContainer.innerHTML += `
+                            <div class="relative bg-gradient-to-br from-white via-slate-50/50 to-indigo-50/20 border border-slate-200/90 hover:border-indigo-400 rounded-2xl p-4 shadow-2xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between group">
+                                <div>
+                                    <div class="flex justify-between items-center mb-3 pb-2 border-b border-slate-100">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-7 h-7 rounded-xl bg-indigo-50 text-indigo-600 font-black text-xs flex items-center justify-center shadow-2xs group-hover:bg-indigo-600 group-hover:text-white transition">🏫</div>
+                                            <span class="font-black text-slate-900 text-xs">Kelas ${item.kelas}</span>
+                                        </div>
+                                        <span class="px-2 py-0.5 bg-slate-100 text-slate-600 rounded-md text-[10px] font-extrabold">${item.jumlah_mapel} Mapel</span>
+                                    </div>
+
+                                    <div class="grid grid-cols-2 gap-2 mb-3 text-[11px] font-semibold text-slate-600 bg-white/80 p-2.5 rounded-xl border border-slate-100">
+                                        <div>Siswa: <span class="text-slate-900 font-bold">${item.jumlah_siswa}</span></div>
+                                        <div class="text-right">Aktif: <span class="text-emerald-600 font-bold">100%</span></div>
                                     </div>
                                 </div>
-                                <div id="detail-kelas-${index}" class="hidden absolute left-0 right-0 top-full mt-2 z-30 bg-white border border-slate-200 rounded-xl p-3 shadow-xl text-xs animate-fade-in">
-                                    <p class="font-bold text-slate-800 mb-2 uppercase tracking-wider text-[10px] border-b border-slate-100 pb-1">Mapel Kelas ${item.kelas}:</p>
-                                    <ul class="max-h-40 overflow-y-auto space-y-1 pr-1 font-medium text-slate-600">${listMapelHtml}</ul>
+
+                                <div>
+                                    <button onclick="toggleDetailKelas(${index})" class="w-full bg-slate-900 hover:bg-indigo-600 text-white text-[11px] font-bold py-2 px-3 rounded-xl transition shadow-xs flex items-center justify-center gap-2 group-hover:shadow-md">
+                                        <span>Lihat Live Progress</span>
+                                        <span id="icon-arrow-${index}" class="text-[10px] transition-transform duration-300">▼</span>
+                                    </button>
+                                </div>
+
+                                <!-- Dropdown Card Interaktif -->
+                                <div id="detail-kelas-${index}" class="hidden absolute left-0 right-0 top-full mt-2 z-30 bg-white border border-slate-200 rounded-2xl p-4 shadow-2xl text-xs animate-fade-in ring-1 ring-slate-900/5">
+                                    <div class="flex justify-between items-center mb-2 pb-2 border-b border-slate-100">
+                                        <span class="font-extrabold text-slate-800 text-[11px] uppercase tracking-wider">Progress Mapel Kelas ${item.kelas}</span>
+                                        <button onclick="toggleDetailKelas(${index})" class="text-slate-400 hover:text-slate-700 font-bold text-xs">✕</button>
+                                    </div>
+                                    <div class="max-h-56 overflow-y-auto pr-1 space-y-1 preview-scroll">${listMapelHtml}</div>
                                 </div>
                             </div>`;
                     });
                     document.getElementById('infoTotalSiswa').innerText = `${totalSiswaAll} Siswa`;
                 }
             }).catch(() => {
-                document.getElementById('gridSubCardKelas').innerHTML = '<div class="text-center text-slate-400 py-4 col-span-full font-medium text-xs">Gagal memuat rincian sub-card kelas.</div>';
+                document.getElementById('gridSubCardKelas').innerHTML = '<div class="text-center text-slate-400 py-6 col-span-full font-medium text-xs text-rose-500">Gagal memuat rincian sub-card kelas.</div>';
             });
         }
         loadDaftarKelas();
+
+        // Fungsi Download Rekap Format Excel (.xls) dengan Tabel Grafik Banding Guru vs Total Mapel Wajib + Pewarnaan Dinamis
+        function downloadRekapExcel() {
+            fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'get_progress_nilai_sekolah' }) })
+            .then(res => res.json()).then(res => {
+                if(!res || res.status !== 'success') {
+                    alert("Gagal mengambil data rekap progress pengisian nilai.");
+                    return;
+                }
+
+                // Hitung rekap perbandingan per Guru (Total Mapel Wajib vs Selesai)
+                const guruRekapMap = {};
+                res.data.forEach(item => {
+                    const guru = item.nama_guru || 'Belum Ditentukan';
+                    if(!guruRekapMap[guru]) {
+                        guruRekapMap[guru] = { totalWajib: 0, selesai: 0 };
+                    }
+                    guruRekapMap[guru].totalWajib += 1;
+                    if(item.persentase === 100) {
+                        guruRekapMap[guru].selesai += 1;
+                    }
+                });
+
+                let htmlTable = `
+                    <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+                    <head>
+                        <meta charset="UTF-8">
+                        <!--[if gte mso 9]>
+                        <xml>
+                            <x:ExcelWorkbook>
+                                <x:ExcelWorksheets>
+                                    <x:ExcelWorksheet>
+                                        <x:Name>Rekap Progres SMANJO</x:Name>
+                                        <x:WorksheetOptions>
+                                            <x:DisplayGridlines/>
+                                        </x:WorksheetOptions>
+                                    </x:ExcelWorksheet>
+                                </x:ExcelWorksheets>
+                            </x:ExcelWorkbook>
+                        </xml>
+                        <![endif]-->
+                        <style>
+                            .title { font-size: 16px; font-weight: bold; text-align: center; background: #4f46e5; color: #ffffff; padding: 10px; }
+                            .subtitle { font-size: 13px; font-weight: bold; background: #e0e7ff; color: #312e81; padding: 6px; }
+                            th { background-color: #cbd5e1; color: #0f172a; font-weight: bold; text-align: center; border: 1px solid #94a3b8; padding: 8px; }
+                            td { border: 1px solid #cbd5e1; padding: 6px; font-size: 11px; }
+                            .text-center { text-align: center; }
+                            .hijau { background-color: #d1fae5; color: #065f46; font-weight: bold; }
+                            .merah { background-color: #fee2e2; color: #991b1b; font-weight: bold; }
+                            .kuning { background-color: #fef3c7; color: #92400e; font-weight: bold; }
+                        </style>
+                    </head>
+                    <body>
+                        <table>
+                            <tr>
+                                <td colspan="6" class="title">REKAPITULASI PROGRES PENGISIAN NILAI RAPOT SISIPAN SMAN 1 WONGSOREJO</td>
+                            </tr>
+                            <tr><td colspan="6"></td></tr>
+                            
+                            <!-- TABEL RINGKASAN: GRAFIK / TABEL BANDING GURU VS TOTAL MAPEL WAJIB -->
+                            <tr>
+                                <td colspan="6" class="subtitle">GRAFIK / TABEL BANDING PENCAPAIAN GURU VS TOTAL MAPEL WAJIB INPUT</td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Nama Guru Pengampu</th>
+                                <th colspan="2">Mapel Selesai (100%)</th>
+                                <th colspan="2">Total Mapel Wajib Diinput</th>
+                            </tr>
+                `;
+
+                for(let guru in guruRekapMap) {
+                    let dataGuru = guruRekapMap[guru];
+                    let pctGuru = Math.round((dataGuru.selesai / dataGuru.totalWajib) * 100);
+                    let badgeClass = pctGuru === 100 ? 'hijau' : (pctGuru > 0 ? 'kuning' : 'merah');
+                    
+                    htmlTable += `
+                        <tr>
+                            <td colspan="2"><b>${guru}</b></td>
+                            <td colspan="2" class="text-center ${badgeClass}">${dataGuru.selesai} Mapel</td>
+                            <td colspan="2" class="text-center"><b>${dataGuru.totalWajib} Mapel Wajib</b> (${pctGuru}%)</td>
+                        </tr>
+                    `;
+                }
+
+                htmlTable += `
+                            <tr><td colspan="6"></td></tr>
+                            <tr><td colspan="6"></td></tr>
+
+                            <!-- TABEL RINCIAN DETAIL MAPEL PER KELAS -->
+                            <tr>
+                                <td colspan="6" class="subtitle">RINCIAN DETAIL PROGRES PER KELAS & MATA PELAJARAN</td>
+                            </tr>
+                            <tr>
+                                <th>No</th>
+                                <th>Kelas</th>
+                                <th>Mata Pelajaran</th>
+                                <th>Guru Pengampu</th>
+                                <th>Persentase (%)</th>
+                                <th>Status Keterangan</th>
+                            </tr>
+                `;
+
+                res.data.forEach((item, idx) => {
+                    let statusInput = '';
+                    let cssClass = '';
+
+                    if (item.persentase === 100) {
+                        statusInput = 'SELESAI (100%)';
+                        cssClass = 'hijau';
+                    } else if (item.persentase > 0) {
+                        statusInput = 'PROSES INPUT (' + item.persentase + '%)';
+                        cssClass = 'kuning';
+                    } else {
+                        statusInput = 'BELUM INPUT (0%)';
+                        cssClass = 'merah';
+                    }
+
+                    htmlTable += `
+                        <tr>
+                            <td class="text-center">${idx + 1}</td>
+                            <td class="text-center">Kelas ${item.kelas}</td>
+                            <td>${item.nama_mapel}</td>
+                            <td>${item.nama_guru || '-'}</td>
+                            <td class="text-center ${cssClass}">${item.persentase}%</td>
+                            <td class="text-center ${cssClass}">${statusInput}</td>
+                        </tr>
+                    `;
+                });
+
+                htmlTable += `
+                        </table>
+                    </body>
+                    </html>
+                `;
+
+                const blob = new Blob([htmlTable], { type: 'application/vnd.ms-excel' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Rekap_Progres_Dan_Mapel_SMANJO_${new Date().toISOString().slice(0,10)}.xls`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }).catch(() => {
+                alert("Terjadi kesalahan saat menghasilkan file Excel rekap.");
+            });
+        }
 
         function toggleDetailKelas(index) {
             const detailEl = document.getElementById(`detail-kelas-${index}`);
@@ -431,7 +649,8 @@
             document.querySelectorAll('[id^="detail-kelas-"]').forEach((el, idx) => {
                 if(idx !== index) {
                     el.classList.add('hidden');
-                    document.getElementById(`icon-arrow-${idx}`).style.transform = 'rotate(0deg)';
+                    const arr = document.getElementById(`icon-arrow-${idx}`);
+                    if(arr) arr.style.transform = 'rotate(0deg)';
                 }
             });
             if (detailEl.classList.contains('hidden')) {
@@ -658,7 +877,7 @@
 
             const tanggalCetak = getFormattedDate();
 
-            // HALAMAN 1 (Rapot Utama)
+            // HALAMAN 1 (Rapot Utama - Catatan Wali & Tanggapan Simetris Menggunakan Flexbox & Grid)
             let page1 = `
                 <div class="a4-page bg-white">
                     <img src="https://i.ibb.co.com/LD8rLMkz/Untitled-design-20260620-130306-0000.png" crossorigin="anonymous" class="watermark-logo">
@@ -722,6 +941,7 @@
                                         <tr><td class="text-left pl-2">Tanpa Keterangan</td><td class="text-center">:</td><td class="text-center">${data.kehadiran ? (data.kehadiran.alpa || '0') : '0'} hari</td></tr>
                                     </table>
                                     
+                                    <!-- Flex-Grow akan memaksa kotak ini memenuhi seluruh sisa tinggi kolom -->
                                     <div style="border: 1px solid #1e293b;" class="flex-grow flex flex-col">
                                         <div style="${thBg} border-bottom: 1px solid #1e293b; padding: 2.5px 4px;" class="text-center font-bold text-[9.5px]">Catatan Wali Kelas</div>
                                         <div style="padding: 2.5px 4px; min-height: 38px;" class="italic align-top text-[10px] flex-grow">${data.kehadiran ? (data.kehadiran.catatan || '-') : '-'}</div>
@@ -735,6 +955,7 @@
                                         ${htmlEkskul}
                                     </table>
                                     
+                                    <!-- Flex-Grow akan memaksa kotak ini sejajar sempurna dengan kotak sebelah kiri -->
                                     <div style="border: 1px solid #1e293b;" class="flex-grow flex flex-col">
                                         <div style="${thBg} border-bottom: 1px solid #1e293b; padding: 2.5px 4px;" class="text-center font-bold text-[9.5px]">Tanggapan Orang Tua / Wali Murid</div>
                                         <div style="padding: 2.5px 4px; min-height: 38px;" class="align-top flex-grow"></div>
@@ -870,6 +1091,7 @@
             });
         }
 
+        // Modifikasi fungsi executePrint untuk menerima parameter judul / nama PDF
         function executePrint(htmlContent, documentTitle = 'Cetak Rapot Sisipan & Grafik') {
             const printWindow = window.open('', '_blank', 'width=950,height=800');
             if (!printWindow) {
@@ -959,6 +1181,7 @@
             if (!container || !container.innerHTML.includes('a4-page')) {
                 alert("Pratinjau rapot belum dimuat."); return;
             }
+            // Kirim judul yang sudah tersimpan di window.currentPrintTitle
             executePrint(container.innerHTML, window.currentPrintTitle);
         }
 
@@ -969,6 +1192,7 @@
 
             btn.innerText = "Menyiapkan Cetak Masal (Termasuk Grafik)..."; btn.disabled = true;
 
+            // Set Judul PDF khusus saat cetak Masal 1 Kelas
             const judulCetakMasal = `Kelas ${kelas} Cetak Rapot Sisipan & Grafik`;
 
             window.currentChartData = [];
@@ -987,7 +1211,7 @@
                 });
 
                 btn.innerText = "🖨️ Cetak Masal 1 Kelas (Printer)"; btn.disabled = false;
-                executePrint(allHtml, judulCetakMasal);
+                executePrint(allHtml, judulCetakMasal); // Kirim parameter judul cetak masal
             }).catch(() => {
                 btn.innerText = "🖨️ Cetak Masal 1 Kelas (Printer)"; btn.disabled = false;
                 alert("Gagal mengambil data kelas.");
